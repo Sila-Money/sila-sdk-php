@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use JMS\Serializer\Annotation\Type;
-
 /**
  * Address
  * Object used in the entity message.
