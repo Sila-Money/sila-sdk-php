@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Address
+ * Base Response
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Domain;
 
 /**
- * Address
- * Object used in the entity message.
+ * Base Response
+ * Response used for the majority of endpoints.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
