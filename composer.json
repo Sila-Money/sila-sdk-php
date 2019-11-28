@@ -1,0 +1,31 @@
+{
+    "name": "silamoney/client",
+    "description": "The Silamoney SDK for the api 0.2 beta version.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "José Morales",
+            "email": "jmorales@digitalgeko.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.4",
+        "squizlabs/php_codesniffer": "^3.5",
+        "friendsofphp/php-cs-fixer": "^2.16"
+    },
+    "autoload": {
+        "psr-4": { "Silamoney\\Client\\" : "lib/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Silamoney\\Client\\" : "test/" }
+    }
+}
