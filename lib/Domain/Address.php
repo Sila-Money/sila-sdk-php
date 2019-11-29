@@ -7,7 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
-use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\{SerializedName, Type};
+use Respect\Validation\Validator as v;
 
 /**
  * Address
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Address
+class Address implements ValidInterface
 {
     /**
      * Address Alias
@@ -56,6 +57,7 @@ class Address
     /**
      * Street Address 1
      * @var string
+     * @SerializedName("street_address_1")
      * @Type("string")
      */
     private $streetAddress1;
@@ -63,6 +65,7 @@ class Address
     /**
      * Street Address 2
      * @var string
+     * @SerializedName("street_address_2")
      * @Type("string")
      */
     private $streetAddress2;
@@ -76,5 +79,16 @@ class Address
         $this->state = $user->getState();
         $this->streetAddress1 = $user->getAddress();
         $this->streetAddress2 = $user->getAddress2();
+    }
+
+    public function isValid(): bool
+    {
+        $notEmptyString = v::stringType()->notEmpty();
+        return v::not(v::nullType())->validate($this->addressAlias)
+            && $notEmptyString->validate($this->streetAddress1)
+            && $notEmptyString->validate($this->city)
+            && $notEmptyString->validate($this->state)
+            && $notEmptyString->validate($this->country)
+            && $notEmptyString->validate($this->postalCode);
     }
 }

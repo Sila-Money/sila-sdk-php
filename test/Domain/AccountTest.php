@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Account Test
- * Object used in the GetAccounts response.
+ * Tests for the Account model.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
