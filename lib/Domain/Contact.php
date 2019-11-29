@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Contact
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Contact
+class Contact implements ValidInterface
 {
     /**
      * Phone
@@ -49,5 +50,13 @@ class Contact
         $this->contactAlias = "";
         $this->email = $user->getEmail();
         $this->phone = $user->getPhone();
+    }
+
+    public function isValid(): bool
+    {
+        $notEmptyString = v::stringType()->notEmpty();
+        return v::not(v::nullType())->validate($this->contactAlias)
+            && $notEmptyString->validate($this->email)
+            && $notEmptyString->validate($this->phone);
     }
 }
