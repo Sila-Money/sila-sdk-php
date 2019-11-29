@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Crypto Entry
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class CryptoEntry
+class CryptoEntry implements ValidInterface
 {
     /**
      * @var string
@@ -46,5 +47,13 @@ class CryptoEntry
         $this->cryptoAddress = $user->getCryptoAddress();
         $this->cryptoAlias = "";
         $this->cryptoCode = CryptoCode::ETH;
+    }
+
+    public function isValid(): bool
+    {
+        $notEmptyString = v::stringType()->notEmpty();
+        return v::not(v::nullType())->validate($this->cryptoAlias)
+            && $notEmptyString->validate($this->cryptoCode)
+            && $notEmptyString->validate($this->cryptoAddress);
     }
 }
