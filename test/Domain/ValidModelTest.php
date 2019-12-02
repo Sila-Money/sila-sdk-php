@@ -53,7 +53,8 @@ class ValidModelTest extends TestCase
             'Contact is valid' => array('ContactValid.json', 'Contact', true),
             'Crypto Entry is valid' => array('CryptoEntryValid.json', 'CryptoEntry', true),
             'Entity is valid' => array('EntityValid.json', 'Entity', true),
-            'Header is valid' => array('HeaderValid.json', 'Header', true)
+            'Header is valid' => array('HeaderValid.json', 'Header', true),
+            'Identity is valid' => array('IdentityValid.json', 'Identity', true)
         );
     }
 
@@ -64,7 +65,8 @@ class ValidModelTest extends TestCase
             'Contact is invalid' => array('ContactInvalid.json', 'Contact', false),
             'Crypt Entry is invalid' => array('CryptoEntryInvalid.json', 'CryptoEntry', false),
             'Entity is invalid' => array('EntityInvalid.json', 'Entity', false),
-            'Header is invalid' => array('HeaderInvalid.json', 'Header', false)
+            'Header is invalid' => array('HeaderInvalid.json', 'Header', false),
+            'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false)
         );
     }
 }

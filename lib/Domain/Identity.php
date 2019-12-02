@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Identity
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Identity
+class Identity implements ValidInterface
 {
     /**
      * @var string
@@ -39,5 +40,12 @@ class Identity
     {
         $this->identityAlias = IdentityAlias::SSN;
         $this->identityValue = $user->getIdentityNumber();
+    }
+
+    public function isValid(): bool
+    {
+        $notEmptyString = v::stringType()->notEmpty();
+        return $notEmptyString->validate($this->identityAlias)
+            && $notEmptyString->validate($this->identityValue);
     }
 }
