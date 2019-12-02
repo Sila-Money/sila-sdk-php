@@ -15,12 +15,19 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "guzzlehttp/guzzle": "^6.4"
+        "guzzlehttp/guzzle": "^6.4",
+        "jms/serializer": "^3.3",
+        "respect/validation": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4",
         "squizlabs/php_codesniffer": "^3.5",
         "friendsofphp/php-cs-fixer": "^2.16"
+    },
+    "scripts": {
+        "lint": "phpcs --standard=PSR12 lib && phpcs --standard=PSR12 test",
+        "lint:autofix": "phpcbf --standard=PSR12 lib && phpcbf --standard=PSR12 test",
+        "test": "phpunit --bootstrap vendor/autoload.php test"
     },
     "autoload": {
         "psr-4": { "Silamoney\\Client\\" : "lib/" }

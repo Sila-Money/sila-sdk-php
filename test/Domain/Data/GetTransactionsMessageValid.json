@@ -1,0 +1,25 @@
+{
+    "header": {
+      "created": 1234567890, 
+      "auth_handle": "handle.silamoney.eth", 
+      "user_handle":"user.silamoney.eth", 
+      "version": "0.2", 
+      "crypto": "ETH", 
+      "reference": "ref"
+    }, 
+    "message": "get_transactions_msg",
+    "search_filters": {
+      "transaction_id": "some UUID string assigned by Sila",
+      "reference_id": "the reference string sent in the header object when transaction request was made",
+      "show_timelines": false,
+      "sort_ascending": false,
+      "max_sila_amount": 1300,
+      "min_sila_amount": 1000,
+      "statuses": ["pending", "successful", "failed", "complete"],
+      "start_epoch": 1234567860,
+      "end_epoch": 1234567891,
+      "page": 1,
+      "per_page": 20,
+      "transaction_types": ["issue", "redeem", "transfer"]
+    }
+  }

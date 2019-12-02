@@ -1,0 +1,13 @@
+{
+    "header": {
+      "created": 1234567890, 
+      "auth_handle": "handle.silamoney.eth", 
+      "user_handle":"user.silamoney.eth", 
+      "version": "0.2", 
+      "crypto": "ETH", 
+      "reference": "ref"
+    }, 
+    "message": "link_account_msg",
+    "public_token": "public_token_wH473vr",
+    "account_name": "Chase Checking Account"
+  }
