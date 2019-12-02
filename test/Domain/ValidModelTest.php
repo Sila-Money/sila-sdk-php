@@ -48,7 +48,8 @@ class ValidModelTest extends TestCase
             'Header is valid' => array('HeaderValid.json', 'Header', true),
             'Identity is valid' => array('IdentityValid.json', 'Identity', true),
             'Search Filters is valid (empty)' => array('SearchFiltersEmpty.json', 'SearchFilters', true),
-            'Search Filters is valid (all props)' => array('SearchFiltersAllProperties.json', 'SearchFilters', true)
+            'Search Filters is valid (all props)' => array('SearchFiltersAllProperties.json', 'SearchFilters', true),
+            'Header Message is valid' => array('HeaderMessageValid.json', 'HeaderMessage', true)
         );
     }
 

@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Header Message
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class HeaderMessage
+class HeaderMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
@@ -40,5 +41,11 @@ class HeaderMessage
     {
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::HEADER;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->header->isValid()
+            && v::stringType()->notEmpty()->validate($this->message);
     }
 }
