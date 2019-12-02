@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Entity Message
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class EntityMessage
+class EntityMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Address
@@ -75,5 +76,22 @@ class EntityMessage
         $this->contact = new Contact($user);
         $this->cryptoEntry = new CryptoEntry($user);
         $this->entity = new Entity($user);
+    }
+
+    public function isValid(): bool
+    {
+        return v::notOptional()->validate($this->header)
+            && $this->header->isValid()
+            && v::stringType()->notEmpty()->validate($this->message)
+            && v::notOptional()->validate($this->address)
+            && $this->address->isValid()
+            && v::notOptional()->validate($this->identity)
+            && $this->identity->isValid()
+            && v::notOptional()->validate($this->contact)
+            && $this->contact->isValid()
+            && v::notOptional()->validate($this->cryptoEntry)
+            && $this->cryptoEntry->isValid()
+            && v::notOptional()->validate($this->entity)
+            && $this->entity->isValid();
     }
 }

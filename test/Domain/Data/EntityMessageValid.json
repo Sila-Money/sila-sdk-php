@@ -1,0 +1,40 @@
+{
+    "header": {
+      "created": 1234567890, 
+      "auth_handle": "handle.silamoney.eth", 
+      "user_handle":"user.silamoney.eth", 
+      "version": "0.2", 
+      "crypto": "ETH", 
+      "reference": "ref"
+    }, 
+    "message": "entity_msg",
+    "address": {
+      "address_alias": "Home Sweet Home",
+      "street_address_1": "123 SW Main St. Apt 143",
+      "city": "Portland",
+      "state": "Oregon",
+      "country": "US",
+      "postal_code": "97000"
+    },
+    "identity": {
+      "identity_alias": "SSN",
+      "identity_value": "123452222"
+    },
+    "contact": {
+      "contact_alias": "main",
+      "phone": "5035035035",
+      "email": "contact@silamoney.com"
+    },
+    "crypto_entry": {
+      "crypto_alias": "primary",
+      "crypto_code": "ETH",
+      "crypto_address": "0x65a796a4bD3AaF6370791BefFb1A86EAcfdBc3C1"
+    },
+    "entity": {
+      "first_name": "Holly",
+      "last_name": "Golightly",
+      "entity_name": "Holly Golightly",
+      "birthdate": "1959-01-31",
+      "relationship": "user"
+    }
+  }

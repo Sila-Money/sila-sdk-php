@@ -49,7 +49,8 @@ class ValidModelTest extends TestCase
             'Identity is valid' => array('IdentityValid.json', 'Identity', true),
             'Search Filters is valid (empty)' => array('SearchFiltersEmpty.json', 'SearchFilters', true),
             'Search Filters is valid (all props)' => array('SearchFiltersAllProperties.json', 'SearchFilters', true),
-            'Header Message is valid' => array('HeaderMessageValid.json', 'HeaderMessage', true)
+            'Header Message is valid' => array('HeaderMessageValid.json', 'HeaderMessage', true),
+            'Entity Message is valid' => array('EntityMessageValid.json', 'EntityMessage', true)
         );
     }
 
@@ -62,7 +63,8 @@ class ValidModelTest extends TestCase
             'Entity is invalid' => array('EntityInvalid.json', 'Entity', false),
             'Header is invalid' => array('HeaderInvalid.json', 'Header', false),
             'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false),
-            'Header Message is invalid' => array('HeaderMessageInvalid.json', 'HeaderMessage', false)
+            'Header Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false),
+            'Entity Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false)
         );
     }
 }
