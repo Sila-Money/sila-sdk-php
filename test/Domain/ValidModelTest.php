@@ -51,7 +51,8 @@ class ValidModelTest extends TestCase
             'Search Filters is valid (all props)' => array('SearchFiltersAllProperties.json', 'SearchFilters', true),
             'Header Message is valid' => array('HeaderMessageValid.json', 'HeaderMessage', true),
             'Entity Message is valid' => array('EntityMessageValid.json', 'EntityMessage', true),
-            'Link Account Message is valid' => array('LinkAccountMessageValid.json', 'LinkAccountMessage', true)
+            'Link Account Message is valid' => array('LinkAccountMessageValid.json', 'LinkAccountMessage', true),
+            'Get Accounts Message is valid' => array('GetAccountsMessageValid.json', 'GetAccountsMessage', true)
         );
     }
 
@@ -66,7 +67,8 @@ class ValidModelTest extends TestCase
             'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false),
             'Header Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false),
             'Entity Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false),
-            'Link Account Message is invalid' => array('MessageInvalid.json', 'LinkAccountMessage', false)
+            'Link Account Message is invalid' => array('MessageInvalid.json', 'LinkAccountMessage', false),
+            'Get Accounts Message is invalid' => array('MessageInvalid.json', 'GetAccountsMessage', false)
         );
     }
 }
