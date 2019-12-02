@@ -18,7 +18,6 @@ namespace Silamoney\Client\Domain;
 
 class Environments extends SplEnum
 {
-    private const __default = self::SANDBOX;
     /**
      * Sila sandbox environment.
      */

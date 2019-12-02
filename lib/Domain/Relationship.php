@@ -16,8 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class Relationship extends SplEnum
 {
-    private const __default = self::USER;
-
     public const ORGANIZATION = 'organization';
     public const DEVELOPER = 'developer';
     public const USER = 'user';

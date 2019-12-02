@@ -16,7 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class Status extends SplEnum
 {
-    private const __default = self::COMPLETE;
     /**
      * String value for pending status.
      */

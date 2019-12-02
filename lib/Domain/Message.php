@@ -16,7 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class Message extends SplEnum
 {
-    public const __default = self::ENTITY;
     /**
      * String value for HeaderMsg.
      */

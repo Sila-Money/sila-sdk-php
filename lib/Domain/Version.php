@@ -16,7 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class Version extends SplEnum
 {
-    private const __default = self::ZERO_2;
     public const ZERO_2 = "0.2";
     public const V0_2 = "v0.2";
 }

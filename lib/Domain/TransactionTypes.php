@@ -16,7 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class TransactionTypes extends SplEnum
 {
-    private const __default = self::ISSUE;
     /**
      * String value for issue type.
      */

@@ -16,7 +16,6 @@ namespace Silamoney\Client\Domain;
  */
 class IdentityAlias extends SplEnum
 {
-    private const __default = self::SSN;
     public const SSN = "SSN";
     public const EIN = "EIN";
     public const ITIN = "ITIN";

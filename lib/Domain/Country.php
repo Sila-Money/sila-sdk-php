@@ -16,7 +16,5 @@ namespace Silamoney\Client\Domain;
  */
 class Country extends SplEnum
 {
-    private const __default = self::US;
-
     public const US = 'US';
 }

@@ -16,7 +16,5 @@ namespace Silamoney\Client\Domain;
  */
 class CryptoCode extends SplEnum
 {
-    private const __default = self::ETH;
-
     public const ETH = 'ETH';
 }
