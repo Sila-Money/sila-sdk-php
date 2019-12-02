@@ -53,7 +53,8 @@ class ValidModelTest extends TestCase
             'Entity Message is valid' => array('EntityMessageValid.json', 'EntityMessage', true),
             'Link Account Message is valid' => array('LinkAccountMessageValid.json', 'LinkAccountMessage', true),
             'Get Accounts Message is valid' => array('GetAccountsMessageValid.json', 'GetAccountsMessage', true),
-            'Issue Message is valid' => array('IssueMessageValid.json', 'IssueMessage', true)
+            'Issue Message is valid' => array('IssueMessageValid.json', 'IssueMessage', true),
+            'Transfer Message is valid' => array('TransferMessageValid.json', 'TransferMessage', true)
         );
     }
 
@@ -70,7 +71,8 @@ class ValidModelTest extends TestCase
             'Entity Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false),
             'Link Account Message is invalid' => array('MessageInvalid.json', 'LinkAccountMessage', false),
             'Get Accounts Message is invalid' => array('MessageInvalid.json', 'GetAccountsMessage', false),
-            'Issue Message is invalid' => array('MessageInvalid.json', 'IssueMessage', false)
+            'Issue Message is invalid' => array('MessageInvalid.json', 'IssueMessage', false),
+            'Transfer Message is invalid' => array('MessageInvalid.json', 'TransferMessage', false)
         );
     }
 }

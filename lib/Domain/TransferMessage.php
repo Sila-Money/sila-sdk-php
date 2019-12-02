@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Transfer Message
@@ -16,11 +17,11 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class TransferMessage
+class TransferMessage implements ValidInterface
 {
     /**
-     * @var int
-     * @Type("int")
+     * @var float
+     * @Type("float")
      */
     private $amount;
 
@@ -60,5 +61,13 @@ class TransferMessage
         $this->destination = $destination;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::TRANSFER;
+    }
+
+    public function isValid(): bool
+    {
+        return v::notOptional()->validate($this->header)
+            && v::stringType()->notEmpty()->validate($this->message)
+            && v::stringType()->notEmpty()->validate($this->destination)
+            && v::floatType()->validate($this->amount);
     }
 }
