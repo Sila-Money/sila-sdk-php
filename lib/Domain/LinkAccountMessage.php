@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Link Account Message
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class LinkAccountMessage
+class LinkAccountMessage implements ValidInterface
 {
     /**
      * @var string
@@ -62,5 +63,15 @@ class LinkAccountMessage
         $this->accountName = $accountName;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::LINK_ACCOUNT;
+    }
+
+    public function isValid(): bool
+    {
+        return v::notOptional()->validate($this->header)
+            && $this->header->isValid()
+            && v::stringType()->notEmpty()->validate($this->message)
+            && v::stringType()->notEmpty()->validate($this->publicToken)
+            && ($this->accountName === null || v::stringType()->validate($this->accountName))
+            && ($this->selectedAccountId === null || v::stringType()->validate($this->selectedAccountId));
     }
 }
