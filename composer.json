@@ -25,8 +25,8 @@
         "friendsofphp/php-cs-fixer": "^2.16"
     },
     "scripts": {
-        "autolint": "phpcbf --standard=PSR12 lib && phpcbf --standard=PSR12 test",
         "lint": "phpcs --standard=PSR12 lib && phpcs --standard=PSR12 test",
+        "lint:autofix": "phpcbf --standard=PSR12 lib && phpcbf --standard=PSR12 test",
         "test": "phpunit --bootstrap vendor/autoload.php test"
     },
     "autoload": {
