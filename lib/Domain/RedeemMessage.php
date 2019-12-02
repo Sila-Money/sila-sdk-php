@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Redeem Message
@@ -16,11 +17,11 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class RedeemMessage
+class RedeemMessage implements ValidInterface
 {
     /**
-     * @var int
-     * @Type("int")
+     * @var float
+     * @Type("float")
      */
     private $amount;
 
@@ -60,5 +61,13 @@ class RedeemMessage
         $this->amount = $amount;
         $this->accountName = $accountName;
         $this->message = Message::REDEEM;
+    }
+
+    public function isValid(): bool
+    {
+        return v::notOptional()->validate($this->header)
+            && v::stringType()->notEmpty()->validate($this->message)
+            && v::floatType()->validate($this->amount)
+            && v::stringType()->notEmpty()->validate($this->accountName);
     }
 }
