@@ -40,21 +40,15 @@ class ValidModelTest extends TestCase
     public function validModelProvider(): array
     {
         return array(
-            'Address without street address 2 is valid' => array(
-                'AddressWithoutStreetAddress2.json',
-                'Address',
-                true
-            ),
-            'Address with street address 2 is valid' => array(
-                'AddressWithStreetAddress2.json',
-                'Address',
-                true
-            ),
+            'Address without street address 2 is valid' => array('AddressWithoutStreetAddress2.json', 'Address', true),
+            'Address with street address 2 is valid' => array('AddressWithStreetAddress2.json', 'Address', true),
             'Contact is valid' => array('ContactValid.json', 'Contact', true),
             'Crypto Entry is valid' => array('CryptoEntryValid.json', 'CryptoEntry', true),
             'Entity is valid' => array('EntityValid.json', 'Entity', true),
             'Header is valid' => array('HeaderValid.json', 'Header', true),
-            'Identity is valid' => array('IdentityValid.json', 'Identity', true)
+            'Identity is valid' => array('IdentityValid.json', 'Identity', true),
+            'Search Filters is valid (empty)' => array('SearchFiltersEmpty.json', 'SearchFilters', true),
+            'Search Filters is valid (all props)' => array('SearchFiltersAllProperties.json', 'SearchFilters', true)
         );
     }
 

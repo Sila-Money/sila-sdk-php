@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Search Filters
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class SearchFilters
+class SearchFilters implements ValidInterface
 {
     /**
      * @var string
@@ -37,8 +38,8 @@ class SearchFilters
     private $transactionTypes;
 
     /**
-     * @var int
-     * @Type("int")
+     * @var float
+     * @Type("float")
      */
     private $maxSilaAmount;
 
@@ -85,10 +86,26 @@ class SearchFilters
     private $page;
 
     /**
-     * @var int
-     * @Type("int")
+     * @var float
+     * @Type("float")
      */
     private $minSilaAmount;
+
+    public function isValid(): bool
+    {
+        return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
+            && ($this->referenceId === null || v::stringType()->notEmpty()->validate($this->referenceId))
+            && ($this->statuses === null || v::arrayType()->validate($this->statuses))
+            && ($this->transactionTypes === null || v::arrayType()->validate($this->transactionTypes))
+            && ($this->maxSilaAmount === null || v::floatType()->validate($this->maxSilaAmount))
+            && ($this->minSilaAmount === null || v::floatType()->validate($this->minSilaAmount))
+            && ($this->startEpoch === null || v::intType()->positive()->validate($this->startEpoch))
+            && ($this->endEpoch === null || v::intType()->positive()->validate($this->endEpoch))
+            && ($this->page === null || v::intType()->positive()->min(1)->validate($this->page))
+            && ($this->perPage === null || v::intType()->positive()->min(1)->max(100)->validate($this->perPage))
+            && ($this->sortAscending === null || v::boolType()->validate($this->sortAscending))
+            && ($this->showTimelines === null || v::boolType()->validate($this->showTimelines));
+    }
 
     /**
      * Sets the transaction id to the filters.
