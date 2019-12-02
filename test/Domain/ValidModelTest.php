@@ -33,24 +33,25 @@ class ValidModelTest extends TestCase
     {
         $jsonData = \file_get_contents(__DIR__ . "/Data/" . $file);
         $serializer = SerializerBuilder::create()->build();
-        $modelInstance = $serializer->deserialize($jsonData, $model, 'json');
+        $modelInstance = $serializer->deserialize($jsonData, "Silamoney\Client\Domain\\" . $model, 'json');
         $this->assertEquals($result, $modelInstance->isValid());
     }
 
     public function validModelProvider(): array
     {
         return array(
-            'Address without street address is valid' => array(
+            'Address without street address 2 is valid' => array(
                 'AddressWithoutStreetAddress2.json',
-                'Silamoney\Client\Domain\Address',
+                'Address',
                 true
             ),
-            'Address with street address is valid' => array(
+            'Address with street address 2 is valid' => array(
                 'AddressWithStreetAddress2.json',
-                'Silamoney\Client\Domain\Address',
+                'Address',
                 true
             ),
-            'Contact is valid' => array('ContactValid.json', 'Silamoney\Client\Domain\Contact', true),
+            'Contact is valid' => array('ContactValid.json', 'Contact', true),
+            'Crypto Entry is valid' => array('CryptoEntryValid.json', 'CryptoEntry', true)
 
 
         );
@@ -59,8 +60,9 @@ class ValidModelTest extends TestCase
     public function invalidModelProvider(): array
     {
         return array(
-            'Address is invalid' => array('AddressInvalid.json', 'Silamoney\Client\Domain\Address', false),
-            'Contact is invalid' => array('ContactInvalid.json', 'Silamoney\Client\Domain\Contact', false)
+            'Address is invalid' => array('AddressInvalid.json', 'Address', false),
+            'Contact is invalid' => array('ContactInvalid.json', 'Contact', false),
+            'Crypt Entry is invalid' => array('CryptoEntryInvalid.json', 'CryptoEntry', false)
         );
     }
 }
