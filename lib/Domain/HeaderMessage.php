@@ -45,7 +45,8 @@ class HeaderMessage implements ValidInterface
 
     public function isValid(): bool
     {
-        return $this->header->isValid()
+        return v::notOptional()->validate($this->header)
+            && $this->header->isValid()
             && v::stringType()->notEmpty()->validate($this->message);
     }
 }

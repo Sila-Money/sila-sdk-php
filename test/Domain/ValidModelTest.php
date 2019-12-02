@@ -61,7 +61,8 @@ class ValidModelTest extends TestCase
             'Crypt Entry is invalid' => array('CryptoEntryInvalid.json', 'CryptoEntry', false),
             'Entity is invalid' => array('EntityInvalid.json', 'Entity', false),
             'Header is invalid' => array('HeaderInvalid.json', 'Header', false),
-            'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false)
+            'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false),
+            'Header Message is invalid' => array('HeaderMessageInvalid.json', 'HeaderMessage', false)
         );
     }
 }
