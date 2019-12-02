@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Entity
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Entity
+class Entity implements ValidInterface
 {
     /**
      * @var string
@@ -62,5 +63,15 @@ class Entity
         $this->lastName = $user->getLastName();
         $this->entityName = $this->firstName + " " + $this->lastName;
         $this->relationship = Relationship::USER;
+    }
+
+    public function isValid(): bool
+    {
+        $notEmptyString = v::stringType()->notEmpty();
+        return v::date()->validate($this->birthdate)
+            && $notEmptyString->validate($this->entityName)
+            && $notEmptyString->validate($this->firstName)
+            && $notEmptyString->validate($this->lastName)
+            && $notEmptyString->validate($this->relationship);
     }
 }
