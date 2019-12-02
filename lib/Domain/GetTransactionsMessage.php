@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Respect\Validation\Validator as v;
 
 /**
  * Get Transactions Message
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class GetTransactionsMessage
+class GetTransactionsMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
@@ -51,5 +52,13 @@ class GetTransactionsMessage
         $this->searchFilters = $searchFilters;
         $this->message = Message::GET_TRANSACTIONS;
         $this->header = new Header($userHandle, $appHandle);
+    }
+
+    public function isValid(): bool
+    {
+        return v::notOptional()->validate($this->header)
+            && $this->header->isValid()
+            && v::stringType()->notEmpty()->validate($this->message)
+            && ($this->searchFilters === null || $this->searchFilters->isValid());
     }
 }
