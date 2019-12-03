@@ -1,12 +1,29 @@
 <?php
 
+/**
+ * Ecdsa Test
+ * PHP version 7.2
+ */
+
 namespace Silamoney\Client\Security;
 
 use kornrunner\{Keccak,Secp256k1};
 
+/**
+ * Ecdsa Test
+ * Class used to sign the messages.
+ * @category Class
+ * @package  Silamoney\Client
+ * @author   José Morales <jmorales@digitalgeko.com>
+ */
 class EcdsaUtil
 {
-    private const OFFSET = 21; // in Dec (in Hex is 15)
+    /**
+     * Offset with Sila expected signature
+     * in Dec (in Hex is 15)
+     */
+    private const OFFSET = 21;
+
     private function __construct()
     {
     }

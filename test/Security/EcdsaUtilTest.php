@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Valid Model Test
+ * Ecdsa Util Test
  * PHP version 7.2
  */
 
@@ -11,8 +11,8 @@ use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Valid Model Test
- * Test for all models that implement ValidInterface.
+ * Ecdsa Util Test
+ * Test for the sign method.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
@@ -23,7 +23,7 @@ class EcdsaUtilTest extends TestCase
      * @test
      * @dataProvider silaProvider
      */
-    public function testSign($message, $hexSignature)
+    public function testSign($message, $hexSignature): void
     {
         $result = EcdsaUtil::sign($message, 'badba7368134dcd61c60f9b56979c09196d03f5891a20c1557b1afac0202a97c');
         $this->assertEquals($hexSignature, $result);
