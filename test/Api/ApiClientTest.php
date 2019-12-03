@@ -9,7 +9,6 @@ namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * Api Client Test
