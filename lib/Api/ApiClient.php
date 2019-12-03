@@ -24,10 +24,14 @@ class ApiClient
      */
     private $client;
     
-    public function __construct($configuration)
+    /**
+     * Api Client constructor
+     * @param string $basePath
+     */
+    public function __construct(string $basePath)
     {
         $this->client = new Client([
-            'base_uri' => $configuration->baseUri
+            'base_uri' => $basePath
         ]);
     }
     

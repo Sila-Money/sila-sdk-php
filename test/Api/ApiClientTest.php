@@ -30,9 +30,8 @@ class ApiClientTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectErrorMessage('{"header":{"created":"Provided epoch in message has expired; please generate a new message and sig');
         
-        $config = new stdClass();
-        $config->baseUri = 'https://sandbox.silamoney.com';
-        $ac = new ApiClient($config);
+        $baseUri = 'https://sandbox.silamoney.com';
+        $ac = new ApiClient($baseUri);
         $json = '{"header": {"created": 1234567890,"auth_handle": "handle.silamoney.eth","user_handle":"user.silamoney.eth","version": "0.2","crypto": "ETH","reference": "ref"},"message": "header_msg"}';
         $headers = [
             'Content-Type' => 'application/json',
