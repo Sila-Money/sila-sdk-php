@@ -15,9 +15,12 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
+        "ext-gmp": "*",
         "guzzlehttp/guzzle": "^6.4",
         "jms/serializer": "^3.3",
-        "respect/validation": "^1.1"
+        "respect/validation": "^1.1",
+        "kornrunner/secp256k1": "^0.1.2",
+        "kornrunner/keccak": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4",
