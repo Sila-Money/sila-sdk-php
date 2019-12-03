@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ecdsa Test
+ * Ecdsa Util
  * PHP version 7.2
  */
 
@@ -10,7 +10,7 @@ namespace Silamoney\Client\Security;
 use kornrunner\{Keccak,Secp256k1};
 
 /**
- * Ecdsa Test
+ * Ecdsa Util
  * Class used to sign the messages.
  * @category Class
  * @package  Silamoney\Client
