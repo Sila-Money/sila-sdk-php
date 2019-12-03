@@ -28,8 +28,18 @@
         "friendsofphp/php-cs-fixer": "^2.16"
     },
     "scripts": {
-        "lint": "phpcs --standard=PSR12 lib && phpcs --standard=PSR12 test",
-        "lint:autofix": "phpcbf --standard=PSR12 lib && phpcbf --standard=PSR12 test",
+        "lint": [
+            "@lint:lib",
+            "@lint:test"
+        ],
+        "lint:lib": "phpcs --standard=PSR12 lib",
+        "lint:test": "phpcs --standard=PSR12 test",
+        "lint:autofix": [
+            "@lint:autofix:lib",
+            "@lint:autofix:test"
+        ],
+        "lint:autofix:lib": "phpcbf --standard=PSR12 lib",
+        "lint:autofix:test": "phpcbf --standard=PSR12 test",
         "test": "phpunit --bootstrap vendor/autoload.php test"
     },
     "autoload": {
