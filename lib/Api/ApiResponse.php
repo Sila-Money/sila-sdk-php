@@ -2,12 +2,7 @@
 
 /**
  * Api Response
- *
- * PHP version 5
- *
- * @category Class
- * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * PHP version 7.2
  */
 
 namespace Silamoney\Client\Api;
@@ -38,7 +33,7 @@ class ApiResponse
     /**
      * Data
      *
-     * @var Object
+     * @var object
      */
     private $data;
 
@@ -61,7 +56,7 @@ class ApiResponse
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -71,7 +66,7 @@ class ApiResponse
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -81,7 +76,7 @@ class ApiResponse
      *
      * @return object
      */
-    public function getData()
+    public function getData(): object
     {
         return $this->data;
     }
