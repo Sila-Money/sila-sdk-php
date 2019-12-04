@@ -20,7 +20,7 @@ use Respect\Validation\Validator as v;
 class HeaderMessage implements ValidInterface
 {
     /**
-     * @var Silamoney\Client\Domain\Header
+     * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
     private $header;

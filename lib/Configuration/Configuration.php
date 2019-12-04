@@ -101,7 +101,7 @@ class Configuration
     }
 
     /**
-     * @return Silamoney\Client\Api\ApiClient
+     * @return \Silamoney\Client\Api\ApiClient
      */
     public function getApiClient(): ApiClient
     {
@@ -109,7 +109,7 @@ class Configuration
     }
 
     /**
-     * @param ApiClient $apiClient
+     * @param \Silamoney\Client\Api\ApiClient $apiClient
      */
     public function setApiClient(ApiClient $apiClient): void
     {
