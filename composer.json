@@ -25,7 +25,8 @@
         "jms/serializer": "^3.3",
         "respect/validation": "^1.1",
         "kornrunner/secp256k1": "^0.1.2",
-        "kornrunner/keccak": "^1.0"
+        "kornrunner/keccak": "^1.0",
+        "myclabs/php-enum": "^1.7"
     },
     "require-dev": {
         "ext-xdebug": "*",

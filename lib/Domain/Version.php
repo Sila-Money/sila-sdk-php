@@ -7,6 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
+use MyCLabs\Enum\Enum;
+
 /**
  * Version
  * Enum used in Header class.
@@ -14,7 +16,7 @@ namespace Silamoney\Client\Domain;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Version extends SplEnum
+class Version extends Enum
 {
     public const ZERO_2 = "0.2";
     public const V0_2 = "v0.2";
