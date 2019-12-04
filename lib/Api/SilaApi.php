@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{Environments, HeaderMessage, Message};
+use Silamoney\Client\Exceptions\BadRequestException;
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -98,6 +99,15 @@ class SilaApi
     private function prepareResponse(Response $response, string $msg): ApiResponse
     {
         $statusCode = $response->getStatusCode();
+
+        switch ($statusCode) {
+            case 400:
+                throw new BadRequestException($response->getBody()->getContents());
+                break;
+            default:
+                break;
+        }
+
         switch ($msg) {
             default:
                 $baseResponse = $this->serializer->deserialize(
