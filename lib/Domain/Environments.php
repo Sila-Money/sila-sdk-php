@@ -7,6 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
+use MyCLabs\Enum\Enum;
+
 /**
  * Environments
  * Enum used to get accepted Sila environments.
@@ -14,16 +16,14 @@ namespace Silamoney\Client\Domain;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-namespace Silamoney\Client\Domain;
-
-class Environments extends SplEnum
+class Environments extends Enum
 {
     /**
      * Sila sandbox environment.
      */
-    public const SANDBOX = "https://sandbox.silamoney.com/0.2";
+    public const SANDBOX = 'https://sandbox.silamoney.com/0.2';
     /**
      * Sila production environment.
      */
-    public const PRODUCTION = "https://api.silamoney.com/0.2";
+    public const PRODUCTION = 'https://api.silamoney.com/0.2';
 }
