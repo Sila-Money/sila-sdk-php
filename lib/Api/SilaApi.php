@@ -104,6 +104,9 @@ class SilaApi
             case 400:
                 throw new BadRequestException($response->getBody()->getContents());
                 break;
+            case 401:
+                throw new InvalidSignatureException($response->getBody()->getContents());
+                break;
             default:
                 break;
         }
