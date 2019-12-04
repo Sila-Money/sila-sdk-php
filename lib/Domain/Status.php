@@ -7,6 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
+use MyCLabs\Enum\Enum;
+
 /**
  * Status
  * Enum with available values for the Status.
@@ -14,7 +16,7 @@ namespace Silamoney\Client\Domain;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Status extends SplEnum
+class Status extends Enum
 {
     /**
      * String value for pending status.
