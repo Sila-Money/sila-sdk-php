@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Country
  * Enum used in Address class.
@@ -16,7 +14,7 @@ use MyCLabs\Enum\Enum;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Country extends Enum
+class Country extends SplEnum
 {
     public const US = 'US';
 }
