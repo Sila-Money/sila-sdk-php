@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Message
  * Enum that contains the message possible options.
@@ -16,7 +14,7 @@ use MyCLabs\Enum\Enum;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Message extends Enum
+class Message extends SplEnum
 {
     /**
      * String value for HeaderMsg.

@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Relationship
  * Enum used in Entity class.
@@ -16,7 +14,7 @@ use MyCLabs\Enum\Enum;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Relationship extends Enum
+class Relationship extends SplEnum
 {
     public const ORGANIZATION = 'organization';
     public const DEVELOPER = 'developer';

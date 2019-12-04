@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Crypto Code
  * Enum used in Crypto Entry class.
@@ -16,7 +14,7 @@ use MyCLabs\Enum\Enum;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class CryptoCode extends Enum
+class CryptoCode extends SplEnum
 {
     public const ETH = 'ETH';
 }

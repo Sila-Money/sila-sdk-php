@@ -7,8 +7,6 @@
 
 namespace Silamoney\Client\Domain;
 
-use MyCLabs\Enum\Enum;
-
 /**
  * Identity Alias
  * Enum used in Identity class.
@@ -16,7 +14,7 @@ use MyCLabs\Enum\Enum;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class IdentityAlias extends Enum
+class IdentityAlias extends SplEnum
 {
     public const SSN = "SSN";
     public const EIN = "EIN";
