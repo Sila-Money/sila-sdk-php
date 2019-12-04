@@ -16,7 +16,7 @@ use Exception;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class BadRequestException extends Exception
+class InvalidSignatureException extends Exception
 {
     public function __construct(string $message)
     {
