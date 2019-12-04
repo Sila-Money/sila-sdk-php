@@ -7,6 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
+use MyCLabs\Enum\Enum;
+
 /**
  * Transaction Types
  * Enum with available values for the Transaction Types.
@@ -14,18 +16,18 @@ namespace Silamoney\Client\Domain;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class TransactionTypes extends SplEnum
+class TransactionTypes extends Enum
 {
     /**
      * String value for issue type.
      */
-    private const ISSUE = "issue";
+    public const ISSUE = "issue";
     /**
      * String value for redeem type.
      */
-    private const REDEEM = "redeem";
+    public const REDEEM = "redeem";
     /**
      * String value for transfer type.
      */
-    private const TRANSFER = "transfer";
+    public const TRANSFER = "transfer";
 }

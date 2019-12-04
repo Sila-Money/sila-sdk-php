@@ -7,6 +7,8 @@
 
 namespace Silamoney\Client\Domain;
 
+use JMS\Serializer\Annotation\Type;
+
 /**
  * Base Response
  * Response used for the majority of endpoints.
@@ -19,18 +21,21 @@ class BaseResponse
     /**
      * Reference
      * @var string
+     * @Type("string")
      */
     private $reference;
 
     /**
      * Message
      * @var string
+     * @Type("string")
      */
     private $message;
 
     /**
      * Status
      * @var string
+     * @Type("string")
      */
     private $status;
 
