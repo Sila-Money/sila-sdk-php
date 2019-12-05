@@ -47,7 +47,7 @@ class BaseResponseTest extends TestCase
      * @test
      * @dataProvider baseResponse200Provider
      */
-    public function testBaseResponse200Sucess(string $file, string $method, array $params, string $message): void
+    public function testBaseResponse200Sucess(string $file, string $method, array $params, string $message, string $status): void
     {
         $body = file_get_contents(__DIR__ . '/Data/' . $file);
         $mock = new MockHandler([
@@ -58,21 +58,7 @@ class BaseResponseTest extends TestCase
         $response = self::$api->$method(...$params);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(self::$config->userHandle . $message, $response->getData()->getMessage());
-        $this->assertEquals("SUCCESS", $response->getData()->getStatus());
-    }
-
-    public function testCheckHandle200Failure()
-    {
-        $body = file_get_contents(__DIR__ . '/Data/CheckHandle200Failure.json');
-        $mock = new MockHandler([
-            new Response(200, [], $body)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkHandle(self::$config->userHandle);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("taken.silamoney.eth is already taken.", $response->getData()->getMessage());
-        $this->assertEquals("FAILURE", $response->getData()->getStatus());
+        $this->assertEquals($status, $response->getData()->getStatus());
     }
 
     public function baseResponse200Provider(): array
