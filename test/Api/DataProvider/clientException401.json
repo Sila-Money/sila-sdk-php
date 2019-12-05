@@ -1,0 +1,16 @@
+[
+    [
+        "CheckHandle401.json",
+        "Invalid Signature",
+        401,
+        "checkHandle",
+        ["user.silamoney.eth"]
+    ],
+    [
+        "RequestKYC401.json",
+        "Invalid Signature",
+        401,
+        "requestKYC",
+        ["user.silamoney.eth", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
+    ]
+]
