@@ -54,7 +54,12 @@ class LinkAccountsTest extends TestCase
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->linkAccount(self::$config->userHandle, '', '', self::$config->userPrivateKey);
+        $response = self::$api->linkAccount(
+            self::$config->userHandle,
+            'Custom Account Name',
+            'public-xxx-xxx',
+            self::$config->userPrivateKey
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals("SUCCESS", $response->getData()->getStatus());
     }
