@@ -78,6 +78,7 @@ class SilaApi
      *
      * @param string $handle
      * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
      */
     public function checkHandle(string $handle): ApiResponse
     {
@@ -91,7 +92,7 @@ class SilaApi
         return $this->prepareResponse($response, Message::HEADER);
     }
 
-    public function getApiClient() 
+    public function getApiClient()
     {
         return $this->configuration->getApiClient();
     }
@@ -100,22 +101,12 @@ class SilaApi
     {
         $statusCode = $response->getStatusCode();
 
-        switch ($statusCode) {
-            case 400:
-                throw new BadRequestException($response->getBody()->getContents());
-                break;
-            case 401:
-                throw new InvalidSignatureException($response->getBody()->getContents());
-                break;
-            default:
-                break;
-        }
-
         switch ($msg) {
             default:
                 $baseResponse = $this->serializer->deserialize(
-                    $response->getBody()->getContents(), 
-                    'Silamoney\Client\Domain\BaseResponse', 'json'
+                    $response->getBody()->getContents(),
+                    'Silamoney\Client\Domain\BaseResponse',
+                    'json'
                 );
                 return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
                 break;

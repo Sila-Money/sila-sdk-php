@@ -14,7 +14,6 @@ use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
-use Silamoney\Client\Exceptions\{BadRequestException, InvalidSignatureException};
 
 /**
  * Check Handle Test
@@ -77,7 +76,7 @@ class CheckHandleTest extends TestCase
 
     public function testCheckHandle400()
     {
-        $this->expectException(BadRequestException::class);
+        $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/CheckHandle400.json');
         $mock = new MockHandler([
             new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
@@ -89,10 +88,14 @@ class CheckHandleTest extends TestCase
 
     public function testCheckHandle401()
     {
-        $this->expectException(InvalidSignatureException::class);
+        $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/CheckHandle401.json');
         $mock = new MockHandler([
-            new ClientException("Invalid Signature", new Request('POST', Environments::SANDBOX), new Response(401, [], $body))
+            new ClientException(
+                "Invalid Signature",
+                new Request('POST', Environments::SANDBOX),
+                new Response(401, [], $body)
+            )
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);

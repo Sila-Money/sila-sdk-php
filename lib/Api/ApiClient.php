@@ -46,17 +46,11 @@ class ApiClient
      * @param array $data
      * @param string $headers
      * @return \GuzzleHttp\Psr7\Response
+     * @throws \GuzzleHttp\Exception\ClientException
      */
     public function callAPI(string $url, string $data, array $headers): Response
     {
-        try 
-        {
-            return $this->client->post('/0.2' . $url, ['body' => $data,'headers' => $headers]);
-        }
-        catch (ClientException $ex)
-        {
-            return $ex->getResponse();
-        }
+        return $this->client->post('/0.2' . $url, ['body' => $data,'headers' => $headers]);
     }
 
     /**
