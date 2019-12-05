@@ -7,6 +7,9 @@
 
 namespace Silamoney\Client\Domain;
 
+use DateTime;
+use JMS\Serializer\Annotation\Type;
+
 /**
  * User
  * Class used in the register method.
@@ -18,66 +21,79 @@ class User
 {
     /**
      * @var string
+     * @Type("string")
      */
     private $handle;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $firstName;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $lastName;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $address;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $address2;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $city;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $state;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $zipCode;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $phone;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $email;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $identityNumber;
 
     /**
      * @var string
+     * @Type("string")
      */
     private $cryptoAddress;
     
     /**
-     * @var Date
+     * @var DateTime
+     * @Type("DateTime<'Y-m-d'>")
      */
     private $birthdate;
 

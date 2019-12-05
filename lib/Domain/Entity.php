@@ -61,7 +61,7 @@ class Entity implements ValidInterface
         $this->birthdate = $date;
         $this->firstName = $user->getFirstName();
         $this->lastName = $user->getLastName();
-        $this->entityName = $this->firstName + " " + $this->lastName;
+        $this->entityName = $this->firstName . " " . $this->lastName;
         $this->relationship = Relationship::USER;
     }
 
