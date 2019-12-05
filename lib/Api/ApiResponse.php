@@ -44,7 +44,7 @@ class ApiResponse
      * @param array  $headers    Headers
      * @param object $data       Data
      */
-    public function __construct(int $statusCode, array $headers, object $data)
+    public function __construct(int $statusCode, array $headers, $data)
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
@@ -76,7 +76,7 @@ class ApiResponse
      *
      * @return object
      */
-    public function getData(): object
+    public function getData()
     {
         return $this->data;
     }

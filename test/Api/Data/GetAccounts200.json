@@ -1,0 +1,14 @@
+[
+  {
+    "account_number": "*1234",
+    "account_name": "default",
+    "account_type": "CHECKING",
+    "account_status": "active"
+  },
+  {
+    "account_number": "*12345",
+    "account_name": "default",
+    "account_type": "CHECKING",
+    "account_status": "active"
+  }
+]

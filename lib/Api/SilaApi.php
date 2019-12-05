@@ -4,47 +4,64 @@
  * Sila Api
  * PHP version 7.2
  */
-
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
-use Silamoney\Client\Domain\{Environments, HeaderMessage, EntityMessage, Message, User};
+use Silamoney\Client\Domain\ {
+    Environments,
+    HeaderMessage,
+    EntityMessage,
+    Message,
+    User,
+    GetAccountsMessage
+};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
  * Sila Api
  *
  * @category Class
- * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * @package Silamoney\Client
+ * @author José Morales <jmorales@digitalgeko.com>
  */
 class SilaApi
 {
+
     /**
+     *
      * @var \Silamoney\Client\Configuration\Configuration
      */
     private $configuration;
+
     /**
+     *
      * @var \JMS\Serializer\SerializerBuilder
      */
     private $serializer;
+
     /**
+     *
      * @var string
      */
     private const AUTH_SIGNATURE = "authsignature";
+
     /**
+     *
      * @var string
      */
     private const USER_SIGNATURE = 'usersignature';
+
     /**
+     *
      * @var string
      */
     private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
 
     /**
      * Constructor for Sila Api using custom environment.
+     *
      * @param string $environment
      * @param string $appHandler
      * @param string $privateKey
@@ -57,6 +74,7 @@ class SilaApi
 
     /**
      * Constructor for Sila Api using specified environment.
+     *
      * @param \Silamoney\Client\Domain\Environments $environment
      * @param string $appHandler
      * @param string $privateKey
@@ -68,6 +86,7 @@ class SilaApi
 
     /**
      * Constructor for Sila Api using sandbox environment.
+     *
      * @param string $appHandler
      * @param string $privateKey
      */
@@ -94,7 +113,7 @@ class SilaApi
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::HEADER);
     }
-    
+
     /**
      * Attaches KYC data and specified blockchain address to an assigned handle.
      *
@@ -135,6 +154,27 @@ class SilaApi
         return $this->prepareResponse($response, Message::HEADER);
     }
 
+    /**
+     * Gets basic bank account names linked to user handle.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function getAccounts(string $userHandle, string $userPrivateKey): ApiResponse
+    {
+        $body = new GetAccountsMessage($userHandle, $this->configuration->getAuthHandle());
+        $path = '/get_accounts';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::GET_ACCOUNTS);
+    }
+
     public function getApiClient()
     {
         return $this->configuration->getApiClient();
@@ -145,12 +185,14 @@ class SilaApi
         $statusCode = $response->getStatusCode();
 
         switch ($msg) {
+            case 'get_accounts_msg':
+                $accounts = $this->serializer->deserialize($response->getBody()
+                    ->getContents(), 'array<Silamoney\Client\Domain\Account>', 'json');
+                return new ApiResponse($statusCode, $response->getHeaders(), $accounts);
+                break;
             default:
-                $baseResponse = $this->serializer->deserialize(
-                    $response->getBody()->getContents(),
-                    'Silamoney\Client\Domain\BaseResponse',
-                    'json'
-                );
+                $baseResponse = $this->serializer->deserialize($response->getBody()
+                    ->getContents(), 'Silamoney\Client\Domain\BaseResponse', 'json');
                 return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
                 break;
         }
