@@ -1,0 +1,9 @@
+[
+    [
+        "CheckHandle400.json",
+        "Invalid Signature",
+        401,
+        "checkHandle",
+        ["user.silamoney.eth"]
+    ]
+]
