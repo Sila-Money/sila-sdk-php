@@ -4,6 +4,7 @@
  * Sila Api
  * PHP version 7.2
  */
+
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Psr7\Response;
@@ -13,6 +14,7 @@ use Silamoney\Client\Domain\ {
     Environments,
     HeaderMessage,
     EntityMessage,
+    LinkAccountMessage,
     Message,
     User,
     GetAccountsMessage
@@ -176,6 +178,34 @@ class SilaApi
     }
 
     /**
+     * Uses a provided Plaid public token to link a bank account to a verified
+     * entity.
+     *
+     * @param string $userHandle
+     * @param string $accountName
+     * @param string $publicToken
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function linkAccount(
+        string $userHandle,
+        string $accountName,
+        string $publicToken,
+        string $userPrivateKey
+    ): ApiResponse {
+        $body = new LinkAccountMessage($userHandle, $accountName, $publicToken, $this->configuration->getAuthHandle());
+        $path = "/link_account";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::LINK_ACCOUNT);
+    }
+
+    /**
      * Gets basic bank account names linked to user handle.
      *
      * @param string $userHandle
@@ -206,10 +236,18 @@ class SilaApi
         $statusCode = $response->getStatusCode();
 
         switch ($msg) {
-            case 'get_accounts_msg':
+            case Message::GET_ACCOUNTS:
                 $accounts = $this->serializer->deserialize($response->getBody()
                     ->getContents(), 'array<Silamoney\Client\Domain\Account>', 'json');
                 return new ApiResponse($statusCode, $response->getHeaders(), $accounts);
+                break;
+            case Message::LINK_ACCOUNT:
+                $linkAccountResponse = $this->serializer->deserialize(
+                    $response->getBody()->getContents(),
+                    'Silamoney\Client\Domain\LinkAccountResponse',
+                    'json'
+                );
+                return new ApiResponse($statusCode, $response->getHeaders(), $linkAccountResponse);
                 break;
             default:
                 $baseResponse = $this->serializer->deserialize($response->getBody()
