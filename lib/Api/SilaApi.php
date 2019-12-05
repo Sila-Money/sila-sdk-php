@@ -37,6 +37,10 @@ class SilaApi
     /**
      * @var string
      */
+    private const USER_SIGNATURE = 'usersignature';
+    /**
+     * @var string
+     */
     private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
 
     /**
@@ -108,6 +112,27 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::ENTITY);
+    }
+
+    /**
+     * Starts KYC verification process on a registered user handle.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function requestKYC(string $userHandle, string $userPrivateKey): ApiResponse
+    {
+        $body = new HeaderMessage($userHandle, $this->configuration->getAuthHandle());
+        $path = '/request_kyc';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::HEADER);
     }
 
     public function getApiClient()

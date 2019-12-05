@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Check Handle Test
+ * Base Response Test
  * PHP version 7.2
  */
 
@@ -16,13 +16,13 @@ use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
 
 /**
- * Check Handle Test
- * Tests for the Check Handle endpoint in the Sila Api class.
+ * Base Response Test
+ * Tests all the endpoints that return a BaseResponse in the Sila Api class.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class CheckHandleTest extends TestCase
+class BaseResponseTest extends TestCase
 {
     /**
      * @var \Silamoney\Client\Api\ApiClient
@@ -45,18 +45,19 @@ class CheckHandleTest extends TestCase
 
     /**
      * @test
+     * @dataProvider baseResponse200Provider
      */
-    public function testCheckHandle200Sucess()
+    public function testBaseResponse200Sucess(string $file, string $method, array $params, string $message): void
     {
-        $body = file_get_contents(__DIR__ . '/Data/CheckHandle200.json');
+        $body = file_get_contents(__DIR__ . '/Data/' . $file);
         $mock = new MockHandler([
             new Response(200, [], $body)
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkHandle(self::$config->userHandle);
+        $response = self::$api->$method(...$params);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(self::$config->userHandle . " is available.", $response->getData()->getMessage());
+        $this->assertEquals(self::$config->userHandle . $message, $response->getData()->getMessage());
         $this->assertEquals("SUCCESS", $response->getData()->getStatus());
     }
 
@@ -74,31 +75,10 @@ class CheckHandleTest extends TestCase
         $this->assertEquals("FAILURE", $response->getData()->getStatus());
     }
 
-    public function testCheckHandle400()
+    public function baseResponse200Provider(): array
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/CheckHandle400.json');
-        $mock = new MockHandler([
-            new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkHandle(self::$config->userHandle);
-    }
-
-    public function testCheckHandle401()
-    {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/CheckHandle401.json');
-        $mock = new MockHandler([
-            new ClientException(
-                "Invalid Signature",
-                new Request('POST', Environments::SANDBOX),
-                new Response(401, [], $body)
-            )
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkHandle(self::$config->userHandle);
+        $serializer = SerializerBuilder::create()->build();
+        $json = file_get_contents(__DIR__ . '/DataProvider/baseResponse200.json');
+        return $serializer->deserialize($json, 'array', 'json');
     }
 }
