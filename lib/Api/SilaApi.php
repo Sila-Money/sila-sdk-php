@@ -237,8 +237,12 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function transferSila(string $userHandle, string $destination, int $amount, string $userPrivateKey): ApiResponse
-    {
+    public function transferSila(
+        string $userHandle,
+        string $destination,
+        int $amount,
+        string $userPrivateKey
+    ): ApiResponse {
         $body = new TransferMessage($userHandle, $destination, $amount, $this->configuration->getAuthHandle());
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
