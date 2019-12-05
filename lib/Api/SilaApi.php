@@ -11,7 +11,6 @@ use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{Environments, HeaderMessage, Message};
-use Silamoney\Client\Exceptions\{BadRequestException, InvalidSignatureException};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
