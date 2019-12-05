@@ -37,6 +37,10 @@ class SilaApi
     /**
      * @var string
      */
+    private const USER_SIGNATURE = "usersignature";
+    /**
+     * @var string
+     */
     private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
 
     /**
@@ -86,6 +90,27 @@ class SilaApi
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::HEADER);
+    }
+    
+    /**
+     * Returns whether entity attached to user handle is verified, not valid, or still pending.
+     *
+     * @param string $handle
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function checkKYC(string $handle, string $userPrivateKey): ApiResponse
+    {
+        $body = new HeaderMessage($handle, $this->configuration->getAuthHandle());
+        $path = "/check_kyc";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::HEADER);
