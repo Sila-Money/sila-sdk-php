@@ -47,8 +47,13 @@ class BaseResponseTest extends TestCase
      * @test
      * @dataProvider baseResponse200Provider
      */
-    public function testBaseResponse200Sucess(string $file, string $method, array $params, string $message, string $status): void
-    {
+    public function testBaseResponse200Sucess(
+        string $file,
+        string $method,
+        array $params,
+        string $message,
+        string $status
+    ): void {
         $body = file_get_contents(__DIR__ . '/Data/' . $file);
         $mock = new MockHandler([
             new Response(200, [], $body)

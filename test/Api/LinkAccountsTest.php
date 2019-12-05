@@ -63,4 +63,25 @@ class LinkAccountsTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals("SUCCESS", $response->getData()->getStatus());
     }
+
+    /**
+     * @test
+     */
+    public function testLinkAccount200Failure(): void
+    {
+        $body = file_get_contents(__DIR__ . '/Data/LinkAccount200Failure.json');
+        $mock = new MockHandler([
+            new Response(200, [], $body)
+        ]);
+        $handler = HandlerStack::create($mock);
+        self::$api->getApiClient()->setApiHandler($handler);
+        $response = self::$api->linkAccount(
+            self::$config->userHandle,
+            'Custom Account Name',
+            'public-xxx-xxx',
+            self::$config->userPrivateKey
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("FAILURE", $response->getData()->getStatus());
+    }
 }
