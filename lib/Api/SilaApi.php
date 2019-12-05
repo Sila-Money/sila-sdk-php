@@ -15,7 +15,8 @@ use Silamoney\Client\Domain\ {
     EntityMessage,
     Message,
     User,
-    GetAccountsMessage
+    GetAccountsMessage,
+    TransferMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -153,7 +154,7 @@ class SilaApi
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::HEADER);
     }
-    
+
     /**
      * Returns whether entity attached to user handle is verified, not valid, or still pending.
      *
@@ -194,6 +195,29 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::GET_ACCOUNTS);
+    }
+
+    /**
+     * Starts a transfer of the requested amount of SILA to the requested destination handle.
+     *
+     * @param string $userHandle
+     * @param string $destination
+     * @param string $amount
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function transferSila(string $userHandle, string $destination, int $amount, string $userPrivateKey): ApiResponse
+    {
+        $body = new TransferMessage($userHandle, $destination, $amount, $this->configuration->getAuthHandle());
+        $path = '/transfer_sila';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::TRANSFER);
     }
 
     public function getApiClient()
