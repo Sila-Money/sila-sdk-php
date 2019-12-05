@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{Environments, HeaderMessage, Message};
+use Silamoney\Client\Exceptions\{BadRequestException, InvalidSignatureException};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -77,6 +78,7 @@ class SilaApi
      *
      * @param string $handle
      * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
      */
     public function checkHandle(string $handle): ApiResponse
     {
@@ -90,7 +92,7 @@ class SilaApi
         return $this->prepareResponse($response, Message::HEADER);
     }
 
-    public function getApiClient() 
+    public function getApiClient()
     {
         return $this->configuration->getApiClient();
     }
@@ -98,11 +100,13 @@ class SilaApi
     private function prepareResponse(Response $response, string $msg): ApiResponse
     {
         $statusCode = $response->getStatusCode();
+
         switch ($msg) {
             default:
                 $baseResponse = $this->serializer->deserialize(
-                    $response->getBody()->getContents(), 
-                    'Silamoney\Client\Domain\BaseResponse', 'json'
+                    $response->getBody()->getContents(),
+                    'Silamoney\Client\Domain\BaseResponse',
+                    'json'
                 );
                 return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
                 break;

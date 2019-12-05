@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
@@ -45,6 +46,7 @@ class ApiClient
      * @param array $data
      * @param string $headers
      * @return \GuzzleHttp\Psr7\Response
+     * @throws \GuzzleHttp\Exception\ClientException
      */
     public function callAPI(string $url, string $data, array $headers): Response
     {
