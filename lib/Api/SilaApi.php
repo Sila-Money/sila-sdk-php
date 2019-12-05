@@ -10,7 +10,7 @@ namespace Silamoney\Client\Api;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
-use Silamoney\Client\Domain\{Environments, HeaderMessage, Message};
+use Silamoney\Client\Domain\{Environments, HeaderMessage, EntityMessage, Message, User};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -89,6 +89,25 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::HEADER);
+    }
+    
+    /**
+     * Attaches KYC data and specified blockchain address to an assigned handle.
+     *
+     * @param User $user
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function register(User $user): ApiResponse
+    {
+        $body = new EntityMessage($user, $this->configuration->getAuthHandle());
+        $path = "/register";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::ENTITY);
     }
 
     public function getApiClient()

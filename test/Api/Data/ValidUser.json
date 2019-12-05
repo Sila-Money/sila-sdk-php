@@ -1,0 +1,15 @@
+{
+    "handle":"user.silamoney.eth",
+	"first_name":"Example",
+	"last_name":"User",
+	"address":"123 Main Street",
+	"address2":"",
+	"city":"New City",
+	"state":"OR",
+	"zip_code":"97204-1234",
+	"phone":"503-123-4567",
+	"email":"example@silamoney.com",
+	"identity_number":"123452222",
+	"crypto_address":"0x1234567890abcdef1234567890abcdef12345678",
+    "birthdate":"1900-01-31"
+}
