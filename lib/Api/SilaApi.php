@@ -209,7 +209,7 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function issueSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey)
+    public function issueSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey): ApiResponse
     {
         $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle());
         $path = '/issue_sila';
