@@ -363,7 +363,7 @@ class SilaApi
         $path = '/silaBalance';
         $json = $this->serializer->serialize($body, 'json');
         $response = $this->configuration->getBalanceClient()->callApi($path, $json, []);
-        return $this->prepareResponse($response, 'string');
+        return $this->prepareResponse($response, 'int');
     }
 
     /**

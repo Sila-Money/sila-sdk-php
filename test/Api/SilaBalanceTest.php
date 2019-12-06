@@ -63,7 +63,7 @@ class SilaBalanceTest extends TestCase
      */
     public function testSilaBalance200()
     {
-        $responseValue = "1234";
+        $responseValue = 1234;
         $mock = new MockHandler([
             new Response(200, [], $responseValue)
         ]);
