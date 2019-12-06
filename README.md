@@ -12,12 +12,14 @@
 ## Installation
 Via Composer
 
-```bash
-composer require silamoney/client
+```shell
+composer require silamoney/client:v0.1-RC
 ```
 
 ## Initialization
 ```php
+require_once 'vendor/autoload.php';
+
 use Silamoney\Client\Api\SilaApi;
 use Silamoney\Client\Domain\{BalanceEnvironments,Environments};
 
