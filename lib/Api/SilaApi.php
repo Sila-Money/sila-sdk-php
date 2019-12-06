@@ -15,11 +15,13 @@ use Silamoney\Client\Domain\ {
     EntityMessage,
     Environments,
     GetAccountsMessage,
+    GetTransactionsMessage,
     HeaderMessage,
     IssueMessage,
     LinkAccountMessage,
     Message,
     RedeemMessage,
+    SearchFilters,
     TransferMessage,
     User
 };
@@ -323,6 +325,29 @@ class SilaApi
     }
 
     /**
+     * Gets array of user handle's transactions with detailed status information.
+     *
+     * @param string $userHandle
+     * @param
+     *            SearchFilters filters
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey): ApiResponse
+    {
+        $body = new GetTransactionsMessage($userHandle, $this->configuration->getAuthHandle(), $filters);
+        $path = '/redeem_sila';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::GET_TRANSACTIONS);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -345,6 +370,11 @@ class SilaApi
         $statusCode = $response->getStatusCode();
 
         switch ($msg) {
+            case Message::GET_TRANSACTIONS:
+                $transactions = $this->serializer->deserialize($response->getBody()
+                    ->getContents(), 'Silamoney\Client\Domain\GetTransactionsResponse', 'json');
+                return new ApiResponse($statusCode, $response->getHeaders(), $transactions);
+                break;
             case Message::GET_ACCOUNTS:
                 $accounts = $this->serializer->deserialize($response->getBody()
                     ->getContents(), 'array<Silamoney\Client\Domain\Account>', 'json');

@@ -79,7 +79,7 @@ class RegisterTest extends TestCase
             ->getStatus());
     }
 
-    public function testCheckHandle400()
+    public function testRegister400()
     {
         $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/Register400.json');
@@ -94,7 +94,7 @@ class RegisterTest extends TestCase
         $response = self::$api->register($user);
     }
     
-    public function testCheckHandle401()
+    public function testRegister401()
     {
         $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/Register400.json');
