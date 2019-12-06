@@ -13,7 +13,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/client:v0.1-RC
+composer require silamoney/client:0.1-RC
 ```
 
 ## Initialization
