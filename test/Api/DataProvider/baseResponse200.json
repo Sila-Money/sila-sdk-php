@@ -35,6 +35,20 @@
         "FAILURE"
     ],
     [
+        "IssueSila200.json",
+        "issueSila",
+        ["user.silamoney.eth", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"],
+        " ref submitted to ACH queue",
+        "SUCCESS"
+    ],
+    [
+        "IssueSila200Failure.json",
+        "issueSila",
+        ["user.silamoney.eth", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"],
+        " ref not submitted to ACH queue",
+        "FAILURE"
+    ],
+    [
         "RedeemSila200.json",
         "redeemSila",
         ["user.silamoney.eth", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"],

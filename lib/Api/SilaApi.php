@@ -14,6 +14,7 @@ use Silamoney\Client\Domain\ {
     Environments,
     HeaderMessage,
     EntityMessage,
+    IssueMessage,
     LinkAccountMessage,
     Message,
     User,
@@ -226,6 +227,30 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::GET_ACCOUNTS);
+    }
+
+    /**
+     * Debits a specified account and issues tokens to the address belonging to
+     * the requested handle.
+     *
+     * @param string $userHandle
+     * @param int $amount
+     * @param string $userPrivateKey
+     * @param string $accountName
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function issueSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey): ApiResponse
+    {
+        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle());
+        $path = '/issue_sila';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::ISSUE);
     }
 
     /**
