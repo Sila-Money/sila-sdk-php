@@ -4,7 +4,6 @@
  * Sila Api
  * PHP version 7.2
  */
-
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Psr7\Response;
@@ -20,7 +19,9 @@ use Silamoney\Client\Domain\ {
     User,
     GetAccountsMessage,
     RedeemMessage,
-    TransferMessage
+    SearchFilters,
+    TransferMessage,
+    GetTransactionsMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -191,12 +192,8 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function linkAccount(
-        string $userHandle,
-        string $accountName,
-        string $publicToken,
-        string $userPrivateKey
-    ): ApiResponse {
+    public function linkAccount(string $userHandle, string $accountName, string $publicToken, string $userPrivateKey): ApiResponse
+    {
         $body = new LinkAccountMessage($userHandle, $accountName, $publicToken, $this->configuration->getAuthHandle());
         $path = "/link_account";
         $json = $this->serializer->serialize($body, 'json');
@@ -263,12 +260,8 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function transferSila(
-        string $userHandle,
-        string $destination,
-        int $amount,
-        string $userPrivateKey
-    ): ApiResponse {
+    public function transferSila(string $userHandle, string $destination, int $amount, string $userPrivateKey): ApiResponse
+    {
         $body = new TransferMessage($userHandle, $destination, $amount, $this->configuration->getAuthHandle());
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -291,12 +284,8 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function redeemSila(
-        string $userHandle,
-        int $amount,
-        string $accountName,
-        string $userPrivateKey
-    ): ApiResponse {
+    public function redeemSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey): ApiResponse
+    {
         $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle());
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -306,6 +295,29 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, Message::REDEEM);
+    }
+
+    /**
+     * Gets array of user handle's transactions with detailed status information.
+     *
+     * @param string $userHandle
+     * @param
+     *            SearchFilters filters
+     * @param string $userPrivateKey
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey): ApiResponse
+    {
+        $body = new GetTransactionsMessage($userHandle, $this->configuration->getAuthHandle(), $filters);
+        $path = '/redeem_sila';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, Message::GET_TRANSACTIONS);
     }
 
     public function getApiClient()
@@ -318,17 +330,19 @@ class SilaApi
         $statusCode = $response->getStatusCode();
 
         switch ($msg) {
+            case Message::GET_TRANSACTIONS:
+                $transactions = $this->serializer->deserialize($response->getBody()
+                    ->getContents(), 'Silamoney\Client\Domain\GetTransactionsResponse', 'json');
+                return new ApiResponse($statusCode, $response->getHeaders(), $transactions);
+                break;
             case Message::GET_ACCOUNTS:
                 $accounts = $this->serializer->deserialize($response->getBody()
                     ->getContents(), 'array<Silamoney\Client\Domain\Account>', 'json');
                 return new ApiResponse($statusCode, $response->getHeaders(), $accounts);
                 break;
             case Message::LINK_ACCOUNT:
-                $linkAccountResponse = $this->serializer->deserialize(
-                    $response->getBody()->getContents(),
-                    'Silamoney\Client\Domain\LinkAccountResponse',
-                    'json'
-                );
+                $linkAccountResponse = $this->serializer->deserialize($response->getBody()
+                    ->getContents(), 'Silamoney\Client\Domain\LinkAccountResponse', 'json');
                 return new ApiResponse($statusCode, $response->getHeaders(), $linkAccountResponse);
                 break;
             default:
