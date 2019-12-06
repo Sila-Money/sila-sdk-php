@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Register Test
+ * GetTransactions Test
  * PHP version 7.2
  */
 namespace Silamoney\Client\Api;
@@ -18,14 +18,14 @@ use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
 
 /**
- * Register Test
- * Tests for the register endpoint in the Sila Api class.
+ * GetTransactions Test
+ * Tests for the GetTransactions endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
  * @author Karlo Lorenzana <klorenzana@digitalgeko.com>
  */
-class RegisterTest extends TestCase
+class GetTransactionsTest extends TestCase
 {
 
     /**
@@ -59,52 +59,51 @@ class RegisterTest extends TestCase
      *
      * @test
      */
-    public function testRegister200()
+    public function testGetTransactions200()
     {
-        $body = file_get_contents(__DIR__ . '/Data/Register200.json');
+        $body = file_get_contents(__DIR__ . '/Data/GetTransactions200.json');
         $mock = new MockHandler([
             new Response(200, [], $body)
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
 
-        $response = self::$api->register($user);
+        $file = file_get_contents(__DIR__ . '/Data/filters.json');
+        $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
+
+        $response = self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("user.silamoney.eth was successfully registered", $response->getData()
-            ->getMessage());
-        $this->assertEquals("SUCCESS", $response->getData()
-            ->getStatus());
     }
 
-    public function testRegister400()
+    public function testGetTransactions400()
     {
         $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/Register400.json');
+        $body = file_get_contents(__DIR__ . '/Data/GetTransactions400.json');
         $mock = new MockHandler([
             new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
 
-        $response = self::$api->register($user);
+        $file = file_get_contents(__DIR__ . '/Data/filters.json');
+        $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
+
+        self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
     }
-    
-    public function testRegister401()
+
+    public function testGetTransactions401()
     {
         $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/Register400.json');
+        $body = file_get_contents(__DIR__ . '/Data/GetTransactions401.json');
         $mock = new MockHandler([
-            new ClientException("Invalid Signature", new Request('POST', Environments::SANDBOX), new Response(401, [], $body))
+            new ClientException("Invalid Signature.", new Request('POST', Environments::SANDBOX), new Response(401, [], $body))
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
-        
-        $response = self::$api->register($user);
+
+        $file = file_get_contents(__DIR__ . '/Data/filters.json');
+        $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
+
+        self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
     }
 }

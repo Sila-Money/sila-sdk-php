@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class GetTransactionsReponse
+class GetTransactionsResponse
 {
     /**
      * Boolean field used for success.
