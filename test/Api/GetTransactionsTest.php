@@ -97,7 +97,11 @@ class GetTransactionsTest extends TestCase
         $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/GetTransactions401.json');
         $mock = new MockHandler([
-            new ClientException("Invalid Signature.", new Request('POST', Environments::SANDBOX), new Response(401, [], $body))
+            new ClientException(
+                "Invalid Signature.",
+                new Request('POST', Environments::SANDBOX),
+                new Response(401, [], $body)
+            )
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);

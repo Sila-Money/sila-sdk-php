@@ -56,7 +56,11 @@ class ValidModelTest extends TestCase
             'Issue Message is valid' => array('IssueMessageValid.json', 'IssueMessage', true),
             'Transfer Message is valid' => array('TransferMessageValid.json', 'TransferMessage', true),
             'Redeem Message is valid' => array('RedeemMessageValid.json', 'RedeemMessage', true),
-            'Get Transactions Message is valid' => array('GetTransactionsMessageValid.json', 'GetTransactionsMessage', true)
+            'Get Transactions Message is valid' => array(
+                'GetTransactionsMessageValid.json',
+                'GetTransactionsMessage',
+                true
+            )
         );
     }
 
