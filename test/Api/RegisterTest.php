@@ -4,6 +4,7 @@
  * Register Test
  * PHP version 7.2
  */
+
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Exception\ClientException;
