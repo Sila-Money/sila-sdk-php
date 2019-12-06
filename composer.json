@@ -47,17 +47,17 @@
         ],
         "lint:autofix:lib": "phpcbf --standard=PSR12 lib",
         "lint:autofix:test": "phpcbf --standard=PSR12 test",
-        "test": "phpunit --bootstrap ./vendor/autoload.php test",
+        "test": "phpunit",
         "test:coverage": [
             "@test:pre:coverage",
-            "@test:coverage:base --coverage-clover build/coverage-clover.xml"
+            "@test:coverage:base --prepend build/xdebug-filter.php --coverage-clover build/coverage-clover.xml"
         ],
         "test:coverage:base": "@test --whitelist ./lib",
         "test:coverage:human": [
             "@test:pre:coverage",
-            "@test:coverage:base --coverage-html build/coverage-report"
+            "@test:coverage:base --prepend ./build/xdebug-filter.php --coverage-html ./build/coverage-report"
         ],
-        "test:pre:coverage": "phpunit --dump-xdebug-filter build/xdebug-filter.php"
+        "test:pre:coverage": "phpunit --dump-xdebug-filter ./build/xdebug-filter.php"
     },
     "autoload": {
         "psr-4": { "Silamoney\\Client\\" : "lib/" }
