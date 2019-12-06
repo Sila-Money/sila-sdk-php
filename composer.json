@@ -1,6 +1,7 @@
 {
     "name": "silamoney/client",
     "description": "The Silamoney SDK for the api 0.2 beta version.",
+    "version": "0.1.0-RC",
     "type": "library",
     "license": "Apache-2.0",
     "authors": [
