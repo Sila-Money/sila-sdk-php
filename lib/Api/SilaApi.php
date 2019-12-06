@@ -229,10 +229,15 @@ class SilaApi
      * @param int $amount
      * @param string $accountName
      * @param string $userPrivateKey
-     * @return
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function redeemSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey)
-    {
+    public function redeemSila(
+        string $userHandle,
+        int $amount,
+        string $accountName,
+        string $userPrivateKey
+    ): ApiResponse {
         $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle());
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
