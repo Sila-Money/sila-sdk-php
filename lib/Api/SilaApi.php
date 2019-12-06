@@ -11,16 +11,17 @@ use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\ {
-    Environments,
-    HeaderMessage,
+    BalanceEnvironments,
     EntityMessage,
+    Environments,
+    GetAccountsMessage,
+    HeaderMessage,
     IssueMessage,
     LinkAccountMessage,
     Message,
-    User,
-    GetAccountsMessage,
     RedeemMessage,
-    TransferMessage
+    TransferMessage,
+    User
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -65,15 +66,21 @@ class SilaApi
     private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
 
     /**
+     * @var string
+     */
+    private const DEFAULT_BALANCE_ENVIRONMENT = BalanceEnvironments::SANDBOX;
+
+    /**
      * Constructor for Sila Api using custom environment.
      *
      * @param string $environment
+     * @param string $balanceEnvironment
      * @param string $appHandler
      * @param string $privateKey
      */
-    public function __construct(string $environment, string $appHandler, string $privateKey)
+    public function __construct(string $environment, string $balanceEnvironment, string $appHandler, string $privateKey)
     {
-        $this->configuration = new Configuration($environment, $privateKey, $appHandler);
+        $this->configuration = new Configuration($environment, $balanceEnvironment, $privateKey, $appHandler);
         $this->serializer = SerializerBuilder::create()->build();
     }
 
@@ -81,12 +88,18 @@ class SilaApi
      * Constructor for Sila Api using specified environment.
      *
      * @param \Silamoney\Client\Domain\Environments $environment
+     * @param \Silamoney\Client\Domain\BalanceEnvironments $balanceEnvironment
      * @param string $appHandler
      * @param string $privateKey
+     * @return \Silamoney\Client\Api\SilaApi
      */
-    public static function fromEnvironment(Environments $environment, string $appHandler, string $privateKey): SilaApi
-    {
-        return new SilaApi($environment, $appHandler, $privateKey);
+    public static function fromEnvironment(
+        Environments $environment,
+        BalanceEnvironments $balanceEnvironment,
+        string $appHandler,
+        string $privateKey
+    ): SilaApi {
+        return new SilaApi($environment, $balanceEnvironment, $appHandler, $privateKey);
     }
 
     /**
@@ -94,10 +107,11 @@ class SilaApi
      *
      * @param string $appHandler
      * @param string $privateKey
+     * @return \Silamoney\Client\Api\SilaApi
      */
-    public static function fromDefault(string $appHandler, string $privateKey)
+    public static function fromDefault(string $appHandler, string $privateKey): SilaApi
     {
-        return new SilaApi(SilaApi::DEFAULT_ENVIRONMENT, $appHandler, $privateKey);
+        return new SilaApi(self::DEFAULT_ENVIRONMENT, self::DEFAULT_BALANCE_ENVIRONMENT, $appHandler, $privateKey);
     }
 
     /**
@@ -308,9 +322,22 @@ class SilaApi
         return $this->prepareResponse($response, Message::REDEEM);
     }
 
-    public function getApiClient()
+    /**
+     * Gets the configuration api client
+     * @return \Silamoney\Client\Api\ApiClient
+     */
+    public function getApiClient(): ApiClient
     {
         return $this->configuration->getApiClient();
+    }
+
+    /**
+     * Gets the configuration api client
+     * @return \Silamoney\Client\Api\ApiClient
+     */
+    public function getBalanceClient(): ApiClient
+    {
+        return $this->configuration->getBalanceClient();
     }
 
     private function prepareResponse(Response $response, string $msg): ApiResponse
