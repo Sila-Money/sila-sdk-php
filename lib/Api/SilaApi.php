@@ -11,17 +11,21 @@ use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\ {
+    Account,
     BalanceEnvironments,
+    BaseResponse,
     EntityMessage,
     Environments,
     GetAccountsMessage,
     GetTransactionsMessage,
+    GetTransactionsResponse,
     HeaderMessage,
     IssueMessage,
     LinkAccountMessage,
-    Message,
+    LinkAccountResponse,
     RedeemMessage,
     SearchFilters,
+    SilaBalanceMessage,
     TransferMessage,
     User
 };
@@ -132,7 +136,7 @@ class SilaApi
             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::HEADER);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -151,7 +155,7 @@ class SilaApi
             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::ENTITY);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -172,7 +176,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::HEADER);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -193,7 +197,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::HEADER);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -221,7 +225,7 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::LINK_ACCOUNT);
+        return $this->prepareResponse($response, LinkAccountResponse::class);
     }
 
     /**
@@ -242,7 +246,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::GET_ACCOUNTS);
+        return $this->prepareResponse($response, 'array<' . Account::class . '>');
     }
 
     /**
@@ -266,7 +270,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::ISSUE);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -293,7 +297,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::TRANSFER);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -321,15 +325,14 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::REDEEM);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
      * Gets array of user handle's transactions with detailed status information.
      *
      * @param string $userHandle
-     * @param
-     *            SearchFilters filters
+     * @param \Silamoney\Client\Domain\SearchFilters $filters
      * @param string $userPrivateKey
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
@@ -344,7 +347,23 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, Message::GET_TRANSACTIONS);
+        return $this->prepareResponse($response, GetTransactionsResponse::class);
+    }
+
+    /**
+     * Gets Sila balance for a given blockchain address.
+     *
+     * @param string $address
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ServerException
+     */
+    public function silaBalance(string $address): ApiResponse
+    {
+        $body = new SilaBalanceMessage($address);
+        $path = '/silaBalance';
+        $json = $this->serializer->serialize($body, 'json');
+        $response = $this->configuration->getBalanceClient()->callApi($path, $json, []);
+        return $this->prepareResponse($response, 'string');
     }
 
     /**
@@ -365,34 +384,16 @@ class SilaApi
         return $this->configuration->getBalanceClient();
     }
 
-    private function prepareResponse(Response $response, string $msg): ApiResponse
+    private function prepareResponse(Response $response, string $className): ApiResponse
     {
         $statusCode = $response->getStatusCode();
+        $baseResponse = $this->serializer->deserialize($response->getBody()
+            ->getContents(), $className, 'json');
+        return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
+    }
 
-        switch ($msg) {
-            case Message::GET_TRANSACTIONS:
-                $transactions = $this->serializer->deserialize($response->getBody()
-                    ->getContents(), 'Silamoney\Client\Domain\GetTransactionsResponse', 'json');
-                return new ApiResponse($statusCode, $response->getHeaders(), $transactions);
-                break;
-            case Message::GET_ACCOUNTS:
-                $accounts = $this->serializer->deserialize($response->getBody()
-                    ->getContents(), 'array<Silamoney\Client\Domain\Account>', 'json');
-                return new ApiResponse($statusCode, $response->getHeaders(), $accounts);
-                break;
-            case Message::LINK_ACCOUNT:
-                $linkAccountResponse = $this->serializer->deserialize(
-                    $response->getBody()->getContents(),
-                    'Silamoney\Client\Domain\LinkAccountResponse',
-                    'json'
-                );
-                return new ApiResponse($statusCode, $response->getHeaders(), $linkAccountResponse);
-                break;
-            default:
-                $baseResponse = $this->serializer->deserialize($response->getBody()
-                    ->getContents(), 'Silamoney\Client\Domain\BaseResponse', 'json');
-                return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
-                break;
-        }
+    private function prepareBaseResponse(Response $response): ApiResponse
+    {
+        return $this->prepareResponse($response, BaseResponse::class);
     }
 }
