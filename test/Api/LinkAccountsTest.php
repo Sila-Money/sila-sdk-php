@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Base Response Test
+ * Link Accounts Test
  * PHP version 7.2
  */
 
@@ -16,13 +16,13 @@ use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
 
 /**
- * Base Response Test
- * Tests all the endpoints that return a BaseResponse in the Sila Api class.
+ * Link Accounts Test
+ * Tests the Link Accounts endpoint 2xx responses in the Sila Api class.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class BaseResponseTest extends TestCase
+class LinkAccountsTest extends TestCase
 {
     /**
      * @var \Silamoney\Client\Api\ApiClient
@@ -45,31 +45,43 @@ class BaseResponseTest extends TestCase
 
     /**
      * @test
-     * @dataProvider baseResponse200Provider
      */
-    public function testBaseResponse200Sucess(
-        string $file,
-        string $method,
-        array $params,
-        string $message,
-        string $status
-    ): void {
-        $body = file_get_contents(__DIR__ . '/Data/' . $file);
+    public function testLinkAccounts200Success(): void
+    {
+        $body = file_get_contents(__DIR__ . '/Data/LinkAccount200.json');
         $mock = new MockHandler([
             new Response(200, [], $body)
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->$method(...$params);
+        $response = self::$api->linkAccount(
+            self::$config->userHandle,
+            'Custom Account Name',
+            'public-xxx-xxx',
+            self::$config->userPrivateKey
+        );
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(self::$config->userHandle . $message, $response->getData()->getMessage());
-        $this->assertEquals($status, $response->getData()->getStatus());
+        $this->assertEquals("SUCCESS", $response->getData()->getStatus());
     }
 
-    public function baseResponse200Provider(): array
+    /**
+     * @test
+     */
+    public function testLinkAccount200Failure(): void
     {
-        $serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/DataProvider/baseResponse200.json');
-        return $serializer->deserialize($json, 'array', 'json');
+        $body = file_get_contents(__DIR__ . '/Data/LinkAccount200Failure.json');
+        $mock = new MockHandler([
+            new Response(200, [], $body)
+        ]);
+        $handler = HandlerStack::create($mock);
+        self::$api->getApiClient()->setApiHandler($handler);
+        $response = self::$api->linkAccount(
+            self::$config->userHandle,
+            'Custom Account Name',
+            'public-xxx-xxx',
+            self::$config->userPrivateKey
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("FAILURE", $response->getData()->getStatus());
     }
 }
