@@ -246,7 +246,7 @@ $address = '0xabc123abc123abc123'
 $response = $client->silaBalance($address);
 ```
 
-### Sucess 200
+### Success 200
 ```php
 echo $response->getStatusCode() // 200
 $results = $response->getData() // 1000 (amount of sila tokens)
