@@ -74,7 +74,7 @@ class ApiResponse
     /**
      * Returns the data
      *
-     * @return object
+     * @return object|array|string
      */
     public function getData()
     {

@@ -4,6 +4,7 @@
  * Register Test
  * PHP version 7.2
  */
+
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Exception\ClientException;
@@ -98,7 +99,11 @@ class RegisterTest extends TestCase
         $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/Register400.json');
         $mock = new MockHandler([
-            new ClientException("Invalid Signature", new Request('POST', Environments::SANDBOX), new Response(401, [], $body))
+            new ClientException(
+                "Invalid Signature",
+                new Request('POST', Environments::SANDBOX),
+                new Response(401, [], $body)
+            )
         ]);
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);

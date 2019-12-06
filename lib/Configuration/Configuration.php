@@ -14,6 +14,11 @@ class Configuration
     /**
      * @var string
      */
+    private $balanceBasePath;
+
+    /**
+     * @var string
+     */
     private $privateKey;
 
     /**
@@ -22,9 +27,14 @@ class Configuration
     private $authHandle;
 
     /**
-     * @var ApiClient
+     * @var \Silamoney\Client\Api\ApiClient
      */
     private $apiClient;
+
+    /**
+     * @var \Silamoney\Client\Api\ApiClient
+     */
+    private $balanceClient;
 
     /**
      * @var string
@@ -41,13 +51,15 @@ class Configuration
      * @param string $privateKey
      * @param string $authHandle
      */
-    public function __construct(string $basePath, string $privateKey, string $authHandle)
+    public function __construct(string $basePath, string $balanceBasePath, string $privateKey, string $authHandle)
     {
         $this->basePath = $basePath;
+        $this->balanceBasePath = $balanceBasePath;
         $this->privateKey = $privateKey;
         $this->authHandle = $authHandle;
         $this->timeout = 10000;
         $this->apiClient = new ApiClient($this->basePath);
+        $this->balanceClient = new ApiClient($this->balanceBasePath);
     }
 
     /**
@@ -66,6 +78,24 @@ class Configuration
         $this->basePath = $basePath;
         unset($this->apiClient);
         $this->apiClient = new ApiClient($this->basePath);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBalanceBasePath(): string
+    {
+        return $this->balanceBasePath;
+    }
+
+    /**
+     * @param string $balanceBasePath
+     */
+    public function setBalanceBasePath(string $balanceBasePath): void
+    {
+        $this->balanceBasePath = $balanceBasePath;
+        unset($this->balanceClient);
+        $this->balanceClient = new ApiClient($this->balanceBasePath);
     }
 
     /**
@@ -114,6 +144,14 @@ class Configuration
     public function setApiClient(ApiClient $apiClient): void
     {
         $this->apiClient = $apiClient;
+    }
+
+    /**
+     * @return \Silamoney\Client\Api\ApiClient
+     */
+    public function getBalanceClient(): ApiClient
+    {
+        return $this->balanceClient;
     }
 
     /**

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * GetAccounts Test
+ * Sila Balance Test
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\ {
@@ -16,19 +16,21 @@ use GuzzleHttp\Psr7\ {
 };
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\{
+    BalanceEnvironments,
+    SilaBalanceMessage
+};
 
 /**
- * GetAccounts Test
- * Tests for the register endpoint in the Sila Api class.
+ * Sila Balance Test
+ * Tests for the sila balance endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
- * @author Karlo Lorenzana <klorenzana@digitalgeko.com>
+ * @author José Morales <jmorales@digitalgeko.com>
  */
-class GetAccountsTest extends TestCase
+class SilaBalanceTest extends TestCase
 {
-
     /**
      *
      * @var \Silamoney\Client\Api\ApiClient
@@ -57,20 +59,37 @@ class GetAccountsTest extends TestCase
     }
 
     /**
-     *
      * @test
      */
-    public function testGetAccounts200()
+    public function testSilaBalance200()
     {
-        $body = file_get_contents(__DIR__ . '/Data/GetAccounts200.json');
+        $responseValue = "1234";
         $mock = new MockHandler([
-            new Response(200, [], $body)
+            new Response(200, [], $responseValue)
         ]);
         $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-
-        $response = self::$api->getAccounts(self::$config->userHandle, self::$config->userPrivateKey);
+        self::$api->getBalanceClient()->setApiHandler($handler);
+        $response = self::$api->silaBalance("address");
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(2, count($response->getData()));
+        $this->assertEquals($responseValue, $response->getData());
+    }
+
+    /**
+     * @test
+     */
+    public function testSilaBalance500()
+    {
+        $this->expectException(ServerException::class);
+        $body = file_get_contents(__DIR__ . '/Data/SilaBalance500.json');
+        $mock = new MockHandler([
+            new ServerException(
+                "Internal Server Error",
+                new Request('POST', BalanceEnvironments::SANDBOX),
+                new Response(500, [], $body)
+            )
+        ]);
+        $handler = HandlerStack::create($mock);
+        self::$api->getBalanceClient()->setApiHandler($handler);
+        $response = self::$api->silaBalance("address");
     }
 }
