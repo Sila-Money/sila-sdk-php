@@ -23,9 +23,6 @@ require_once 'vendor/autoload.php';
 use Silamoney\Client\Api\SilaApi;
 use Silamoney\Client\Domain\{BalanceEnvironments,Environments};
 
-// Json serialization and deserialization library needs to register custom annotations
-\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-
 // Load your credentials
 $appHandle = 'your app handle';
 $privateKey = 'your private key';
