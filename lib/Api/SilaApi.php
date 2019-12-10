@@ -23,6 +23,8 @@ use Silamoney\Client\Domain\ {
     IssueMessage,
     LinkAccountMessage,
     LinkAccountResponse,
+    PlaidSamedayAuthMessage,
+    PlaidSamedayAuthResponse,
     RedeemMessage,
     SearchFilters,
     SilaBalanceMessage,
@@ -365,6 +367,26 @@ class SilaApi
         $json = $this->serializer->serialize($body, 'json');
         $response = $this->configuration->getBalanceClient()->callApi($path, $json, []);
         return $this->prepareResponse($response, 'int');
+    }
+
+     /**
+     * Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
+     *
+     * @param string $userHandle
+     * @param string $accountName
+     * @return \Silamoney\Client\Api\ApiResponse
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
+    {
+        $body = new PlaidSamedayAuthMessage($userHandle, $accountName, $this->configuration->getAuthHandle());
+        $path = '/plaid_sameday_auth';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, PlaidSamedayAuthResponse::class);
     }
 
     /**
