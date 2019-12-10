@@ -87,4 +87,19 @@ class PlaidSamedayAuthTest extends TestCase
         self::$api->getApiClient()->setApiHandler($handler);
         $response = self::$api->plaidSamedayAuth(self::$config->userHandle, "Incorrect Account Status");
     }
+
+    /**
+     * @test
+     */
+    public function testPlaidSamedayAuth404()
+    {
+        $this->expectException(ClientException::class);
+        $body = file_get_contents(__DIR__ . '/Data/PlaidSamedayAuth404.json');
+        $mock = new MockHandler([
+            new ClientException("Not Found", new Request('POST', Environments::SANDBOX), new Response(404, [], $body))
+        ]);
+        $handler = HandlerStack::create($mock);
+        self::$api->getApiClient()->setApiHandler($handler);
+        $response = self::$api->plaidSamedayAuth(self::$config->userHandle, "Not A Valid Account");
+    }
 }
