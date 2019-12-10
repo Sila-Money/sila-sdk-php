@@ -28,9 +28,9 @@ $appHandle = 'your app handle';
 $privateKey = 'your private key';
 
 // Create your client
-$client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url', $appHandle, $privateKey) // From custom URL
-$client = SilaApi::fromEnvironment(Environments::SANDBOX, BalanceEnvironments::SANDBOX, $appHandler, $privateKey) // From predefined environments
-$client = SilaApi::fromDefault($appHandle, $privateKey) // From default sandbox environments
+$client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url', $appHandle, $privateKey); // From custom URL
+$client = SilaApi::fromEnvironment(Environments::SANDBOX, BalanceEnvironments::SANDBOX, $appHandler, $privateKey); // From predefined environments
+$client = SilaApi::fromDefault($appHandle, $privateKey); // From default sandbox environments
 ```
 ## Check Handle Endpoint
 Checks if a specific handle is already taken.
@@ -40,17 +40,17 @@ $response = $client->checkHandle($userHandle); // Returns Silamoney\Client\Api\A
 ```
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // User is available
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // User is available
 ```
 ### Failure 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // FAILURE
-echo $response->getData()->getMessage() // User is already taken
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // FAILURE
+echo $response->getData()->getMessage(); // User is already taken
 ```
 ## Register endpoint
 Attaches KYC data and specified blockchain address to an assigned handle.
@@ -82,10 +82,10 @@ $response = $client->register($user);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // User was successfully register
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // User was successfully register
 ```
 
 ## Request KYC endpoint
@@ -98,10 +98,10 @@ $response = $client->requestKYC($userHandle, $userPrivateKey);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // User submitted for KYC review.
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // User submitted for KYC review.
 ```
 
 ## Check KYC endpoint
@@ -114,10 +114,10 @@ $response = $client->checkKYC($userHandle, $userPrivateKey);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // User has passed ID verification!
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // User has passed ID verification!
 ```
 
 ## Link Account endpoint
@@ -136,8 +136,8 @@ $response = $client->linkAccount($userHandle, $accountName, $publicToken, $userP
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getStatus() // SUCCESS
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getStatus(); // SUCCESS
 ```
 
 ## Get Accounts endpoint
@@ -150,12 +150,12 @@ $response = $client->getAccounts($userHandle, $userPrivateKey);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-$accounts = $response->getData() // Array of Silamoney\Client\Domain\Account
-echo $accounts[0]->accountName // Account Name
-echo $accounts[0]->accountNumber // Account Number
-echo $accounts[0]->accountStatus // Account Status
-echo $accounts[0]->accountType // Account Type
+echo $response->getStatusCode(); // 200
+$accounts = $response->getData(); // Array of Silamoney\Client\Domain\Account
+echo $accounts[0]->accountName; // Account Name
+echo $accounts[0]->accountNumber; // Account Number
+echo $accounts[0]->accountStatus; // Account Status
+echo $accounts[0]->accountType; // Account Type
 ```
 
 ## Issue Sila endpoint
@@ -173,10 +173,10 @@ $response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateK
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // Transaction submitted to processing queue.
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 ```
 
 ## Transfer Sila endpoint
@@ -194,10 +194,10 @@ $response = $client->transferSila($userHandle, $destination, $amount, $userPriva
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // Transaction submitted to processing queue.
+echo $response->getStatusCode(): // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 ```
 
 ## Redeem Sila endpoint
@@ -215,10 +215,10 @@ $response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivate
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-echo $response->getData()->getReference() // Random reference number
-echo $response->getData()->getStatus() // SUCCESS
-echo $response->getData()->getMessage() // Transaction submitted to processing queue.
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 ```
 
 ## Get Transactions endpoint
@@ -237,8 +237,8 @@ $response = $client->getTransactions($userHandle, $filters, $userPrivateKey);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-$results = $response->getData() // Silamoney\Client\Domain\GetTransactionsResponse
+echo $response->getStatusCode(); // 200
+$results = $response->getData(); // Silamoney\Client\Domain\GetTransactionsResponse
 ```
 
 ## Sila Balance endpoint
@@ -250,6 +250,23 @@ $response = $client->silaBalance($address);
 
 ### Success 200
 ```php
-echo $response->getStatusCode() // 200
-$results = $response->getData() // 1000 (amount of sila tokens)
+echo $response->getStatusCode(); // 200
+$results = $response->getData(); // 1000 (amount of sila tokens)
+```
+
+## Plaid Sameday Auth endpoint
+Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
+```php
+$userHandle = 'user.silamoney.eth';
+$accountName = 'Custom Account Name';
+$response = $client->plaidSamedayAuth($userHandle, $accountName);
+```
+
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // Plaid public token succesfully created
+echo $response->getData()->getPublicToken(); // Token
 ```
