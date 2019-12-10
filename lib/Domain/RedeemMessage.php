@@ -66,6 +66,7 @@ class RedeemMessage implements ValidInterface
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header)
+            && $this->header->isValid()
             && v::stringType()->notEmpty()->validate($this->message)
             && v::floatType()->validate($this->amount)
             && v::stringType()->notEmpty()->validate($this->accountName);
