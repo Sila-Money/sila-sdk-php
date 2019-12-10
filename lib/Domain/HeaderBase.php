@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Header
+ * Header Base
  * PHP version 7.2
  */
 
@@ -11,31 +11,31 @@ use JMS\Serializer\Annotation\Type;
 use Respect\Validation\Validator as v;
 
 /**
- * Header
- * Object used in the multiple msg.
+ * Header Base
+ * Object used as base of Header and in plaid sameday auth message.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Header extends HeaderBase
+class HeaderBase implements ValidInterface
 {
     /**
-     * @var string
-     * @Type("string")
+     * @var int
+     * @Type("int")
      */
-    private $reference;
+    protected $created;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $version;
+    protected $userHandle;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $crypto;
+    protected $authHandle;
 
     /**
      * Constructor for header object.
@@ -45,10 +45,9 @@ class Header extends HeaderBase
      */
     public function __construct(string $userHandle, string $appHandle)
     {
-        parent::__construct($userHandle, $appHandle);
-        $this->crypto = CryptoCode::ETH;
-        $this->reference = strval(rand(0, 1000000));
-        $this->version = Version::ZERO_2;
+        $this->authHandle = $appHandle;
+        $this->userHandle = $userHandle;
+        $this->created = time() - 100;
     }
 
     public function isValid(): bool
@@ -56,9 +55,6 @@ class Header extends HeaderBase
         $notEmptyString = v::stringType()->notEmpty();
         return $notEmptyString->validate($this->authHandle)
             && $notEmptyString->validate($this->userHandle)
-            && v::intType()->positive()->validate($this->created)
-            && $notEmptyString->validate($this->crypto)
-            && $notEmptyString->validate($this->reference)
-            && $notEmptyString->validate($this->version);
+            && v::intType()->positive()->validate($this->created);
     }
 }
