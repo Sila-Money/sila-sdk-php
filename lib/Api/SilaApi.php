@@ -370,7 +370,7 @@ class SilaApi
     }
 
      /**
-     * Gets array of user handle's transactions with detailed status information.
+     * Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
      *
      * @param string $userHandle
      * @param string $accountName

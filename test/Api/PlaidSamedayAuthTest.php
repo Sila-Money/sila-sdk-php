@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sila Balance Test
+ * Plaid Sameday Auth Test
  * PHP version 7.2
  */
 
@@ -16,14 +16,11 @@ use GuzzleHttp\Psr7\ {
 };
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\{
-    BalanceEnvironments,
-    SilaBalanceMessage
-};
+use Silamoney\Client\Domain\Environments;
 
 /**
- * Sila Balance Test
- * Tests for the sila balance endpoint in the Sila Api class.
+ * Plaid Sameday Auth Test
+ * Tests for the plaid sameday auth endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
@@ -74,5 +71,20 @@ class PlaidSamedayAuthTest extends TestCase
         $this->assertEquals("Plaid public token succesfully created", $response->getData()->getMessage());
         $this->assertEquals("SUCCESS", $response->getData()->getStatus());
         $this->assertEquals("token", $response->getData()->getPublicToken());
+    }
+
+    /**
+     * @test
+     */
+    public function testPlaidSamedayAuth400()
+    {
+        $this->expectException(ClientException::class);
+        $body = file_get_contents(__DIR__ . '/Data/PlaidSamedayAuth400.json');
+        $mock = new MockHandler([
+            new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
+        ]);
+        $handler = HandlerStack::create($mock);
+        self::$api->getApiClient()->setApiHandler($handler);
+        $response = self::$api->plaidSamedayAuth(self::$config->userHandle, "Incorrect Account Status");
     }
 }
