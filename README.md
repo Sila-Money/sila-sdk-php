@@ -13,7 +13,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/client:0.2.2
+composer require silamoney/php-sdk:0.2.2
 ```
 
 ## Initialization
