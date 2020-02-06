@@ -29,7 +29,7 @@ $privateKey = 'your private key';
 
 // Create your client
 $client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url', $appHandle, $privateKey); // From custom URL
-$client = SilaApi::fromEnvironment(Environments::SANDBOX, BalanceEnvironments::SANDBOX, $appHandler, $privateKey); // From predefined environments
+$client = SilaApi::fromEnvironment(Environments::SANDBOX, BalanceEnvironments::SANDBOX, $appHandle, $privateKey); // From predefined environments
 $client = SilaApi::fromDefault($appHandle, $privateKey); // From default sandbox environments
 ```
 ## Check Handle Endpoint
