@@ -114,7 +114,7 @@ class User
         string $email,
         string $identityNumber,
         string $cryptoAddress,
-        Date $birthdate
+        DateTime $birthdate
     ) {
         $this->handle = $handle;
         $this->firstName = $firstName;
