@@ -56,7 +56,7 @@ class Entity implements ValidInterface
      */
     public function __construct(User $user)
     {
-        $pattern = 'yyyy-MM-dd';
+        $pattern = 'Y-m-d';
         $date = $user->getBirthdate()->format($pattern);
         $this->birthdate = $date;
         $this->firstName = $user->getFirstName();
