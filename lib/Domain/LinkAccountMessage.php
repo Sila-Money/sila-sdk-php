@@ -56,11 +56,13 @@ class LinkAccountMessage implements ValidInterface
      * @param string $accountName
      * @param string $publicToken
      * @param string $appHandle
+     * @param string $selectedAccountId
      */
-    public function __construct(string $userHandle, string $accountName, string $publicToken, string $appHandle)
+    public function __construct(string $userHandle, string $accountName, string $publicToken, string $appHandle, string $selectedAccountId)
     {
         $this->publicToken = $publicToken;
         $this->accountName = $accountName;
+        $this->selectedAccountId = $selectedAccountId;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::LINK_ACCOUNT;
     }

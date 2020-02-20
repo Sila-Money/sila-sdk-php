@@ -38,6 +38,13 @@ class ApiResponse
     private $data;
 
     /**
+     * Success
+     *
+     * @var boolean
+     */
+    private $success;
+
+    /**
      * Constructor
      *
      * @param int    $statusCode Status Code
@@ -79,5 +86,10 @@ class ApiResponse
     public function getData()
     {
         return $this->data;
+    }
+
+    public function getSuccess()
+    {
+        return $this->data->getSuccess();
     }
 }

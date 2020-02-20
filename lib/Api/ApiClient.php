@@ -9,6 +9,7 @@ namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
@@ -39,7 +40,7 @@ class ApiClient
             ApiClient::BASE_URI => $basePath
         ]);
     }
-    
+
     /**
      * Makes the call to the sila API
      * @param string $url
@@ -50,7 +51,28 @@ class ApiClient
      */
     public function callAPI(string $url, string $data, array $headers): Response
     {
-        return $this->client->post('/0.2' . $url, ['body' => $data,'headers' => $headers]);
+        try {
+            return $this->client->post('0.2/' . $url, ['body' => $data, 'headers' => $headers]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        }
+    }
+
+    /**
+     * Makes the call to the sila API from the base URL
+     * @param string $url
+     * @param array $data
+     * @param string $headers
+     * @return \GuzzleHttp\Psr7\Response
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function callUnversionedAPI(string $url, string $data, array $headers): Response
+    {
+        try {
+            return $this->client->post($url, ['body' => $data, 'headers' => $headers]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        }
     }
 
     /**

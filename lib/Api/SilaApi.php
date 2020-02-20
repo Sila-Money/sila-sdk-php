@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
@@ -28,8 +29,10 @@ use Silamoney\Client\Domain\ {
     RedeemMessage,
     SearchFilters,
     SilaBalanceMessage,
+    SilaBalanceResponse,
     TransferMessage,
-    User
+    User,
+    SilaWallet
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -190,7 +193,7 @@ class SilaApi
      * @return \Silamoney\Client\Api\ApiResponse
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function checkKYC(string $handle, string $userPrivateKey): ApiResponse
+    public function checkKYC(string $handle, string $userPrivateKey, $flow = null): ApiResponse
     {
         $body = new HeaderMessage($handle, $this->configuration->getAuthHandle());
         $path = "/check_kyc";
@@ -211,16 +214,17 @@ class SilaApi
      * @param string $accountName
      * @param string $publicToken
      * @param string $userPrivateKey
+     * @param string|null $accountId
      * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
      */
     public function linkAccount(
         string $userHandle,
         string $accountName,
         string $publicToken,
-        string $userPrivateKey
+        string $userPrivateKey,
+        string $accountId = null
     ): ApiResponse {
-        $body = new LinkAccountMessage($userHandle, $accountName, $publicToken, $this->configuration->getAuthHandle());
+        $body = new LinkAccountMessage($userHandle, $accountName, $publicToken, $this->configuration->getAuthHandle(), $accountId);
         $path = "/link_account";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -343,7 +347,7 @@ class SilaApi
     public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey): ApiResponse
     {
         $body = new GetTransactionsMessage($userHandle, $this->configuration->getAuthHandle(), $filters);
-        $path = '/redeem_sila';
+        $path = '/get_transactions';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
@@ -365,8 +369,10 @@ class SilaApi
         $body = new SilaBalanceMessage($address);
         $path = '/silaBalance';
         $json = $this->serializer->serialize($body, 'json');
-        $response = $this->configuration->getBalanceClient()->callApi($path, $json, []);
-        return $this->prepareResponse($response, 'int');
+        $headers = ['Content-Type' => 'application/json'];
+        $response = $this->configuration->getBalanceClient()->callUnversionedAPI($path, $json, $headers);
+        $json_string = $response->getBody()->getContents();
+        return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders(), SilaBalanceResponse::class);
     }
 
      /**
@@ -385,7 +391,7 @@ class SilaApi
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response, PlaidSamedayAuthResponse::class);
     }
 
@@ -396,6 +402,17 @@ class SilaApi
     public function getApiClient(): ApiClient
     {
         return $this->configuration->getApiClient();
+    }
+
+    /**
+     * Create a new SilaWallet
+     * @param string|null $private_key
+     * @param string|null $address
+     * @return SilaWallet
+     */
+    public function generateWallet($private_key = null, $address = null): SilaWallet
+    {
+        return new SilaWallet($private_key, $address);
     }
 
     /**
@@ -410,13 +427,22 @@ class SilaApi
     private function prepareResponse(Response $response, string $className): ApiResponse
     {
         $statusCode = $response->getStatusCode();
-        $baseResponse = $this->serializer->deserialize($response->getBody()
-            ->getContents(), $className, 'json');
+        $contents = $response->getBody()->getContents();
+        if ($className == SilaBalanceResponse::class) {
+            $contents = json_encode(json_decode($contents));
+        }
+        $baseResponse = $this->serializer->deserialize($contents, $className, 'json');
         return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
     }
 
     private function prepareBaseResponse(Response $response): ApiResponse
     {
         return $this->prepareResponse($response, BaseResponse::class);
+    }
+
+    private function prepareJsonResponse(string $json, int $statusCode, array $headers, string $className)
+    {
+        $json = json_decode($json);
+        return new ApiResponse($statusCode, $headers, $json);
     }
 }

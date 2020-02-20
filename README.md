@@ -52,6 +52,35 @@ echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // FAILURE
 echo $response->getData()->getMessage(); // User is already taken
 ```
+
+## Generate Wallet
+This is a helper function that allows you to generate a wallet (private key & address)
+that you can then use to register a new user.
+
+**Important!** Sila does not custody these private keys. They should *never* be sent to
+us or disclosed to any third party. The private key will be used to sign all
+requests from the associated user for authentication purposes.
+
+```php
+$wallet = $client->generateWallet();
+print $wallet->getAddress();        // e.g. 0x9ae1e2a685c5f23981757ea0cb6f5b413aa5f29f
+print $wallet->getPrivateKey();     // e.g. 0xe62049e7ca71d9223c8db6751e007ce000d686b7729792160787034e1c976c12
+```
+
+You can also initialize a wallet using existing values, e.g.
+
+```php
+$privateKey = '0xe62049e7ca71d9223c8db6751e007ce000d686b7729792160787034e1c976c12';
+$address = '0x9ae1e2a685c5f23981757ea0cb6f5b413aa5f29f';
+$wallet = $client->generateWallet($privateKey, $address);
+print $wallet->getAddress();        // e.g. 0x9ae1e2a685c5f23981757ea0cb6f5b413aa5f29f
+print $wallet->getPrivateKey();     // e.g. 0xe62049e7ca71d9223c8db6751e007ce000d686b7729792160787034e1c976c12
+```
+
+Wallet has two attributes:
+- `address` is the public blockchain address that will be used when you call register()
+- `private_key` is the private key associated with this address. This will _only_ be used to sign requests. **Keep this safe!**
+
 ## Register endpoint
 Attaches KYC data and specified blockchain address to an assigned handle.
 ```php
@@ -124,19 +153,44 @@ echo $response->getData()->getMessage(); // User has passed ID verification!
 Uses a provided Plaid public token to link a bank account to a verified entity.
 **Public token received in the /link/item/create [Plaid](https://plaid.com/docs/#integrating-with-link) endpoint.**
 ```php
+// SANDBOX ONLY: You can generate a testing public token instead of using the Plaid Link plugin with:
+$client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
+$options = [
+    'json' => [
+        "public_key" => "fa9dd19eb40982275785b09760ab79",
+        "initial_products" => ["transactions"],
+        "institution_id" => "ins_109508",
+        "credentials" => [
+            "username" => "user_good",
+            "password" => "pass_good"
+        ]
+    ]
+];
+$response = $client->post('/link/item/create', $options);
+$content = json_decode($response->getBody()->getContents());
+$public_token = $content->public_token;             // Public Token to pass to linkAccount()
+$account_id = $content->accounts[0]->account_id;    // Optional Account ID to pass to linkAccount()
+```
+---
+**IMPORTANT!** If you do not specify an `$account_id` in `linkAccount()`, the first account returned by Plaid will be linked by default.
+
+---
+
+```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
-$accountName = 'Custom Account Name';
-$publicToken = 'public-xxx-xxx';
-$userPrivateKey = 'some private key'; // Hex format
+$accountName = 'Custom Account Name';   // Defaults to 'default'
+$publicToken = 'public-xxx-xxx';        // A temporary token returned from the Plaid Link plugin. See above for testing.
+$accountId = 'string';                  // Recommended but not required. See note above.
+$userPrivateKey = 'some private key';   // The private key used to register the specified user
 
 // Call the api
-$response = $client->linkAccount($userHandle, $accountName, $publicToken, $userPrivateKey);
+$response = $client->linkAccount($userHandle, $accountName, $publicToken, $userPrivateKey, $accountId);
 ```
 
 ### Success 200
 ```php
-echo $response->getStatusCode(); // 200
+echo $response->getStatusCode();        // 200
 echo $response->getData()->getStatus(); // SUCCESS
 ```
 
@@ -150,13 +204,17 @@ $response = $client->getAccounts($userHandle, $userPrivateKey);
 
 ### Success 200
 ```php
-echo $response->getStatusCode(); // 200
-$accounts = $response->getData(); // Array of Silamoney\Client\Domain\Account
-echo $accounts[0]->accountName; // Account Name
-echo $accounts[0]->accountNumber; // Account Number
-echo $accounts[0]->accountStatus; // Account Status
-echo $accounts[0]->accountType; // Account Type
+echo $response->getStatusCode();    // 200
+$accounts = $response->getData();   // Array of Silamoney\Client\Domain\Account
+if (count($accounts)) {
+    echo $accounts[0]->accountName;     // Account Name
+    echo $accounts[0]->accountNumber;   // Account Number
+    echo $accounts[0]->accountStatus;   // Account Status
+    echo $accounts[0]->accountType;     // Account Type
+}
 ```
+
+If no accounts are linked, `$accounts` in the above response example will be an empty array.
 
 ## Issue Sila endpoint
 Debits a specified account and issues tokens to the address belonging to the requested handle.

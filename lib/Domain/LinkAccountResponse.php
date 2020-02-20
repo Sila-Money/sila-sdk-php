@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Domain;
 
+use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /**
@@ -31,5 +32,14 @@ class LinkAccountResponse
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * Returns a boolean success indicator
+     * @return bool
+     */
+    public function getSuccess(): bool
+    {
+        return $this->status == 'SUCCESS';
     }
 }

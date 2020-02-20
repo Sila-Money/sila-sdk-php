@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * Base Response
@@ -64,5 +65,20 @@ class BaseResponse
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * Gets any response attribute.
+     * @param $attr string
+     * @return mixed
+     */
+    public function getAttr($attr)
+    {
+        return property_exists($this, $attr) ? $this->{$attr} : null;
+    }
+
+    public function getSuccess()
+    {
+        return $this->status === 'SUCCESS';
     }
 }

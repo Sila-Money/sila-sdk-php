@@ -7,6 +7,9 @@
 
 namespace Silamoney\Client\Security;
 
+use Sop\CryptoTypes\Asymmetric\EC\ECPublicKey;
+use Sop\CryptoTypes\Asymmetric\EC\ECPrivateKey;
+use Sop\CryptoEncoding\PEM;
 use kornrunner\{Keccak,Secp256k1};
 
 /**

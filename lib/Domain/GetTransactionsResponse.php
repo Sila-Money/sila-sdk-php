@@ -48,4 +48,21 @@ class GetTransactionsResponse
      * @Type("array<Silamoney\Client\Domain\Transaction>")
      */
     public $transactions;
+
+    /**
+     * Checks to see if the request was successful
+     * @return bool
+     */
+    public function getSuccess()
+    {
+        return $this->success;
+    }
+
+    public function getTransactionById($id)
+    {
+        $tx = array_values(array_filter($this->transactions, function ($v, $k) use ($id) {
+            return $v->referenceId = $id;
+        }, ARRAY_FILTER_USE_BOTH));
+        return count($tx) ? $tx[0] : false;
+    }
 }
