@@ -1,5 +1,9 @@
 # Silamoney\Client
 
+`Version 0.2.4-alpha`
+
+> **Note**: This SDK is still in Beta.
+
 ## Prerequisites
 ### PHP supported versions
 * 7.2 and above
@@ -13,7 +17,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.2
+composer require silamoney/php-sdk:0.2.4-alpha
 ```
 
 ## Initialization
