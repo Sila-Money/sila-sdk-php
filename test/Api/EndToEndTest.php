@@ -78,16 +78,19 @@ class EndToEndTest extends TestCase
     {
 
         /* Reference Block for testing
-        $handle = 'e1963042b0ae706ab4d77b85c7b34ff8';
+         * You can move this block anywhere in the test on subsequent runs,
+         * commenting out all code above. That will let you execute
+         * only a specific part of this test.
+        $handle = 'String Output from previous test run';
         $wallet = self::$api->generateWallet(
-            '0xd0591bfd748fbd427a2e0ea0d4763310a7fb6bef65877d6efb10bdf76f041c94',
-            '0xe024920188083543e4f8817065f8e613e2b78ad4'
+            'Private Key Output from previous test run',
+            'Address Output from previous test run'
         );
 
-        $handle2 = 'e86fb7163d3decedadaac12322f36f32';
+        $handle2 = 'String Output from previous test run';
         $wallet2 = self::$api->generateWallet(
-            '0xd951a1eb4344227f6fe4bcb27700f823f0d90546e17cd20f7a3c5e77df438448',
-            '0x5aab15dadf3461da6db6b15b87c80a14f81e4a7c'
+            'Private Key Output from previous test run',
+            'Address Output from previous test run'
         );*/
 
         // Check Existing Handle
