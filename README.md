@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.4-alpha`
+`Version 0.2.4-beta`
 
 > **Note**: This SDK is still in Beta.
 
