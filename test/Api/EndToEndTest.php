@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sila Balance Test
+ * Sila End To End Test
  * PHP version 7.2
  */
 
@@ -77,22 +77,6 @@ class EndToEndTest extends TestCase
     public function testEndToEnd()
     {
 
-        /* Reference Block for testing
-         * You can move this block anywhere in the test on subsequent runs,
-         * commenting out all code above. That will let you execute
-         * only a specific part of this test.
-        $handle = 'String Output from previous test run';
-        $wallet = self::$api->generateWallet(
-            'Private Key Output from previous test run',
-            'Address Output from previous test run'
-        );
-
-        $handle2 = 'String Output from previous test run';
-        $wallet2 = self::$api->generateWallet(
-            'Private Key Output from previous test run',
-            'Address Output from previous test run'
-        );*/
-
         // Check Existing Handle
         $response = self::$api->checkHandle('test');
         $this->assertEquals(200, $response->getStatusCode());
@@ -164,6 +148,7 @@ class EndToEndTest extends TestCase
         $this->assertFalse($response->getSuccess());
         $this->assertStringContainsString('was not requested', $response->getData()->getMessage());
         // Request KYC
+        self::$api->requestKYC($handle2, $wallet2->getPrivateKey());
         $response = self::$api->requestKYC($handle, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('submitted for KYC review', $response->getData()->getMessage());

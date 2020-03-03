@@ -27,6 +27,7 @@ use Silamoney\Client\Domain\ {
     PlaidSamedayAuthMessage,
     PlaidSamedayAuthResponse,
     RedeemMessage,
+    RequestKYCMessage,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
@@ -169,12 +170,12 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $userPrivateKey
+     * @param string|null $level
      * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function requestKYC(string $userHandle, string $userPrivateKey): ApiResponse
+    public function requestKYC(string $userHandle, string $userPrivateKey, string $level = null): ApiResponse
     {
-        $body = new HeaderMessage($userHandle, $this->configuration->getAuthHandle());
+        $body = new RequestKYCMessage($userHandle, $this->configuration->getAuthHandle(), $level);
         $path = '/request_kyc';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -409,6 +410,7 @@ class SilaApi
      * @param string|null $private_key
      * @param string|null $address
      * @return SilaWallet
+     * @throws \Exception
      */
     public function generateWallet($private_key = null, $address = null): SilaWallet
     {

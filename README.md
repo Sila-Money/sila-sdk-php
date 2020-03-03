@@ -145,6 +145,11 @@ $userPrivateKey = 'some private key'; // Hex format
 $response = $client->checkKYC($userHandle, $userPrivateKey);
 ```
 
+> Note: Adaptive KYC is supported by adding the provisioned `kyc_level` name as a third parameter, e.g. 
+> `$client->checkKYC($userHandle, $userPrivateKey, 'CUSTOM_KYC_LEVEL')` This flow must be provisioned for the 
+> requesting app, or the request will be rejected. Please [contact our Customer Success team]('https://silamoney.com') 
+> for custom KYC requests.
+
 ### Success 200
 ```php
 echo $response->getStatusCode(); // 200
