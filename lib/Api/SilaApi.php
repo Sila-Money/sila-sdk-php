@@ -107,8 +107,8 @@ class SilaApi
      * @return \Silamoney\Client\Api\SilaApi
      */
     public static function fromEnvironment(
-        Environments $environment,
-        BalanceEnvironments $balanceEnvironment,
+        string $environment,
+        string $balanceEnvironment,
         string $appHandler,
         string $privateKey
     ): SilaApi {

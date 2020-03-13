@@ -1,7 +1,7 @@
 {
     "name": "silamoney/php-sdk",
     "description": "Sila PHP SDK for API Version 0.2",
-    "version": "0.2.4-beta-2",
+    "version": "0.2.4-beta-3",
     "keywords": ["sila","payments","ach","credit","fintech","finance"],
     "type": "library",
     "license": "Apache-2.0",

@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.4-beta-2`
+`Version 0.2.4-beta-3`
 
 > **Note**: This SDK is still in Beta.
 
@@ -17,7 +17,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.4-beta-2
+composer require silamoney/php-sdk:0.2.4-beta-3
 ```
 
 ## Initialization
