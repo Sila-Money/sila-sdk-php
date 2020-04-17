@@ -19,6 +19,13 @@ use PHPUnit\Framework\TestCase;
  */
 class EcdsaUtilTest extends TestCase
 {
+
+    public function testConstructor()
+    {
+        $ecdsaUtil = new EcdsaUtil();
+        $this->assertTrue($ecdsaUtil != null);
+    }
+
     /**
      * @test
      * @dataProvider silaProvider

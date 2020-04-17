@@ -1,0 +1,18 @@
+{
+    "transaction_id": "xxxx-xxxx-xxxx",
+    "reference_id": "xxxx-xxxx-xxxx",
+    "statuses": [
+        "status1", "status2"
+    ],
+    "transaction_types": [
+        "type1", "type2"
+    ],
+    "max_sila_amount": 1000.0,
+    "min_sila_amount": 10.0,
+    "start_epoch": 20,
+    "end_epoch": 10,
+    "page": 3,
+    "per_page": 4,
+    "sort_ascending": true,
+    "show_timelines": true
+}

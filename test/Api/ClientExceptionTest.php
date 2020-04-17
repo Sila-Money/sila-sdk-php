@@ -47,10 +47,14 @@ class ClientExceptionTest extends TestCase
      * @test
      * @dataProvider clientException400Provider
      * @dataProvider clientException401Provider
+     * @param string $file
+     * @param string $message
+     * @param int $code
+     * @param string $method
+     * @param array $params
      */
     public function testCheckHandle4xx(string $file, string $message, int $code, string $method, array $params): void
     {
-        $this->expectException(ClientException::class);
         $body = file_get_contents(__DIR__ . '/Data/' . $file);
         $mock = new MockHandler([
             new ClientException($message, new Request('POST', Environments::SANDBOX), new Response($code, [], $body))
@@ -58,6 +62,7 @@ class ClientExceptionTest extends TestCase
         $handler = HandlerStack::create($mock);
         self::$api->getApiClient()->setApiHandler($handler);
         $response = self::$api->$method(...$params);
+        $this->assertEquals($code, $response->getStatusCode());
     }
 
     public function clientException400Provider(): array

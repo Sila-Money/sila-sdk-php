@@ -43,9 +43,18 @@ class CheckKYCTest extends TestCase
     {
         \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/Configuration.json');
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, self::$config->privateKey);
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+    }
+
+    public static function setUpBeforeClassInvalidAuthSignature(): void
+    {
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
+        self::$serializer = SerializerBuilder::create()->build();
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
+        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
     /**
@@ -53,57 +62,44 @@ class CheckKYCTest extends TestCase
      */
     public function testCheckKYC200Sucess()
     {
-        $body = file_get_contents(__DIR__ . '/Data/CheckKYC200Success.json');
-        $mock = new MockHandler([
-            new Response(200, [], $body)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkKYC(self::$config->userHandle, self::$config->userPrivateKey);
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->checkKYC($resp[0], $resp[1]);
+        $response2 = self::$api->checkKYC($resp[2], $resp[3]);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("KYC passed for user.silamoney.eth", $response->getData()->getMessage());
-        $this->assertEquals("SUCCESS", $response->getData()->getStatus());
+        $this->assertEquals(200, $response2->getStatusCode());
     }
 
     public function testCheckKYC200Failure()
     {
-        $body = file_get_contents(__DIR__ . '/Data/CheckKYC200Failure.json');
-        $mock = new MockHandler([
-            new Response(200, [], $body)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkKYC(self::$config->userHandle, self::$config->userPrivateKey);
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->checkKYC($resp[0], 0);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("KYC not passed for user.silamoney.eth", $response->getData()->getMessage());
-        $this->assertEquals("FAILURE", $response->getData()->getStatus());
     }
 
     public function testCheckHandle400()
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/CheckKYC400.json');
-        $mock = new MockHandler([
-            new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkKYC(self::$config->userHandle, self::$config->userPrivateKey);
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->checkKYC(0, 0);
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testCheckHandle401()
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/CheckKYC401.json');
-        $mock = new MockHandler([
-            new ClientException(
-                "Invalid Signature",
-                new Request('POST', Environments::SANDBOX),
-                new Response(401, [], $body)
-            )
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $response = self::$api->checkKYC(self::$config->userHandle, self::$config->userPrivateKey);
+        self::setUpBeforeClassInvalidAuthSignature();
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->checkKYC($resp[0], 0);
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }

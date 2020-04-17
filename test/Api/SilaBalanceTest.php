@@ -70,6 +70,7 @@ class SilaBalanceTest extends TestCase
         $handler = HandlerStack::create($mock);
         self::$api->getBalanceClient()->setApiHandler($handler);
         $response = self::$api->silaBalance("address");
+        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals($responseValue, $response->getData());
     }
@@ -79,7 +80,6 @@ class SilaBalanceTest extends TestCase
      */
     public function testSilaBalance500()
     {
-        $this->expectException(ServerException::class);
         $body = file_get_contents(__DIR__ . '/Data/SilaBalance500.json');
         $mock = new MockHandler([
             new ServerException(
@@ -91,5 +91,6 @@ class SilaBalanceTest extends TestCase
         $handler = HandlerStack::create($mock);
         self::$api->getBalanceClient()->setApiHandler($handler);
         $response = self::$api->silaBalance("address");
+        $this->assertEquals(500, $response->getStatusCode());
     }
 }
