@@ -1,7 +1,38 @@
 <phpunit bootstrap="vendor/autoload.php">
   <testsuites>
     <testsuite name="silamoney">
-      <directory>./test</directory>
+
+      <file>test/Configuration/ConfigurationTest.php</file>
+      <file>test/Domain/AccountTest.php</file>
+      <file>test/Domain/SearchFiltersTest.php</file>
+      <file>test/Domain/SilaWalletTest.php</file>
+      <file>test/Domain/UserTest.php</file>
+      <file>test/Domain/ValidModelTest.php</file>
+      <file>test/Security/EcdsaUtilTest.php</file>
+
+      <file>test/Api/ApiClientTest.php</file>
+      <file>test/Api/BaseResponseTest.php</file>
+      <file>test/Api/ClientExceptionTest.php</file>
+      <file>test/Api/SilaApiTest.php</file>
+
+      <file>test/Api/RegisterTest.php</file>
+      <file>test/Api/RequestKYCTest.php</file>
+      <file>test/Api/CheckKYCTest.php</file>
+      <file>test/Api/LinkAccountsTest.php</file>
+      <file>test/Api/GetAccountsTest.php</file>
+      <file>test/Api/GetAccountBalanceTest.php</file>
+      <file>test/Api/IssueSilaTest.php</file>
+      <file>test/Api/TransferSilaTest.php</file>
+      <file>test/Api/RedeemSilaTest.php</file>
+      <file>test/Api/GetTransactionsTest.php</file>
+      <file>test/Api/PlaidSamedayAuthTest.php</file>
+      <file>test/Api/RegisterWalletTest.php</file>
+      <file>test/Api/GetWalletsTest.php</file>
+      <file>test/Api/GetWalletTest.php</file>
+      <file>test/Api/UpdateWalletTest.php</file>
+      <file>test/Api/DeleteWalletTest.php</file>
+      <file>test/Api/SilaBalanceTest.php</file>
+
     </testsuite>
   </testsuites>
   <filter>
