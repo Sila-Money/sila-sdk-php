@@ -44,21 +44,30 @@ class TransferMessage implements ValidInterface
     private $message;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $destination_address;    
+
+    /**
      ** Constructor for TransferMessage object.
      *
      * @param string $userHandle
      * @param string $destination
      * @param int $amount
      * @param string $appHandle
+     * @param string $destination_address
      */
     public function __construct(
         string $userHandle,
         string $destination,
         int $amount,
-        string $appHandle
+        string $appHandle,
+        ?string $destination_address
     ) {
         $this->amount = $amount;
         $this->destination = $destination;
+        $this->destination_address = $destination_address;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::TRANSFER;
     }
@@ -68,6 +77,7 @@ class TransferMessage implements ValidInterface
         return v::notOptional()->validate($this->header)
             && v::stringType()->notEmpty()->validate($this->message)
             && v::stringType()->notEmpty()->validate($this->destination)
+            && v::stringType()->notEmpty()->validate($this->destination_address)
             && v::floatType()->validate($this->amount);
     }
 }

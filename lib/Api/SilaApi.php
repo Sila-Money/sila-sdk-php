@@ -7,16 +7,17 @@
 
 namespace Silamoney\Client\Api;
 
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
-use Silamoney\Client\Domain\ {
-    Account,
+use Silamoney\Client\Domain\{Account,
     BalanceEnvironments,
     BaseResponse,
     EntityMessage,
     Environments,
+    GetAccountBalanceMessage,
     GetAccountsMessage,
     GetTransactionsMessage,
     GetTransactionsResponse,
@@ -27,14 +28,18 @@ use Silamoney\Client\Domain\ {
     PlaidSamedayAuthMessage,
     PlaidSamedayAuthResponse,
     RedeemMessage,
-    RequestKYCMessage,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
     TransferMessage,
     User,
-    SilaWallet
-};
+    SilaWallet,
+    GetWalletMessage,
+    RegisterWalletMessage,
+    Wallet,
+    UpdateWalletMessage,
+    DeleteWalletMessage,
+    GetWalletsMessage};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -107,8 +112,8 @@ class SilaApi
      * @return \Silamoney\Client\Api\SilaApi
      */
     public static function fromEnvironment(
-        string $environment,
-        string $balanceEnvironment,
+        Environments $environment,
+        BalanceEnvironments $balanceEnvironment,
         string $appHandler,
         string $privateKey
     ): SilaApi {
@@ -131,8 +136,9 @@ class SilaApi
      * Checks if a specific handle is already taken.
      *
      * @param string $handle
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
      */
     public function checkHandle(string $handle): ApiResponse
     {
@@ -150,8 +156,8 @@ class SilaApi
      * Attaches KYC data and specified blockchain address to an assigned handle.
      *
      * @param User $user
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
     public function register(User $user): ApiResponse
     {
@@ -170,12 +176,16 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $userPrivateKey
-     * @param string|null $level
-     * @return \Silamoney\Client\Api\ApiResponse
+     * @param string $kycLevel
+     * @return ApiResponse
+     * @throws Exception
      */
-    public function requestKYC(string $userHandle, string $userPrivateKey, string $level = null): ApiResponse
+    public function requestKYC(string $userHandle, string $userPrivateKey, string $kycLevel = ''): ApiResponse
     {
-        $body = new RequestKYCMessage($userHandle, $this->configuration->getAuthHandle(), $level);
+        $body = new HeaderMessage($userHandle, $this->configuration->getAuthHandle());
+        if ($kycLevel != '' && $kycLevel != null) {
+            $body->setKycLevel($kycLevel);
+        }
         $path = '/request_kyc';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -191,10 +201,10 @@ class SilaApi
      *
      * @param string $handle
      * @param string $userPrivateKey
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
-    public function checkKYC(string $handle, string $userPrivateKey, $flow = null): ApiResponse
+    public function checkKYC(string $handle, string $userPrivateKey): ApiResponse
     {
         $body = new HeaderMessage($handle, $this->configuration->getAuthHandle());
         $path = "/check_kyc";
@@ -216,18 +226,34 @@ class SilaApi
      * @param string $publicToken
      * @param string $userPrivateKey
      * @param string|null $accountId
-     * @return \Silamoney\Client\Api\ApiResponse
+     * @param string $accountNumber
+     * @param string $routingNumber
+     * @param string $accountType
+     * @return ApiResponse
      */
     public function linkAccount(
         string $userHandle,
         string $accountName,
         string $publicToken,
         string $userPrivateKey,
-        string $accountId = null
+        string $accountId = null,
+        string $accountNumber = '',
+        string $routingNumber = '',
+        string $accountType = ''
     ): ApiResponse {
-        $body = new LinkAccountMessage($userHandle, $accountName, $publicToken, $this->configuration->getAuthHandle(), $accountId);
+        $body = new LinkAccountMessage(
+            $userHandle,
+            $accountName,
+            $publicToken,
+            $this->configuration->getAuthHandle(),
+            $accountId,
+            $accountNumber,
+            $routingNumber,
+            $accountType
+        );
         $path = "/link_account";
         $json = $this->serializer->serialize($body, 'json');
+        echo $json;
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
@@ -241,8 +267,8 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $userPrivateKey
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
     public function getAccounts(string $userHandle, string $userPrivateKey): ApiResponse
     {
@@ -257,6 +283,19 @@ class SilaApi
         return $this->prepareResponse($response, 'array<' . Account::class . '>');
     }
 
+    public function getAccountBalance(string $userHandle, string $userPrivateKey, string $accontName): ApiResponse
+    {
+        $body = new GetAccountBalanceMessage($userHandle, $this->configuration->getAuthHandle(), $accontName);
+        $path = '/get_account_balance';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareBaseResponse($response);
+    }
+
     /**
      * Debits a specified account and issues tokens to the address belonging to
      * the requested handle.
@@ -265,8 +304,8 @@ class SilaApi
      * @param int $amount
      * @param string $userPrivateKey
      * @param string $accountName
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
     public function issueSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey): ApiResponse
     {
@@ -286,18 +325,26 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $destination
-     * @param string $amount
+     * @param int $amount
      * @param string $userPrivateKey
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @param string $destinationAddress
+     * @return ApiResponse
+     * @throws Exception
      */
     public function transferSila(
         string $userHandle,
         string $destination,
         int $amount,
-        string $userPrivateKey
+        string $userPrivateKey,
+        string $destinationAddress = ''
     ): ApiResponse {
-        $body = new TransferMessage($userHandle, $destination, $amount, $this->configuration->getAuthHandle());
+        $body = new TransferMessage(
+            $userHandle,
+            $destination,
+            $amount,
+            $this->configuration->getAuthHandle(),
+            ($destinationAddress != '' ? $destinationAddress : null)
+        );
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -316,8 +363,8 @@ class SilaApi
      * @param int $amount
      * @param string $accountName
      * @param string $userPrivateKey
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
     public function redeemSila(
         string $userHandle,
@@ -342,8 +389,9 @@ class SilaApi
      * @param string $userHandle
      * @param \Silamoney\Client\Domain\SearchFilters $filters
      * @param string $userPrivateKey
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
      */
     public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey): ApiResponse
     {
@@ -362,18 +410,18 @@ class SilaApi
      * Gets Sila balance for a given blockchain address.
      *
      * @param string $address
-     * @return \Silamoney\Client\Api\ApiResponse
+     * @return ApiResponse
      * @throws \GuzzleHttp\Exception\ServerException
      */
     public function silaBalance(string $address): ApiResponse
     {
         $body = new SilaBalanceMessage($address);
-        $path = '/silaBalance';
+        $path = '/get_sila_balance';
         $json = $this->serializer->serialize($body, 'json');
         $headers = ['Content-Type' => 'application/json'];
         $response = $this->configuration->getBalanceClient()->callUnversionedAPI($path, $json, $headers);
         $json_string = $response->getBody()->getContents();
-        return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders(), SilaBalanceResponse::class);
+        return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders());
     }
 
      /**
@@ -381,8 +429,8 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $accountName
-     * @return \Silamoney\Client\Api\ApiResponse
-     * @throws \GuzzleHttp\Exception\ClientException
+     * @return ApiResponse
+     * @throws ClientException
      */
     public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
     {
@@ -394,6 +442,133 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response, PlaidSamedayAuthResponse::class);
+    }
+
+    /**
+     * Gets details about the user wallet used to generate the usersignature header..
+     *
+     * @param string $userHandle
+     * @param string $accountName
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getWallet(string $userHandle, string $userPrivateKey): ApiResponse
+    {
+        $body = new GetWalletMessage($userHandle, $this->configuration->getAuthHandle());
+        $path = '/get_wallet';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Adds another "wallet"/blockchain address to a user handle.
+     *
+     * @param string $userHandle
+     * @param Wallet $wallet
+     * @param string $wallet_verification_signature
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function registerWallet(
+        string $userHandle,
+        Wallet $wallet,
+        string $wallet_verification_signature,
+        string $userPrivateKey
+    ): ApiResponse {
+        $body = new RegisterWalletMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $wallet,
+            $wallet_verification_signature
+        );
+        $path = '/register_wallet';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Updates nickname and/or default status of a wallet.
+     *
+     * @param string $userHandle
+     * @param string $nickname
+     * @param boolean $status
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function updateWallet(
+        string $userHandle,
+        string $nickname,
+        bool $status,
+        string $userPrivateKey
+    ): ApiResponse {
+        $body = new UpdateWalletMessage($userHandle, $this->configuration->getAuthHandle(), $nickname, $status);
+        $path = '/update_wallet';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Deletes a user wallet.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function deleteWallet(string $userHandle, string $userPrivateKey): ApiResponse
+    {
+        $body = new DeleteWalletMessage($userHandle, $this->configuration->getAuthHandle());
+        $path = '/delete_wallet';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Gets a paginated list of "wallets"/blockchain addresses attached to a user handle.
+     *
+     * @param string $userHandle
+     * @param SearchFilters $searchFilters
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getWallets(
+        string $userHandle,
+        string $userPrivateKey,
+        SearchFilters $searchFilters = null
+    ): ApiResponse {
+        $body = new GetWalletsMessage($userHandle, $this->configuration->getAuthHandle(), $searchFilters);
+        $path = '/get_wallets';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     /**
@@ -410,7 +585,6 @@ class SilaApi
      * @param string|null $private_key
      * @param string|null $address
      * @return SilaWallet
-     * @throws \Exception
      */
     public function generateWallet($private_key = null, $address = null): SilaWallet
     {
@@ -426,15 +600,26 @@ class SilaApi
         return $this->configuration->getBalanceClient();
     }
 
-    private function prepareResponse(Response $response, string $className): ApiResponse
+    private function prepareResponse(Response $response, string $className = ''): ApiResponse
     {
         $statusCode = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
         if ($className == SilaBalanceResponse::class) {
             $contents = json_encode(json_decode($contents));
         }
-        $baseResponse = $this->serializer->deserialize($contents, $className, 'json');
-        return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
+        if ($statusCode == 200) {
+            if ($className != '') {
+                $baseResponse = $this->serializer->deserialize($contents, $className, 'json');
+                return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
+            } else {
+                return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
+            }
+        } elseif ($statusCode == 400) {
+            $baseResponse = $this->serializer->deserialize($contents, BaseResponse::class, 'json');
+            return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
+        } else {
+            return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
+        }
     }
 
     private function prepareBaseResponse(Response $response): ApiResponse
@@ -442,7 +627,7 @@ class SilaApi
         return $this->prepareResponse($response, BaseResponse::class);
     }
 
-    private function prepareJsonResponse(string $json, int $statusCode, array $headers, string $className)
+    private function prepareJsonResponse(string $json, int $statusCode, array $headers)
     {
         $json = json_decode($json);
         return new ApiResponse($statusCode, $headers, $json);

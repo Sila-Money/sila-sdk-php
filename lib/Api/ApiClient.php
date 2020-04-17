@@ -8,7 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\{ClientException, ServerException};
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
@@ -55,6 +55,8 @@ class ApiClient
             return $this->client->post('0.2/' . $url, ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
+        } catch (ServerException $e) {
+            return $e->getResponse();
         }
     }
 
@@ -71,6 +73,8 @@ class ApiClient
         try {
             return $this->client->post($url, ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (ServerException $e) {
             return $e->getResponse();
         }
     }

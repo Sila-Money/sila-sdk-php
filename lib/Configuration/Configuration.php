@@ -139,14 +139,6 @@ class Configuration
     }
 
     /**
-     * @param \Silamoney\Client\Api\ApiClient $apiClient
-     */
-    public function setApiClient(ApiClient $apiClient): void
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    /**
      * @return \Silamoney\Client\Api\ApiClient
      */
     public function getBalanceClient(): ApiClient

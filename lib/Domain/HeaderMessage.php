@@ -32,6 +32,12 @@ class HeaderMessage implements ValidInterface
     private $message;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $kyc_level;
+
+    /**
      * HeaderMessage constructor.
      *
      * @param string $userHandle
@@ -41,6 +47,26 @@ class HeaderMessage implements ValidInterface
     {
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::HEADER;
+    }
+
+    /**
+     * HeaderMessage with kyc_level param constructor.
+     *
+     * @param string $userHandle
+     * @param string $appHandle
+     * @param string $kyc_level
+
+    public function __construct_kyc(string $userHandle, string $appHandle, string $kyc_level)
+    {
+        $this->header = new Header($userHandle, $appHandle);
+        $this->message = Message::HEADER;
+        $this->kyc_level = $kyc_level;
+    }
+     */
+
+    public function setKycLevel(string $kyc_level)
+    {
+        $this->kyc_level = $kyc_level;
     }
 
     public function isValid(): bool

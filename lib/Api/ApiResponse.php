@@ -38,13 +38,6 @@ class ApiResponse
     private $data;
 
     /**
-     * Success
-     *
-     * @var boolean
-     */
-    private $success;
-
-    /**
      * Constructor
      *
      * @param int    $statusCode Status Code
