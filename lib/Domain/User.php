@@ -100,6 +100,18 @@ class User
     /**
      * Constructor for user object
      * @param string $handle
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $address
+     * @param string|null $address2
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     * @param string $phone
+     * @param string $email
+     * @param string $identityNumber
+     * @param string $cryptoAddress
+     * @param DateTime $birthdate
      */
     public function __construct(
         string $handle,
@@ -120,7 +132,7 @@ class User
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->address = $address;
-        $this->address2 = $address;
+        $this->address2 = $address2;
         $this->city = $city;
         $this->state = $state;
         $this->zipCode = $zipCode;
@@ -171,7 +183,7 @@ class User
      * Gets the user street address 2.
      * @return string
      */
-    public function getAddress2(): string
+    public function getAddress2(): ?string
     {
         return $this->address2;
     }

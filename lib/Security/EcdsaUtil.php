@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Security;
 
+use Exception;
 use Sop\CryptoTypes\Asymmetric\EC\ECPublicKey;
 use Sop\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Sop\CryptoEncoding\PEM;
@@ -27,7 +28,7 @@ class EcdsaUtil
      */
     private const OFFSET = 21;
 
-    private function __construct()
+    public function __construct()
     {
     }
 
@@ -36,6 +37,7 @@ class EcdsaUtil
      * @param string $message
      * @param string $privateKey
      * @return string
+     * @throws Exception
      */
     public static function sign($message, $privateKey): string
     {

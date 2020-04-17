@@ -60,9 +60,9 @@ class GetTransactionsResponse
 
     public function getTransactionById($id)
     {
-        $tx = array_values(array_filter($this->transactions, function ($v, $k) use ($id) {
+        $tx = array_values(array_filter($this->transactions, function ($v) use ($id) {
             return $v->referenceId = $id;
         }, ARRAY_FILTER_USE_BOTH));
-        return count($tx) ? $tx[0] : false;
+        return count($tx) ? $tx[0] : null;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * GetAccounts Test
+ * Register Test
  * PHP version 7.2
  */
 
@@ -16,17 +16,20 @@ use GuzzleHttp\Psr7\ {
 };
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\{
+    Environments,
+    User
+};
 
 /**
- * GetAccounts Test
+ * Register Test
  * Tests for the register endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
  * @author Karlo Lorenzana <klorenzana@digitalgeko.com>
  */
-class GetAccountsTest extends TestCase
+class RequestKYCTest extends TestCase
 {
 
     /**
@@ -46,6 +49,14 @@ class GetAccountsTest extends TestCase
      * @var \JMS\Serializer\SerializerBuilder
      */
     private static $serializer;
+
+    private function uuid()
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
 
     public static function setUpBeforeClass(): void
     {
@@ -69,46 +80,49 @@ class GetAccountsTest extends TestCase
      *
      * @test
      */
-    public function testGetAccounts200()
+    public function testRegister200()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], $resp[1]);
-        var_dump($response);
+        $response = self::$api->requestKYC($resp[0], $resp[1], '');
+        $response2 = self::$api->requestKYC($resp[2], $resp[3], '');
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $response2->getStatusCode());
     }
 
-    public function testCheckHandle400()
+    public function testRegister403KycLevel()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts(0, 0);
-        // var_dump($response);
+        $response = self::$api->requestKYC($resp[0], $resp[1], 'test_php');
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    public function testRegister400()
+    {
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->requestKYC(0, 0, '');
         $this->assertEquals(400, $response->getStatusCode());
     }
-
-    public function testCheckHandle401()
+    
+    public function testRegister401()
     {
-        self::setUpBeforeClassInvalidAuthSignature();
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], 0);
-        // var_dump($response);
+        $response = self::$api->requestKYC($resp[0], 0, '');
         $this->assertEquals(401, $response->getStatusCode());
     }
+
+    // public function testRegister403(){
+    //     We expect more information about this response code.
+    // }
 }

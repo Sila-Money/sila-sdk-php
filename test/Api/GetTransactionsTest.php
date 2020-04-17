@@ -16,7 +16,10 @@ use GuzzleHttp\Psr7\ {
 };
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\{
+    Environments,
+    SearchFilters
+};
 
 /**
  * GetTransactions Test
@@ -47,13 +50,30 @@ class GetTransactionsTest extends TestCase
      */
     private static $serializer;
 
+    private function uuid()
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
     public static function setUpBeforeClass(): void
     {
         \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/Configuration.json');
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, self::$config->privateKey);
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+    }
+
+    public static function setUpBeforeClassInvalidAuthSignature(): void
+    {
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
+        self::$serializer = SerializerBuilder::create()->build();
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
+        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
     /**
@@ -62,53 +82,57 @@ class GetTransactionsTest extends TestCase
      */
     public function testGetTransactions200()
     {
-        $body = file_get_contents(__DIR__ . '/Data/GetTransactions200.json');
-        $mock = new MockHandler([
-            new Response(200, [], $body)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
 
-        $file = file_get_contents(__DIR__ . '/Data/filters.json');
-        $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
+        $filters = new SearchFilters();
+        //$filters->setReferenceId($resp[4]);
+        $status = 'queued';
+        $attempt = 0;
+        while (in_array($status, ['queued', 'pending']) && $attempt < 13) {
+            // This is ok in Sandbox, but don't do this in production!
+            sleep(10);
+            print('.');
+            $response = self::$api->getTransactions($resp[0], $filters, $resp[1]);
+            $this->assertEquals(200, $response->getStatusCode());
+            $data = $response->getData();
+            $transactions = $data->transactions;
+            $this->assertEquals(true, count($transactions) >= 0);
+            if (!empty($transactions)) {
+                $tx = $transactions[0];
+                $status = $tx->status;
+            }
 
-        $response = self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
-        $this->assertEquals(200, $response->getStatusCode());
+            $attempt++;
+        }
     }
 
     public function testGetTransactions400()
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/GetTransactions400.json');
-        $mock = new MockHandler([
-            new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
         $file = file_get_contents(__DIR__ . '/Data/filters.json');
         $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
 
-        self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
+        $response = self::$api->getTransactions(0, $filters, 0);
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testGetTransactions401()
-    {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/GetTransactions401.json');
-        $mock = new MockHandler([
-            new ClientException(
-                "Invalid Signature.",
-                new Request('POST', Environments::SANDBOX),
-                new Response(401, [], $body)
-            )
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
+    // public function testGetTransactions401()
+    // {
+    //     self::setUpBeforeClassInvalidAuthSignature();
+    //     $my_file = 'response.txt';
+    //     $handle = fopen($my_file, 'r');
+    //     $data = fread($handle,filesize($my_file));
+    //     $resp = explode("||", $data);
+    //     $file = file_get_contents(__DIR__ . '/Data/filters.json');
+    //     $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
 
-        $file = file_get_contents(__DIR__ . '/Data/filters.json');
-        $filters = self::$serializer->deserialize($file, 'Silamoney\Client\Domain\SearchFilters', 'json');
-
-        self::$api->getTransactions(self::$config->userHandle, $filters, self::$config->privateKey);
-    }
+    //     $response = self::$api->getTransactions($resp[0], $filters, $resp[1]);
+    //     $this->assertEquals(401, $response->getStatusCode());
+    // }
 }

@@ -91,6 +91,25 @@ class SearchFilters implements ValidInterface
      */
     private $minSilaAmount;
 
+    // Support for account_number, routing_number and account_type
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $account_number;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $routing_number;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $account_type;     
+
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
@@ -104,7 +123,10 @@ class SearchFilters implements ValidInterface
             && ($this->page === null || v::intType()->positive()->min(1)->validate($this->page))
             && ($this->perPage === null || v::intType()->positive()->min(1)->max(100)->validate($this->perPage))
             && ($this->sortAscending === null || v::boolType()->validate($this->sortAscending))
-            && ($this->showTimelines === null || v::boolType()->validate($this->showTimelines));
+            && ($this->showTimelines === null || v::boolType()->validate($this->showTimelines))
+            && ($this->account_number === null || v::stringType()->notEmpty()->validate($this->account_number))
+            && ($this->routing_number === null || v::stringType()->notEmpty()->validate($this->routing_number))
+            && ($this->account_type === null || v::stringType()->notEmpty()->validate($this->account_type));
     }
 
     /**
@@ -154,9 +176,9 @@ class SearchFilters implements ValidInterface
      * @param int $maxSilaAmount
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setMaxSilaAmount(int $maxSilaAmount): SearchFilters
+    public function setMaxSilaAmount(float $maxSilaAmount): SearchFilters
     {
-        $this->maxSilaAmount = maxSilaAmount;
+        $this->maxSilaAmount = $maxSilaAmount;
         return $this;
     }
 
@@ -202,7 +224,7 @@ class SearchFilters implements ValidInterface
      */
     public function setEndEpoch(int $endEpoch): SearchFilters
     {
-        $this->endEpoch = endEpoch;
+        $this->endEpoch = $endEpoch;
         return $this;
     }
 
@@ -214,7 +236,7 @@ class SearchFilters implements ValidInterface
      */
     public function setStartEpoch(int $startEpoch): SearchFilters
     {
-        $this->startEpoch = startEpoch;
+        $this->startEpoch = $startEpoch;
         return $this;
     }
 
@@ -227,9 +249,9 @@ class SearchFilters implements ValidInterface
     public function setStatuses(array $status): SearchFilters
     {
         if ($status != null) {
-            $this->status = array();
+            $this->statuses = array();
             foreach ($status as $st) {
-                $array_push($this->status, $st);
+                array_push($this->statuses, $st);
             }
         }
         return $this;
@@ -253,9 +275,45 @@ class SearchFilters implements ValidInterface
      * @param int $minSilaAmount
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setMinSilaAmount(int $minSilaAmount): SearchFilters
+    public function setMinSilaAmount(float $minSilaAmount): SearchFilters
     {
         $this->minSilaAmount = $minSilaAmount;
         return $this;
     }
+
+    /**
+     * Sets the account_number to the filters.
+     *
+     * @param string $account_number
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setAccountNumber(string $account_number): SearchFilters
+    {
+        $this->account_number = $account_number;
+        return $this;
+    }
+    
+    /**
+     * Sets the routing_number to the filters.
+     *
+     * @param int $routing_number
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setRoutingNumber(string $routing_number): SearchFilters
+    {
+        $this->routing_number = $routing_number;
+        return $this;
+    }
+    
+    /**
+     * Sets the account_type to the filters.
+     *
+     * @param int $account_type
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setAccountType(string $account_type): SearchFilters
+    {
+        $this->account_type = $account_type;
+        return $this;
+    }    
 }

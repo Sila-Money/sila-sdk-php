@@ -1,7 +1,7 @@
 <?php
 
 /**
- * GetAccounts Test
+ * Check KYC Test
  * PHP version 7.2
  */
 
@@ -10,42 +10,42 @@ namespace Silamoney\Client\Api;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
+use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
 
 /**
- * GetAccounts Test
- * Tests for the register endpoint in the Sila Api class.
- *
+ * Check KYC Test
+ * Tests for the Check Handle endpoint in the Sila Api class.
  * @category Class
- * @package Silamoney\Client
- * @author Karlo Lorenzana <klorenzana@digitalgeko.com>
+ * @package  Silamoney\Client
+ * @author   Karlo Lorenzana <klorenzana@digitalgeko.com>
  */
-class GetAccountsTest extends TestCase
+class TransferSilaTest extends TestCase
 {
-
     /**
-     *
      * @var \Silamoney\Client\Api\ApiClient
      */
     protected static $api;
 
     /**
-     *
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-
+    
     /**
-     *
      * @var \JMS\Serializer\SerializerBuilder
      */
     private static $serializer;
+
+    private function uuid()
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
 
     public static function setUpBeforeClass(): void
     {
@@ -66,49 +66,55 @@ class GetAccountsTest extends TestCase
     }
 
     /**
-     *
      * @test
      */
-    public function testGetAccounts200()
+    public function testTransferSila200()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], $resp[1]);
+        $response = self::$api->transferSila(
+            $resp[0],
+            $resp[2],
+            1000,
+            $resp[1],
+            ''
+        );
+
+
+        $file = 'response.txt';
+        $current = file_get_contents($file);
+        if ($response->getStatusCode() == 200) {
+            $current .= '||' . $response->getData()->getReference();
+            file_put_contents($file, $current);
+        }
+
         var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testCheckHandle400()
+
+    public function testTransferSila400()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts(0, 0);
+        $response = self::$api->transferSila(0, 0, 10000, 0, '');
         // var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testCheckHandle401()
+    public function testTransferSila401()
     {
-        self::setUpBeforeClassInvalidAuthSignature();
+        $destination = 'phpSDK-' . $this->uuid();
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], 0);
+        $response = self::$api->transferSila($resp[0], $destination, 10000, $resp[1], '');
         // var_dump($response);
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals($response->getStatusCode(), $response->getStatusCode());
     }
 }

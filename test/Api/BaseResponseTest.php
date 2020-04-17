@@ -47,7 +47,7 @@ class BaseResponseTest extends TestCase
      * @test
      * @dataProvider baseResponse200Provider
      */
-    public function testBaseResponse200Sucess(
+    public function testBaseResponse200Success(
         string $file,
         string $method,
         array $params,
@@ -62,8 +62,10 @@ class BaseResponseTest extends TestCase
         self::$api->getApiClient()->setApiHandler($handler);
         $response = self::$api->$method(...$params);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals([], $response->getHeaders());
         $this->assertEquals(self::$config->userHandle . $message, $response->getData()->getMessage());
         $this->assertEquals($status, $response->getData()->getStatus());
+        $this->assertEquals($response->getSuccess(), $response->getSuccess());
     }
 
     public function baseResponse200Provider(): array

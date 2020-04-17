@@ -49,6 +49,25 @@ class LinkAccountMessage implements ValidInterface
      */
     private $message;
 
+    // Support for account_number, routing_number and account_type
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $account_number;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $routing_number;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $account_type;
+
     /**
      * Constructor for LinkAccountMessage object.
      *
@@ -57,12 +76,26 @@ class LinkAccountMessage implements ValidInterface
      * @param string $publicToken
      * @param string $appHandle
      * @param string $selectedAccountId
+     * @param string $account_number
+     * @param string $routing_number
+     * @param string $account_type
      */
-    public function __construct(string $userHandle, string $accountName, string $publicToken, string $appHandle, string $selectedAccountId)
-    {
+    public function __construct(
+        string $userHandle,
+        string $accountName,
+        string $publicToken,
+        string $appHandle,
+        ?string $selectedAccountId,
+        ?string $account_number,
+        ?string $routing_number,
+        ?string $account_type
+    ) {
         $this->publicToken = $publicToken;
         $this->accountName = $accountName;
         $this->selectedAccountId = $selectedAccountId;
+        $this->account_number = $account_number;
+        $this->routing_number = $routing_number;
+        $this->account_type = $account_type;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::LINK_ACCOUNT;
     }

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * GetAccounts Test
- * PHP version 7.2
- */
-
 namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Exception\ClientException;
@@ -17,16 +12,11 @@ use GuzzleHttp\Psr7\ {
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\Wallet;
+use Silamoney\Client\Security\EcdsaUtil;
+use Silamoney\Client\Security\EcdsaUtilTest;
 
-/**
- * GetAccounts Test
- * Tests for the register endpoint in the Sila Api class.
- *
- * @category Class
- * @package Silamoney\Client
- * @author Karlo Lorenzana <klorenzana@digitalgeko.com>
- */
-class GetAccountsTest extends TestCase
+class RegisterWalletTest extends TestCase
 {
 
     /**
@@ -65,50 +55,71 @@ class GetAccountsTest extends TestCase
         self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
-    /**
-     *
-     * @test
-     */
-    public function testGetAccounts200()
+    public function testRegisterWallet200()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], $resp[1]);
-        var_dump($response);
+
+
+        $silaWallet = self::$api->generateWallet();
+        $wallet = new Wallet(
+            $silaWallet->getAddress(),
+            "ETH",
+            "wallet_test_php"
+        );
+
+        $wallet_verification_signature = EcdsaUtil::sign($silaWallet->getAddress(), $silaWallet->getPrivateKey());
+
+        $response = self::$api->registerWallet(
+            $resp[0],
+            $wallet,
+            $wallet_verification_signature,
+            $resp[1]
+        );
+
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testCheckHandle400()
+    public function testRegisterWallet400()
     {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts(0, 0);
-        // var_dump($response);
+
+        $wallet = new Wallet(
+            "0xe60a5c57130f4e82782cbdb498943f31fe8f92ab96daac2cc13cbbbf9c0b4d9e",
+            "ETH",
+            "wallet_test_php"
+        );
+
+        $wallet_verification_signature = EcdsaUtil::sign($resp[1], $resp[3]);
+
+        $response = self::$api->registerWallet($resp[0], $wallet, $wallet_verification_signature, $resp[1]);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testCheckHandle401()
+    public function testRegisterWallet403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
-        $response = self::$api->getAccounts($resp[0], 0);
-        // var_dump($response);
-        $this->assertEquals(401, $response->getStatusCode());
+
+
+        $silaWallet = self::$api->generateWallet();
+        $wallet = new Wallet(
+            $silaWallet->getAddress(),
+            "ETH",
+            "wallet_test_php"
+        );
+
+        $wallet_verification_signature = EcdsaUtil::sign($silaWallet->getAddress(), $silaWallet->getPrivateKey());
+
+        $response = self::$api->registerWallet($resp[0], $wallet, $wallet_verification_signature, $resp[1]);
+        $this->assertEquals(403, $response->getStatusCode());
     }
 }

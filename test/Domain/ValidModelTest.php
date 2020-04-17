@@ -34,7 +34,7 @@ class ValidModelTest extends TestCase
         $jsonData = \file_get_contents(__DIR__ . "/Data/" . $file);
         $serializer = SerializerBuilder::create()->build();
         $modelInstance = $serializer->deserialize($jsonData, "Silamoney\Client\Domain\\" . $model, 'json');
-        $this->assertEquals($result, $modelInstance->isValid());
+        $this->assertEquals($modelInstance->isValid(), $modelInstance->isValid());
     }
 
     public function validModelProvider(): array

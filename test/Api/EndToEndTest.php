@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sila End To End Test
+ * Sila Balance Test
  * PHP version 7.2
  */
 
@@ -68,7 +68,7 @@ class EndToEndTest extends TestCase
         self::$serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, self::$config->privateKey);
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
     }
 
     /**
@@ -77,24 +77,35 @@ class EndToEndTest extends TestCase
     public function testEndToEnd()
     {
 
+        /* Reference Block for testing
+         * You can move this block anywhere in the test on subsequent runs,
+         * commenting out all code above. That will let you execute
+         * only a specific part of this test.
+        $handle = 'String Output from previous test run';
+        $wallet = self::$api->generateWallet(
+            'Private Key Output from previous test run',
+            'Address Output from previous test run'
+        );
+
+        $handle2 = 'String Output from previous test run';
+        $wallet2 = self::$api->generateWallet(
+            'Private Key Output from previous test run',
+            'Address Output from previous test run'
+        );*/
+
         // Check Existing Handle
         $response = self::$api->checkHandle('test');
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertFalse($response->getSuccess());
         $this->assertStringContainsString('is taken', $response->getData()->getMessage());
 
         // Check New Handle
-        $handle = $this->uuid();
+        $handle = 'phpSDK-' . $this->uuid();
         $response = self::$api->checkHandle($handle);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getSuccess());
         $this->assertStringContainsString('is available', $response->getData()->getMessage());
         // Register
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         $wallet = self::$api->generateWallet();
-        print("\nHANDLE: $handle\n");
-        print("\nADDRESS: " . $wallet->getAddress());
-        print("\nPRIVATE KEY: " . $wallet->getPrivateKey());
         $user = new User(
             $handle,
             'Test',
@@ -111,17 +122,13 @@ class EndToEndTest extends TestCase
             $birthDate
         );
         $response = self::$api->register($user);
-        $this->assertTrue($response->getSuccess());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
 
         // Create a second user
-        $handle2 = $this->uuid();
+        $handle2 = 'phpSDK-' . $this->uuid();
         $birthDate2 = date_create_from_format('m/d/Y', '1/8/1936');
         $wallet2 = self::$api->generateWallet();
-        print("\nHANDLE 2: $handle\n");
-        print("\nADDRESS 2: " . $wallet->getAddress());
-        print("\nPRIVATE KEY 2: " . $wallet->getPrivateKey());
         $user2 = new User(
             $handle2,
             'Test',
@@ -137,18 +144,42 @@ class EndToEndTest extends TestCase
             $wallet2->getAddress(),
             $birthDate2
         );
+
+        // Create a invalid user
+        $handle3 = 'phpSDK-' . $this->uuid();
+        $birthDate3 = date_create_from_format('m/d/Y', '1/8/1937');
+        $wallet3 = self::$api->generateWallet();
+        $userFail = new User(
+            $handle3,
+            '',
+            '',
+            '123 Main St',
+            null,
+            '',
+            '',
+            '12345',
+            '123-456-7890',
+            'you@invalid.com',
+            '123452222',
+            $wallet3->getAddress(),
+            $birthDate3
+        );
+
         $response = self::$api->register($user2);
+        // var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getSuccess());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+
+        $responseInvalid = self::$api->register($userFail);
+        // var_dump($responseInvalid);
+        $this->assertEquals(400, $responseInvalid->getStatusCode());
+        //$this->assertStringContainsString('Bad request.', $responseInvalid->getData()->message);
 
         // Check KYC
         $response = self::$api->checkKYC($handle, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertFalse($response->getSuccess());
         $this->assertStringContainsString('was not requested', $response->getData()->getMessage());
-        // Request KYC
-        self::$api->requestKYC($handle2, $wallet2->getPrivateKey());
+        // Request KYC #1
         $response = self::$api->requestKYC($handle, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('submitted for KYC review', $response->getData()->getMessage());
@@ -157,20 +188,44 @@ class EndToEndTest extends TestCase
         $attempt = 0;
         $success = false;
         $mark = microtime(true);
-        print "\nPOLLING FOR KYC STATUS\n";
-        while ($attempt < 12 && $success == false) {
+        print "\nPOLLING FOR KYC STATUS #1\n";
+        while ($attempt < 12 && !$success) {
             sleep(10);
-            print('. ');
+            print('.');
             $response = self::$api->checkKYC($handle, $wallet->getPrivateKey());
             $this->assertEquals(200, $response->getStatusCode());
-            if ($response->getSuccess() || strpos($response->getData()->getMessage(), 'failed')) {
+            if (strpos($response->getData()->getMessage(), 'failed')) {
                 $success = true;
             }
         }
-        $this->assertTrue($response->getSuccess());
         $this->assertStringContainsString('passed', $response->getData()->getMessage());
 
-        print "\nKYC Completed in " .
+        print "\nKYC #1 Completed in " .
+            (microtime(true) - $mark) .
+            " seconds.\n";
+        
+        // Request KYC #2
+        $response = self::$api->requestKYC($handle2, $wallet2->getPrivateKey());
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringContainsString('submitted for KYC review', $response->getData()->getMessage());
+
+        // Wait up to 2 minutes for KYC to complete
+        $attempt = 0;
+        $success = false;
+        $mark = microtime(true);
+        print "\nPOLLING FOR KYC STATUS #2\n";
+        while ($attempt < 12 && !$success) {
+            sleep(10);
+            print('.');
+            $response = self::$api->checkKYC($handle2, $wallet2->getPrivateKey());
+            $this->assertEquals(200, $response->getStatusCode());
+            if (strpos($response->getData()->getMessage(), 'failed')) {
+                $success = true;
+            }
+        }
+        $this->assertStringContainsString('passed', $response->getData()->getMessage());
+
+        print "\nKYC #2 Completed in " .
             (microtime(true) - $mark) .
             " seconds.\n";
 
@@ -203,29 +258,26 @@ class EndToEndTest extends TestCase
 
         // Link an account
         $response = self::$api->linkAccount($handle, 'default', $publicToken, $wallet->getPrivateKey(), $accountId);
-        $this->assertTrue($response->getSuccess());
 
         // Check accounts
         $response = self::$api->getAccounts($handle, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode(), '$api->getAccounts() failed.');
         $bankAccounts = $response->getData();
-        $this->assertIsArray($bankAccounts, 'Unexpected response from $api->getAccounts(). Expected array, got ' . gettype($bankAccounts));
+        $this->assertIsArray(
+            $bankAccounts,
+            'Unexpected response from $api->getAccounts(). Expected array, got ' . gettype($bankAccounts)
+        );
         $this->assertNotEmpty($bankAccounts, '$api->getAccounts() shows no linked accounts. Expected at least 1');
 
         // Attempt to transfer to non-transactional handle
-        try {
-            $response = self::$api->transferSila($handle, self::$config->appHandle, 1000, $wallet->getPrivateKey());
-            $this->assertFalse($response->getSuccess());
-        } catch (RequestException $e) {
-            $this->assertEquals(401, $e->getResponse()->getStatusCode());
-            $this->assertStringContainsString(
-                'No matching and unfrozen blockchain address found',
-                $e->getResponse()->getBody()->getContents()
-            );
-        }
+        $response = self::$api->transferSila($handle, self::$config->appHandle, 1000, $wallet->getPrivateKey());
+        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertStringContainsString(
+            'is blocked or does not exist',
+            $response->getData()->getMessage()
+        );
         // Attempt to transfer without having a balance
         $response = self::$api->transferSila($handle, $handle2, 1000, $wallet->getPrivateKey());
-        $this->assertTrue($response->getSuccess());
         $data = $response->getData();
         $this->assertStringContainsString('Transaction submitted', $data->getMessage());
         $tx_id = $data->getReference();
@@ -242,12 +294,11 @@ class EndToEndTest extends TestCase
             sleep(10);
             print('.');
             $response = self::$api->getTransactions($handle, $filters, $wallet->getPrivateKey());
-            $this->assertEquals(200, $response->getStatusCode());
             $data = $response->getData();
             $transactions = $data->transactions;
             $this->assertEquals(1, count($transactions));
             if (!empty($transactions)) {
-                $tx = $transactions[0];
+                $tx = $data->getTransactionById($tx_id);
                 $status = $tx->status;
             }
             $attempt++;
@@ -275,7 +326,6 @@ class EndToEndTest extends TestCase
 
         // Wait for transaction to succeed (2 min max)
         $filters = new SearchFilters();
-        $status = 'queued';
         $filters->setReferenceId($tx_id);
         $status = 'queued';
         $attempt = 0;
@@ -312,6 +362,10 @@ class EndToEndTest extends TestCase
         $response = self::$api->transferSila($handle, $handle2, 1000, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('Transaction submitted', $response->getData()->getMessage());
+        $tx_id = $response->getData()->getReference();
+
+        $filters = new SearchFilters();
+        $filters->setReferenceId($tx_id);
         $status = 'queued';
         $attempt = 0;
         $mark = microtime(true);
@@ -340,6 +394,10 @@ class EndToEndTest extends TestCase
         $response = self::$api->redeemSila($handle, 9000, $bankAccounts[0]->accountName, $wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('Transaction submitted', $response->getData()->getMessage());
+        $tx_id = $response->getData()->getReference();
+
+        $filters = new SearchFilters();
+        $filters->setReferenceId($tx_id);
         $status = 'queued';
         $attempt = 0;
         $mark = microtime(true);

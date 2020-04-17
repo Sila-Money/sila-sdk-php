@@ -16,7 +16,10 @@ use GuzzleHttp\Psr7\ {
 };
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\{
+    Environments,
+    User
+};
 
 /**
  * Register Test
@@ -47,13 +50,30 @@ class RegisterTest extends TestCase
      */
     private static $serializer;
 
+    private function uuid()
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
     public static function setUpBeforeClass(): void
     {
         \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/Configuration.json');
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, self::$config->privateKey);
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+    }
+
+    public static function setUpBeforeClassInvalidAuthSignature(): void
+    {
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
+        self::$serializer = SerializerBuilder::create()->build();
+        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
+        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
+        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
     /**
@@ -62,54 +82,119 @@ class RegisterTest extends TestCase
      */
     public function testRegister200()
     {
-        $body = file_get_contents(__DIR__ . '/Data/Register200.json');
-        $mock = new MockHandler([
-            new Response(200, [], $body)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
+        $handle = 'phpSDK-' . $this->uuid();
+        $response = self::$api->checkHandle($handle);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringContainsString('is available', $response->getData()->getMessage());
+        // Register
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        $wallet = self::$api->generateWallet();
+        $user = new User(
+            $handle,
+            'Test',
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate
+        );
+
+        $handle2 = 'phpSDK-' . $this->uuid();
+        $response2 = self::$api->checkHandle($handle2);
+        $this->assertEquals(200, $response2->getStatusCode());
+        $this->assertStringContainsString('is available', $response->getData()->getMessage());
+        // Register
+        $birthDate2 = date_create_from_format('m/d/Y', '1/8/1935');
+        $wallet2 = self::$api->generateWallet();
+        $userDestination = new User(
+            $handle2,
+            'Test',
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet2->getAddress(),
+            $birthDate2
+        );
 
         $response = self::$api->register($user);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("user.silamoney.eth was successfully registered", $response->getData()
-            ->getMessage());
-        $this->assertEquals("SUCCESS", $response->getData()
-            ->getStatus());
+
+        $response2 = self::$api->register($userDestination);
+
+        $file = 'response.txt';
+        $filecreate = fopen($file, 'w') or die('Cannot open file:  ' . $file);
+        $current = file_get_contents($file);
+        $current .= $handle . '||';
+        $current .= $wallet->getPrivateKey() . '||';
+        $current .= $handle2 . '||';
+        $current .= $wallet2->getPrivateKey();
+        file_put_contents($file, $current);
     }
 
     public function testRegister400()
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/Register400.json');
-        $mock = new MockHandler([
-            new ClientException("Bad Request", new Request('POST', Environments::SANDBOX), new Response(400, [], $body))
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
+        // Create a invalid user
+        $handle3 = 'phpSDK-' . $this->uuid();
+        $birthDate3 = date_create_from_format('m/d/Y', '1/8/1937');
+        $wallet3 = self::$api->generateWallet();
+        $userFail = new User(
+            $handle3,
+            '',
+            '',
+            '123 Main St',
+            null,
+            '',
+            '',
+            '12345',
+            '123-456-7890',
+            'you@invalid.com',
+            '123452222',
+            $wallet3->getAddress(),
+            $birthDate3
+        );
 
-        $response = self::$api->register($user);
+        $response = self::$api->register($userFail);
+        $this->assertEquals(400, $response->getStatusCode());
     }
     
     public function testRegister401()
     {
-        $this->expectException(ClientException::class);
-        $body = file_get_contents(__DIR__ . '/Data/Register400.json');
-        $mock = new MockHandler([
-            new ClientException(
-                "Invalid Signature",
-                new Request('POST', Environments::SANDBOX),
-                new Response(401, [], $body)
-            )
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getApiClient()->setApiHandler($handler);
-        $stringUser = file_get_contents(__DIR__ . '/Data/ValidUser.json');
-        $user = self::$serializer->deserialize($stringUser, 'Silamoney\Client\Domain\User', 'json');
+        self::setUpBeforeClassInvalidAuthSignature();
+        // Check New Handle
+        $handle = 'phpSDK-' . $this->uuid();
+        // Register
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        $wallet = self::$api->generateWallet();
+
+        $user = new User(
+            $handle,
+            'Test',
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate
+        );
         
         $response = self::$api->register($user);
+        $this->assertEquals(401, $response->getStatusCode());
     }
 }
