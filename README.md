@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.4-beta-3`
+`Version 0.2.7-rc`
 
 > **Note**: This SDK is still in Beta.
 
@@ -17,7 +17,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.4-beta-3
+composer require silamoney/php-sdk:0.2.4-alpha
 ```
 
 ## Initialization
@@ -33,7 +33,7 @@ $privateKey = 'your private key';
 
 // Create your client
 $client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url', $appHandle, $privateKey); // From custom URL
-$client = SilaApi::fromEnvironment(Environments::SANDBOX, BalanceEnvironments::SANDBOX, $appHandle, $privateKey); // From predefined environments
+$client = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey); // From predefined environments
 $client = SilaApi::fromDefault($appHandle, $privateKey); // From default sandbox environments
 ```
 ## Check Handle Endpoint
@@ -144,11 +144,6 @@ $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
 $response = $client->checkKYC($userHandle, $userPrivateKey);
 ```
-
-> Note: Adaptive KYC is supported by adding the provisioned `kyc_level` name as a third parameter, e.g. 
-> `$client->checkKYC($userHandle, $userPrivateKey, 'CUSTOM_KYC_LEVEL')` This flow must be provisioned for the 
-> requesting app, or the request will be rejected. Please [contact our Customer Success team]('https://silamoney.com') 
-> for custom KYC requests.
 
 ### Success 200
 ```php
