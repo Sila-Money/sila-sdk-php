@@ -17,7 +17,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.4-alpha
+composer require silamoney/php-sdk:0.2.7-rc
 ```
 
 ## Initialization
