@@ -2,7 +2,7 @@
 
 `Version 0.2.7-rc`
 
-> **Note**: This SDK is still in Beta.
+> **Note**: This SDK is a Release Candidate.
 
 ## Prerequisites
 ### PHP supported versions
@@ -61,7 +61,7 @@ echo $response->getData()->getMessage(); // User is already taken
 This is a helper function that allows you to generate a wallet (private key & address)
 that you can then use to register a new user.
 
-**Important!** Sila does not custody these private keys. They should *never* be sent to
+##**Important!** Sila does not custody these private keys. They should *never* be sent to
 us or disclosed to any third party. The private key will be used to sign all
 requests from the associated user for authentication purposes.
 
@@ -123,10 +123,20 @@ echo $response->getData()->getMessage(); // User was successfully register
 
 ## Request KYC endpoint
 Starts KYC verification process on a registered user handle.
+
+### Normal flow
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
 $response = $client->requestKYC($userHandle, $userPrivateKey);
+```
+
+### Custom flow
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$kycLevel = 'CUSTOM_KYC_FLOW_NAME';
+$response = $client->requestKYC($userHandle, $userPrivateKey, $kycLevel);
 ```
 
 ### Success 200
@@ -301,6 +311,106 @@ $response = $client->getTransactions($userHandle, $filters, $userPrivateKey);
 ```php
 echo $response->getStatusCode(); // 200
 $results = $response->getData(); // Silamoney\Client\Domain\GetTransactionsResponse
+```
+
+## Get Wallets endpoint
+Gets a paginated list of "wallets"/blockchain addresses attached to a user handle.
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$filters = new SearchFilters();
+
+// Call the api
+$response = $client->getWallets($userHandle, $filters, $userPrivateKey);
+```
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+$results = $response->getData(); // [wallet list, total count, total requested, page]
+```
+## Register Wallet endpoint
+Adds another "wallet"/blockchain address to a user handle.
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$wallet = new Wallet();
+$walletVerificationSignature = '(address to register to user_handle)';
+
+// Call the api
+$response = $client->registerWallet(
+  $userHandle, 
+  $wallet, 
+  $walletVerificationSignature, 
+  $userPrivateKey
+);
+```
+### Success 200
+```php
+echo $response->getStatusCode();
+```
+
+## Get Wallet endpoint
+Gets details about the user wallet used to generate the usersignature header.
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+
+// Call the api
+$response = $client->getWallet($userHandle, $userPrivateKey);
+```
+
+###Success 200
+```php
+echo $response->getStatusCode(); // 200
+$results = $response->getData(); // [wallet requested, is whitelisted, sila balance]
+```
+
+## Update Wallet endpoint
+Updates nickname and/or default status of a wallet.
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$nickname = 'new_wallet_nickname'
+$status = true
+
+// Call the api
+$response = $client->getWallet($userHandle, $nickname, $status, $userPrivateKey);
+```
+
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+```
+
+## Delete Wallet endpoint
+Deletes a user wallet.
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+
+// Call the api
+$response = $client->deleteWallet($userHandle, $userPrivateKey);
+```
+
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+```
+
+## Plaid Same Day Auth endpoint
+Handle a request for a Plaid public_token in order to complete Plaid's Same Day Microdeposit Authentication
+```php
+$userHandle = 'user.silamoney.eth';
+$accountName = 'Custom Account Name';
+$response = $client->plaidSamedayAuth($userHandle, $accountName);
+```
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->getReference(); // Random reference number
+echo $response->getData()->getStatus(); // SUCCESS
+echo $response->getData()->getMessage(); // Plaid public token succesfully created
+echo $response->getData()->getPublicToken(); // Token
 ```
 
 ## Sila Balance endpoint
