@@ -70,7 +70,6 @@ class SilaBalanceTest extends TestCase
         $handler = HandlerStack::create($mock);
         self::$api->getBalanceClient()->setApiHandler($handler);
         $response = self::$api->silaBalance("address");
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals($responseValue, $response->getData());
     }

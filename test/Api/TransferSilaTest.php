@@ -90,7 +90,6 @@ class TransferSilaTest extends TestCase
             file_put_contents($file, $current);
         }
 
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -102,7 +101,6 @@ class TransferSilaTest extends TestCase
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
         $response = self::$api->transferSila(0, 0, 10000, 0, '');
-        // var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
@@ -114,7 +112,6 @@ class TransferSilaTest extends TestCase
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
         $response = self::$api->transferSila($resp[0], $destination, 10000, $resp[1], '');
-        // var_dump($response);
         $this->assertEquals($response->getStatusCode(), $response->getStatusCode());
     }
 }
