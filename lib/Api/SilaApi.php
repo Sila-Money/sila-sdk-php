@@ -222,38 +222,69 @@ class SilaApi
      * entity.
      *
      * @param string $userHandle
-     * @param string $accountName
      * @param string $publicToken
      * @param string $userPrivateKey
+     * @param string|null $accountName
      * @param string|null $accountId
-     * @param string $accountNumber
-     * @param string $routingNumber
-     * @param string $accountType
      * @return ApiResponse
      */
     public function linkAccount(
         string $userHandle,
-        string $accountName,
-        string $publicToken,
         string $userPrivateKey,
-        string $accountId = null,
-        string $accountNumber = '',
-        string $routingNumber = '',
-        string $accountType = ''
+        string $publicToken,
+        string $accountName = null,
+        string $accountId = null
     ): ApiResponse {
         $body = new LinkAccountMessage(
             $userHandle,
+            $this->configuration->getAuthHandle(),
             $accountName,
             $publicToken,
-            $this->configuration->getAuthHandle(),
             $accountId,
+            null,
+            null,
+            null
+        );
+        $path = "/link_account";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, LinkAccountResponse::class);
+    }
+
+    /**
+     * Uses a provided Plaid public token to link a bank account to a verified
+     * entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $accountNumber
+     * @param string routingNumber
+     * @param string|null $accountName
+     * @param string|null $accountType
+     * @return ApiResponse
+     */
+    public function linkAccountDirect(string $userHandle,
+    string $userPrivateKey,
+    string $accountNumber,
+    string $routingNumber,
+    string $accountName = null,
+    string $accountType = null): ApiResponse {
+        $body = new LinkAccountMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $accountName,
+            null,
+            null,
             $accountNumber,
             $routingNumber,
             $accountType
         );
         $path = "/link_account";
         $json = $this->serializer->serialize($body, 'json');
-        echo $json;
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
