@@ -74,12 +74,8 @@ class GetAccountsTest extends TestCase
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
         $response = self::$api->getAccounts($resp[0], $resp[1]);
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -88,12 +84,8 @@ class GetAccountsTest extends TestCase
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
         $response = self::$api->getAccounts(0, 0);
-        // var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
@@ -103,12 +95,8 @@ class GetAccountsTest extends TestCase
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
-        // var_dump($data);
         $resp = explode("||", $data);
-        // var_dump($resp[0]);
-        // var_dump($resp[1]);
         $response = self::$api->getAccounts($resp[0], 0);
-        // var_dump($response);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

@@ -77,26 +77,33 @@ class LinkAccountsTest extends TestCase
         $response = $client->post('/link/item/create', $options);
         $content = json_decode($response->getBody()->getContents());
         $publicToken = $content->public_token;
-        $accountId = $content->accounts[0]->account_id;
 
+        $my_file = 'response.txt';
+        $handle = fopen($my_file, 'r');
+        $data = fread($handle, filesize($my_file));
+        $resp = explode("||", $data);
+        $response = self::$api->linkAccount(
+            $resp[0],
+            $resp[1],
+            $publicToken,
+            null,
+            null
+        );
+        // var_dump($response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getSuccess());
+    }
+
+    public function testLinkAccountDirect200() {
         $my_file = 'response.txt';
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         // var_dump($data);
         $resp = explode("||", $data);
-        $response = self::$api->linkAccount(
-            $resp[0],
-            'default',
-            $publicToken,
-            $resp[1],
-            $accountId,
-            '123456789012',
-            '123456789',
-            'CHECKING'
-        );
-        // var_dump($response);
+        $response = self::$api->linkAccountDirect($resp[0], $resp[1], '123456789012', '123456789', 'sync_direct');
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getSuccess());
+        $this->assertStringContainsString('manually linked', $response->getData()->getMessage());
     }
 
     /**
@@ -126,13 +133,8 @@ class LinkAccountsTest extends TestCase
         $resp = explode("||", $data);
         $response = self::$api->linkAccount(
             $resp[0],
-            'Custom Account Name',
-            'public-xxx-xxx',
             $resp[1],
-            '123456789012',
-            '123456789',
-            'CHEKING',
-            'CHECKING'
+            'public-xxx-xxx'
         );
         $this->assertEquals(400, $response->getStatusCode());
     }
@@ -166,13 +168,10 @@ class LinkAccountsTest extends TestCase
         $resp = explode("||", $data);
         $response = self::$api->linkAccount(
             $resp[0],
-            'default',
-            $publicToken,
             $resp[1],
-            $accountId,
-            '123456789012',
-            '123456789',
-            'CHECKING'
+            $publicToken,
+            'default',
+            $accountId
         );
         $this->assertEquals(401, $response->getStatusCode());
     }
