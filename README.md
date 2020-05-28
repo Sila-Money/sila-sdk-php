@@ -193,13 +193,27 @@ $account_id = $content->accounts[0]->account_id;    // Optional Account ID to pa
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
-$accountName = 'Custom Account Name';   // Defaults to 'default'
+$accountName = 'Custom Account Name';   // Defaults to 'default' if not provided. (not required)
 $publicToken = 'public-xxx-xxx';        // A temporary token returned from the Plaid Link plugin. See above for testing.
 $accountId = 'string';                  // Recommended but not required. See note above.
 $userPrivateKey = 'some private key';   // The private key used to register the specified user
 
 // Call the api
-$response = $client->linkAccount($userHandle, $accountName, $publicToken, $userPrivateKey, $accountId);
+$response = $client->linkAccount($userHandle, $userPrivateKey, $publicToken, $accountName, $accountId);
+```
+
+**Direct account link method**
+```php
+// Load your information
+$userHandle = 'user.silamoney.eth';
+$accountName = 'Custom Account Name';   // Defaults to 'default' if not provided. (not required)
+$routingNumber = '123456789';           // The routing number. 
+$accountNumber = '123456789012';        // The bank account number
+$userPrivateKey = 'some private key';   // The private key used to register the specified user
+$accountType = 'CHECKING';              // The account type (not required). Only available value is CHECKING
+
+// Call the api
+$response = $client->linkAccountDirect($userHandle, $userPrivateKey, $accountNumber, $routingNumber, $accountName, $accountType);
 ```
 
 ### Success 200
