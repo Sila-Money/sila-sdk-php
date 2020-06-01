@@ -74,8 +74,9 @@ class RedeemSilaTest extends TestCase
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
-        $response = self::$api->redeemSila($resp[0], 10000, 'default', $resp[1]);
+        $response = self::$api->redeemSila($resp[0], 10000, 'default', 'test descriptor', $resp[1]);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('test descriptor', $response->getData()->getDescriptor());
     }
 
     // public function testRedeemSila200Failure()
@@ -89,7 +90,7 @@ class RedeemSilaTest extends TestCase
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
-        $response = self::$api->redeemSila(0, 10000, 'default', 0);
+        $response = self::$api->redeemSila(0, 10000, 'default', 'test descriptor', 0);
         // var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
     }
@@ -101,8 +102,8 @@ class RedeemSilaTest extends TestCase
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
-        $response = self::$api->redeemSila($resp[0], 10000, 'default', $resp[1]);
-        // var_dump($response);
+        $response = self::$api->redeemSila($resp[0], 10000, 'default', 'test descriptor', $resp[1]);
+        //var_dump($response);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

@@ -15,6 +15,7 @@ use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{Account,
     BalanceEnvironments,
     BaseResponse,
+    OperationResponse,
     EntityMessage,
     Environments,
     GetAccountBalanceMessage,
@@ -333,14 +334,15 @@ class SilaApi
      *
      * @param string $userHandle
      * @param int $amount
-     * @param string $userPrivateKey
      * @param string $accountName
+     * @param string $descriptor
+     * @param string $userPrivateKey
      * @return ApiResponse
      * @throws ClientException
      */
-    public function issueSila(string $userHandle, int $amount, string $accountName, string $userPrivateKey): ApiResponse
+    public function issueSila(string $userHandle, int $amount, string $accountName, string $descriptor = '', string $userPrivateKey): ApiResponse
     {
-        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle());
+        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle(), $descriptor);
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -348,7 +350,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response, OperationResponse::class);
     }
 
     /**
@@ -359,12 +361,14 @@ class SilaApi
      * @param int $amount
      * @param string $userPrivateKey
      * @param string $destinationAddress
+     * @param string $descriptor
      * @return ApiResponse
      * @throws Exception
      */
     public function transferSila(
         string $userHandle,
         string $destination,
+        string $descriptor = '',
         int $amount,
         string $userPrivateKey,
         string $destinationAddress = ''
@@ -374,7 +378,8 @@ class SilaApi
             $destination,
             $amount,
             $this->configuration->getAuthHandle(),
-            ($destinationAddress != '' ? $destinationAddress : null)
+            ($destinationAddress != '' ? $destinationAddress : null),
+            $descriptor
         );
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -383,7 +388,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response, OperationResponse::class);
     }
 
     /**
@@ -393,6 +398,7 @@ class SilaApi
      * @param string $userHandle
      * @param int $amount
      * @param string $accountName
+     * @param string $descriptor
      * @param string $userPrivateKey
      * @return ApiResponse
      * @throws ClientException
@@ -401,9 +407,10 @@ class SilaApi
         string $userHandle,
         int $amount,
         string $accountName,
+        string $descriptor = '',
         string $userPrivateKey
     ): ApiResponse {
-        $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle());
+        $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle(), $descriptor);
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -411,7 +418,7 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response, OperationResponse::class);
     }
 
     /**

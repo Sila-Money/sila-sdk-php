@@ -44,23 +44,32 @@ class RedeemMessage implements ValidInterface
     private $message;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $descriptor;
+
+    /**
      * Constructor for RedeemMsg object.
      *
      * @param string $userHandle
      * @param int $amount
      * @param string $accountName
      * @param string $appHandle
+     * @param string $descriptor
      */
     public function __construct(
         string $userHandle,
         int $amount,
         string $accountName,
-        string $appHandle
+        string $appHandle,
+        string $descriptor
     ) {
         $this->header = new Header($userHandle, $appHandle);
         $this->amount = $amount;
         $this->accountName = $accountName;
         $this->message = Message::REDEEM;
+        $this->descriptor = $descriptor;
     }
 
     public function isValid(): bool
