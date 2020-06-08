@@ -251,11 +251,12 @@ Debits a specified account and issues tokens to the address belonging to the req
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
 $accountName = 'Custom Account Name';
-$descriptor = 'Transaction Descriptor';
 $userPrivateKey = 'some private key'; // Hex format
+$descriptor = 'Transaction Descriptor'; // Optional
+$businessUuid = 'you-business-uuid-code'; // Optional
 
 // Call the api
-$response = $client->issueSila($userHandle, $amount, $accountName, $descriptor, $userPrivateKey);
+$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
 ```
 
 ### Success 200
@@ -265,20 +266,24 @@ echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
 ```
 
 ## Transfer Sila endpoint
-Burns given the amount of SILA at the handle's blockchain address and credits their named bank account in the equivalent monetary amount.
+Starts a transfer of the requested amount of SILA to the requested destination handle.
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $destination = 'user2.silamoney.eth';
-$descriptor = 'Transaction Descriptor';
 $amount = 1000;
 $userPrivateKey = 'some private key'; // Hex format
+$destinationAddress = 'some wallet address'; // Optional
+$destinationWalletName = 'the_wallet_name'; // Optional
+$descriptor = 'Transaction Descriptor'; // Optional
+$businessUuid = 'you-business-uuid-code'; // Optional
 
 // Call the api
-$response = $client->transferSila($userHandle, $destination, $descriptor, $amount, $userPrivateKey);
+$response = $client->transferSila($userHandle, $destination, $amount, $userPrivateKey, $destinationAddress, $destinationWalletName, $descriptor, $businessUuid);
 ```
 
 ### Success 200
@@ -288,6 +293,8 @@ echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
+echo $response->getData()->getDestinationAddress(); // The destination wallet address.
 ```
 
 ## Redeem Sila endpoint
@@ -297,11 +304,12 @@ Burns given the amount of SILA at the handle's blockchain address and credits th
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
 $accountName = 'Custom Account Name';
-$descriptor = 'Transaction Descriptor';
 $userPrivateKey = 'some private key'; // Hex format
+$descriptor = 'Transaction Descriptor'; // optional
+$businessUuid = 'you-business-uuid-code'; // optional
 
 // Call the api
-$response = $client->redeemSila($userHandle, $amount, $accountName, $descriptor, $userPrivateKey);
+$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
 ```
 
 ### Success 200
@@ -311,6 +319,7 @@ echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
 echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
 ```
 
 ## Get Transactions endpoint
