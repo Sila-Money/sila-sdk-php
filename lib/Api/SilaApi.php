@@ -12,7 +12,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
-use Silamoney\Client\Domain\{Account,
+use Silamoney\Client\Domain\{
+    Account,
     BalanceEnvironments,
     BaseResponse,
     OperationResponse,
@@ -40,7 +41,9 @@ use Silamoney\Client\Domain\{Account,
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
-    GetWalletsMessage};
+    GetWalletsMessage,
+    TransferResponse
+};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -95,6 +98,7 @@ class SilaApi
      * @param string $balanceEnvironment
      * @param string $appHandler
      * @param string $privateKey
+     * @return \Silamoney\Client\Api\SilaApi
      */
     public function __construct(string $environment, string $balanceEnvironment, string $appHandler, string $privateKey)
     {
@@ -268,12 +272,14 @@ class SilaApi
      * @param string|null $accountType
      * @return ApiResponse
      */
-    public function linkAccountDirect(string $userHandle,
-    string $userPrivateKey,
-    string $accountNumber,
-    string $routingNumber,
-    string $accountName = null,
-    string $accountType = null): ApiResponse {
+    public function linkAccountDirect(
+        string $userHandle,
+        string $userPrivateKey,
+        string $accountNumber,
+        string $routingNumber,
+        string $accountName = null,
+        string $accountType = null
+    ): ApiResponse {
         $body = new LinkAccountMessage(
             $userHandle,
             $this->configuration->getAuthHandle(),
@@ -340,9 +346,15 @@ class SilaApi
      * @return ApiResponse
      * @throws ClientException
      */
-    public function issueSila(string $userHandle, int $amount, string $accountName, string $descriptor = '', string $userPrivateKey): ApiResponse
-    {
-        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle(), $descriptor);
+    public function issueSila(
+        string $userHandle,
+        int $amount,
+        string $accountName,
+        string $userPrivateKey,
+        string $descriptor = null,
+        string $businessUuid = null
+    ): ApiResponse {
+        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle(), $descriptor, $businessUuid);
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -368,18 +380,22 @@ class SilaApi
     public function transferSila(
         string $userHandle,
         string $destination,
-        string $descriptor = '',
         int $amount,
         string $userPrivateKey,
-        string $destinationAddress = ''
+        string $destinationAddress = null,
+        string $destinationWalletName = null,
+        string $descriptor = null,
+        string $businessUuid = null
     ): ApiResponse {
         $body = new TransferMessage(
             $userHandle,
             $destination,
             $amount,
             $this->configuration->getAuthHandle(),
-            ($destinationAddress != '' ? $destinationAddress : null),
-            $descriptor
+            $destinationAddress,
+            $destinationWalletName,
+            $descriptor,
+            $businessUuid
         );
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -388,7 +404,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, OperationResponse::class);
+        return $this->prepareResponse($response, TransferResponse::class);
     }
 
     /**
@@ -407,10 +423,11 @@ class SilaApi
         string $userHandle,
         int $amount,
         string $accountName,
-        string $descriptor = '',
-        string $userPrivateKey
+        string $userPrivateKey,
+        string $descriptor = null,
+        string $businessUuid = null
     ): ApiResponse {
-        $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle(), $descriptor);
+        $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle(), $descriptor, $businessUuid);
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -462,7 +479,7 @@ class SilaApi
         return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders());
     }
 
-     /**
+    /**
      * Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
      *
      * @param string $userHandle

@@ -38,6 +38,12 @@ class IssueMessage implements ValidInterface
     private $descriptor;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $businessUuid;
+
+    /**
      * @var Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
@@ -57,14 +63,16 @@ class IssueMessage implements ValidInterface
      * @param amount
      * @param appHandle
      * @param descriptor
+     * @return IssueMessage
      */
-    public function __construct(string $userHandle, string $accountName, string $amount, string $appHandle, string $descriptor)
+    public function __construct(string $userHandle, string $accountName, string $amount, string $appHandle, string $descriptor = null, string $businessUuid = null)
     {
         $this->accountName = $accountName;
         $this->amount = $amount;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::ISSUE;
         $this->descriptor = $descriptor;
+        $this->businessUuid = $businessUuid;
     }
 
     public function isValid(): bool
