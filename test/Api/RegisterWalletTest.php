@@ -2,26 +2,18 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
 use Silamoney\Client\Domain\Wallet;
 use Silamoney\Client\Security\EcdsaUtil;
-use Silamoney\Client\Security\EcdsaUtilTest;
+use Silamoney\Client\Utils\DefaultConfig;
 
 class RegisterWalletTest extends TestCase
 {
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -57,20 +49,19 @@ class RegisterWalletTest extends TestCase
 
     public function testRegisterWallet200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
 
-        $silaWallet = self::$api->generateWallet();
+        DefaultConfig::$wallet = self::$api->generateWallet();
         $wallet = new Wallet(
-            $silaWallet->getAddress(),
+            DefaultConfig::$wallet->getAddress(),
             "ETH",
-            "wallet_test_php"
+            "new_wallet"
         );
 
-        $wallet_verification_signature = EcdsaUtil::sign($silaWallet->getAddress(), $silaWallet->getPrivateKey());
+        $wallet_verification_signature = EcdsaUtil::sign(DefaultConfig::$wallet->getAddress(), DefaultConfig::$wallet->getPrivateKey());
 
         $response = self::$api->registerWallet(
             $resp[0],
@@ -84,9 +75,8 @@ class RegisterWalletTest extends TestCase
 
     public function testRegisterWallet400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $wallet = new Wallet(
@@ -104,9 +94,8 @@ class RegisterWalletTest extends TestCase
     public function testRegisterWallet403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
 

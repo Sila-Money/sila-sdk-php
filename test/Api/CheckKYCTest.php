@@ -33,7 +33,7 @@ class CheckKYCTest extends TestCase
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-    
+
     /**
      * @var \JMS\Serializer\SerializerBuilder
      */
@@ -67,9 +67,20 @@ class CheckKYCTest extends TestCase
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
         $response = self::$api->checkKYC($resp[0], $resp[1]);
-        $response2 = self::$api->checkKYC($resp[2], $resp[3]);
+        $statusCode = $response->getStatusCode();
+        $status = $response->getData()->getStatus();
+        $message = $response->getData()->getMessage();
+        while ($statusCode == 200 && $status == 'FAILURE' && preg_match('/pending/', $message)) {
+            sleep(30);
+            echo 'CheckKYC waiting for 30 seconds...';
+            $response = self::$api->checkKYC($resp[0], $resp[1]);
+            $statusCode = $response->getStatusCode();
+            $status = $response->getData()->getStatus();
+            $message = $response->getData()->getMessage();
+        }
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(200, $response2->getStatusCode());
+        $this->assertEquals('SUCCESS', $response->getData()->getStatus());
+        $this->assertStringContainsString('passed', $response->getData()->getMessage());
     }
 
     public function testCheckKYC200Failure()
