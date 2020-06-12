@@ -401,6 +401,10 @@ $response = $client->registerWallet(
 ### Success 200
 ```php
 echo $response->getStatusCode();
+echo $response->getData()->success;
+echo $response->getData()->reference;
+echo $response->getData()->message;
+echo $response->getData()->wallet_nickname;
 ```
 
 ## Get Wallet endpoint

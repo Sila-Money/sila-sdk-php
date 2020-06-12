@@ -71,6 +71,10 @@ class RegisterWalletTest extends TestCase
         );
 
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->reference);
+        $this->assertIsString($response->getData()->message);
+        $this->assertEquals("new_wallet", $response->getData()->wallet_nickname);
     }
 
     public function testRegisterWallet400()
