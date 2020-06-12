@@ -2,23 +2,17 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
-
+use Silamoney\Client\Utils\DefaultConfig;
 
 class GetAccountBalanceTest extends TestCase
 {
+    private const ACCOUNT_NAME = 'default';
+
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -58,21 +52,25 @@ class GetAccountBalanceTest extends TestCase
      */
     public function testGetAccountBalance200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->getAccountBalance($resp[0], $resp[1], 'default');
+        $response = self::$api->getAccountBalance($resp[0], $resp[1], self::ACCOUNT_NAME);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsFloat($response->getData()->availableBalance);
+        $this->assertIsFloat($response->getData()->currentBalance);
+        $this->assertIsString($response->getData()->maskedAccountNumber);
+        $this->assertIsString($response->getData()->routingNumber);
+        $this->assertEquals(self::ACCOUNT_NAME, $response->getData()->accountName);
     }
 
     public function testGetAccountBalance400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->getAccountBalance(0, $resp[1], 'default');
+        $response = self::$api->getAccountBalance(0, $resp[1], self::ACCOUNT_NAME);
         $this->assertEquals(400, $response->getStatusCode());
     }
 

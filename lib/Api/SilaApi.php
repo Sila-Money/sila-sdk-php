@@ -20,6 +20,7 @@ use Silamoney\Client\Domain\{
     EntityMessage,
     Environments,
     GetAccountBalanceMessage,
+    GetAccountBalanceResponse,
     GetAccountsMessage,
     GetTransactionsMessage,
     GetTransactionsResponse,
@@ -331,7 +332,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response, GetAccountBalanceResponse::class);
     }
 
     /**

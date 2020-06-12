@@ -244,6 +244,26 @@ if (count($accounts)) {
 
 If no accounts are linked, `$accounts` in the above response example will be an empty array.
 
+## Get Account Balance endpoint
+Gets bank account balance for a bank account linked with Plaid
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$accountName = 'Custom Account Name';
+$response = self::$api->getAccountBalance($userHandle, $userPrivateKey, $accountName);
+```
+
+### Success 200
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->availableBalance; // Available balance
+echo $response->getData()->currentBalance; // Current balance
+echo $response->getData()->maskedAccountNumber; // Masked account number
+echo $response->getData()->routingNumber; // Routing number
+echo $response->getData()->accountName; // Account name
+```
+
 ## Issue Sila endpoint
 Debits a specified account and issues tokens to the address belonging to the requested handle.
 ```php
