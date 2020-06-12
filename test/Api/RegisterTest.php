@@ -7,19 +7,10 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\{
-    Environments,
-    User
-};
+use Silamoney\Client\Domain\User;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Register Test
@@ -34,7 +25,7 @@ class RegisterTest extends TestCase
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -89,6 +80,7 @@ class RegisterTest extends TestCase
         // Register
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         $wallet = self::$api->generateWallet();
+        DefaultConfig::$walletAddressForBalance = $wallet->getAddress();
         $user = new User(
             $handle,
             'Test',
@@ -132,9 +124,9 @@ class RegisterTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $response2 = self::$api->register($userDestination);
+        $this->assertEquals(200, $response2->getStatusCode());
 
         $file = 'response.txt';
-        $filecreate = fopen($file, 'w') or die('Cannot open file:  ' . $file);
         $current = file_get_contents($file);
         $current .= $handle . '||';
         $current .= $wallet->getPrivateKey() . '||';

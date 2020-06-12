@@ -482,7 +482,7 @@ echo $response->getData()->getMessage(); // Plaid public token succesfully creat
 echo $response->getData()->getPublicToken(); // Token
 ```
 
-## Sila Balance endpoint
+## Get Sila Balance endpoint
 Gets Sila balance for a given blockchain address.
 ```php
 $address = '0xabc123abc123abc123'
@@ -492,5 +492,7 @@ $response = $client->silaBalance($address);
 ### Success 200
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // 1000 (amount of sila tokens)
+echo $response->getData()->success; // TRUE
+echo $response->getData()->address; // The requested blockchain address
+echo $response->getData()->sila_balance; // The amount of sila tokens in the wallet
 ```

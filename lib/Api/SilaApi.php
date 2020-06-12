@@ -474,10 +474,8 @@ class SilaApi
         $body = new SilaBalanceMessage($address);
         $path = '/get_sila_balance';
         $json = $this->serializer->serialize($body, 'json');
-        $headers = ['Content-Type' => 'application/json'];
-        $response = $this->configuration->getBalanceClient()->callUnversionedAPI($path, $json, $headers);
-        $json_string = $response->getBody()->getContents();
-        return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders());
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, []);
+        return $this->prepareResponse($response);
     }
 
     /**

@@ -24,4 +24,6 @@ class DefaultConfig {
      * @var \Silamoney\Client\Domain\SilaWallet
      */
     public static $wallet;
+
+    public static $walletAddressForBalance;
 }
