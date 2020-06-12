@@ -250,7 +250,7 @@ Gets bank account balance for a bank account linked with Plaid
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
 $accountName = 'Custom Account Name';
-$response = self::$api->getAccountBalance($userHandle, $userPrivateKey, $accountName);
+$response = $client->getAccountBalance($userHandle, $userPrivateKey, $accountName);
 ```
 
 ### Success 200
