@@ -436,12 +436,16 @@ $nickname = 'new_wallet_nickname'
 $status = true
 
 // Call the api
-$response = $client->getWallet($userHandle, $nickname, $status, $userPrivateKey);
+$response = $client->updateWallet($userHandle, $nickname, $status, $userPrivateKey);
 ```
 
 ### Success 200
 ```php
 echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Message
+echo $response->getData()->wallet; // The wallet updated
+echo $response->getData()->changes; // An array with the changes made to the properties
 ```
 
 ## Delete Wallet endpoint
