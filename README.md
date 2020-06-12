@@ -370,12 +370,17 @@ $userPrivateKey = 'some private key'; // Hex format
 $filters = new SearchFilters();
 
 // Call the api
-$response = $client->getWallets($userHandle, $filters, $userPrivateKey);
+$response = $client->getWallets($userHandle, $userPrivateKey, $filters);
 ```
 ### Success 200
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // [wallet list, total count, total requested, page]
+echo $response->getData()->success; // TRUE
+echo $response->getData()->wallets; // The list of wallets
+echo $response->getData()->page; // The current page of results
+echo $response->getData()->returned_count; // The amount of wallets returned
+echo $response->getData()->total_count; // The total amount of wallets
+echo $response->getData()->total_page_count; // The total amount of pages
 ```
 ## Register Wallet endpoint
 Adds another "wallet"/blockchain address to a user handle.

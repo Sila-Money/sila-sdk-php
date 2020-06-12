@@ -2,24 +2,16 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
-use Silamoney\Client\Domain\SearchFilters;
+use Silamoney\Client\Utils\DefaultConfig;
 
 class GetWalletsTest extends TestCase
 {
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -55,22 +47,25 @@ class GetWalletsTest extends TestCase
 
     public function testGetWallets200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->getWallets($resp[0], $resp[1]);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsArray($response->getData()->wallets);
+        $this->assertIsInt($response->getData()->page);
+        $this->assertIsInt($response->getData()->returned_count);
+        $this->assertIsInt($response->getData()->total_count);
+        $this->assertIsInt($response->getData()->total_page_count);
     }
 
     public function testGetWallets400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $filters = new SearchFilters();
 
         $response = self::$api->getWallets(0, $resp[1]);
         $this->assertEquals(400, $response->getStatusCode());
@@ -79,11 +74,9 @@ class GetWalletsTest extends TestCase
     public function testGetWallets403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $filters = new SearchFilters();
 
         $response = self::$api->getWallets($resp[2], $resp[1]);
         $this->assertEquals(403, $response->getStatusCode());
