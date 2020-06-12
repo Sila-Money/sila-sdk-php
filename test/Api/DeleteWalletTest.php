@@ -53,6 +53,9 @@ class DeleteWalletTest extends TestCase
 
         $response = self::$api->deleteWallet($resp[0], DefaultConfig::$wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->message);
+        $this->assertIsString($response->getData()->reference);
     }
 
     public function testDeleteWallet400()

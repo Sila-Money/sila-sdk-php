@@ -461,6 +461,9 @@ $response = $client->deleteWallet($userHandle, $userPrivateKey);
 ### Success 200
 ```php
 echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Message
+echo $response->getData()->reference; // Random number reference
 ```
 
 ## Plaid Same Day Auth endpoint
