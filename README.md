@@ -420,7 +420,11 @@ $response = $client->getWallet($userHandle, $userPrivateKey);
 ###Success 200
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // [wallet requested, is whitelisted, sila balance]
+echo $response->getData()->success; // TRUE
+echo $response->getData()->reference; // Random reference number
+echo $response->getData()->wallet; // The wallet requested
+echo $response->getData()->is_whitelisted; // Indicates if the wallet is whitelisted
+echo $response->getData()->sila_balance; // The current sila balance of the wallet
 ```
 
 ## Update Wallet endpoint

@@ -2,24 +2,16 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
-
+use Silamoney\Client\Utils\DefaultConfig;
 
 class GetWalletTest extends TestCase
 {
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -55,20 +47,23 @@ class GetWalletTest extends TestCase
 
     public function testGetWallet200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->getWallet($resp[0], $resp[1]);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->reference);
+        $this->assertIsObject($response->getData()->wallet);
+        $this->assertIsBool($response->getData()->is_whitelisted);
+        $this->assertIsFloat($response->getData()->sila_balance);
     }
 
     public function testGetWallet400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->getWallet(0, $resp[1]);
@@ -78,9 +73,8 @@ class GetWalletTest extends TestCase
     public function testGetWallet403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->getWallet($resp[2], $resp[1]);
