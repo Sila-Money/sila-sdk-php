@@ -494,20 +494,3 @@ $response = $client->silaBalance($address);
 echo $response->getStatusCode(); // 200
 $results = $response->getData(); // 1000 (amount of sila tokens)
 ```
-
-## Plaid Sameday Auth endpoint
-Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
-```php
-$userHandle = 'user.silamoney.eth';
-$accountName = 'Custom Account Name';
-$response = $client->plaidSamedayAuth($userHandle, $accountName);
-```
-
-### Success 200
-```php
-echo $response->getStatusCode(); // 200
-echo $response->getData()->getReference(); // Random reference number
-echo $response->getData()->getStatus(); // SUCCESS
-echo $response->getData()->getMessage(); // Plaid public token succesfully created
-echo $response->getData()->getPublicToken(); // Token
-```
