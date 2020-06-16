@@ -9,8 +9,14 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  phpVersion: 7.2
+strategy:
+  matrix:
+    php72:
+      phpVersion: 7.2
+    php73:
+      phpVersion: 7.3
+    php74:
+      phpVersion: 7.4
 
 steps:
 - script: |
@@ -24,3 +30,16 @@ steps:
 
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
+
+- script: 'composer test:coverage'
+  env:
+    SILA_PRIVATE_KEY: $(silaPrivateKey)
+    SILA_PRIVATE_KEY_INVALID: $(silaPrivateKeyInvalid)
+  displayName: 'composer test'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/test-*.xml'
+  displayName: 'Publish test results'
+  condition: succeededOrFailed()
