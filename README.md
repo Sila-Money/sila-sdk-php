@@ -107,7 +107,7 @@ $birthDate = new DateTime::createFromFormat('m/d/Y', '1/8/1935'); // Only date p
 
 // Create user object
 $user = new User($userHandle, $firstName, $lastName, $streetAddress1, $streetAddress2,
-    $city, $state, $postalCode, $phone, $email, $cryptoAdress, $identityNumber, $birthDate);
+    $city, $state, $postalCode, $phone, $email, $identityNumber, $cryptoAdress, $birthDate);
 
 // Call the api
 $response = $client->register($user);
