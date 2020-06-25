@@ -7,19 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\{
-    Environments,
-    User
-};
+use Silamoney\Client\Domain\User;
 
 /**
  * Register Test
@@ -34,7 +24,7 @@ class RegisterTest extends TestCase
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -46,7 +36,7 @@ class RegisterTest extends TestCase
 
     /**
      *
-     * @var \JMS\Serializer\SerializerBuilder
+     * @var \JMS\Serializer\SerializerInterface
      */
     private static $serializer;
 
@@ -167,6 +157,9 @@ class RegisterTest extends TestCase
 
         $response = self::$api->register($userFail);
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
     
     public function testRegister401()

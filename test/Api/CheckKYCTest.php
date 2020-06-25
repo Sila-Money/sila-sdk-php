@@ -7,13 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Domain\BadRequestResponse;
 
 /**
  * Check KYC Test
@@ -25,7 +21,7 @@ use Silamoney\Client\Domain\Environments;
 class CheckKYCTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -90,6 +86,9 @@ class CheckKYCTest extends TestCase
         $resp = explode("||", $data);
         $response = self::$api->checkKYC(0, 0);
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testCheckHandle401()
