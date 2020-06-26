@@ -7,16 +7,8 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
 
 /**
  * Plaid Sameday Auth Test
@@ -30,7 +22,7 @@ class PlaidSamedayAuthTest extends TestCase
 {
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -83,6 +75,8 @@ class PlaidSamedayAuthTest extends TestCase
         $resp = explode("||", $data);
         $response = self::$api->plaidSamedayAuth($resp[0], "default");
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('not in status "microdeposit_pending_manual_verification"', $response->getData()->message);
     }
 
 

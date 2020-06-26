@@ -7,13 +7,8 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
 
 /**
  * Link Accounts Test
@@ -25,7 +20,7 @@ use Silamoney\Client\Domain\Environments;
 class LinkAccountsTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -137,6 +132,9 @@ class LinkAccountsTest extends TestCase
             'public-xxx-xxx'
         );
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertIsString($response->getData()->reference);
+        $this->assertStringContainsString('public token is in an invalid format', $response->getData()->message);
     }
 
         /**

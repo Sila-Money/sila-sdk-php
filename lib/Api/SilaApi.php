@@ -60,7 +60,7 @@ class SilaApi
 
     /**
      *
-     * @var \JMS\Serializer\SerializerBuilder
+     * @var \JMS\Serializer\SerializerInterface
      */
     private $serializer;
 
@@ -635,22 +635,17 @@ class SilaApi
     {
         $statusCode = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
+        $body = null;
         if ($className == SilaBalanceResponse::class) {
             $contents = json_encode(json_decode($contents));
         }
-        if ($statusCode == 200) {
-            if ($className != '') {
-                $baseResponse = $this->serializer->deserialize($contents, $className, 'json');
-                return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
-            } else {
-                return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
-            }
-        } elseif ($statusCode == 400) {
-            $baseResponse = $this->serializer->deserialize($contents, BaseResponse::class, 'json');
-            return new ApiResponse($statusCode, $response->getHeaders(), $baseResponse);
+
+        if ($statusCode == 200 && $className != '') {
+                $body = $this->serializer->deserialize($contents, $className, 'json');
         } else {
-            return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
+            $body = json_decode($contents);
         }
+        return new ApiResponse($statusCode, $response->getHeaders(), $body);
     }
 
     private function prepareBaseResponse(Response $response): ApiResponse

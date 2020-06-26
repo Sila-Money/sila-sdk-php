@@ -2,16 +2,8 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
 use Silamoney\Client\Domain\SearchFilters;
 
 class GetWalletsTest extends TestCase
@@ -19,7 +11,7 @@ class GetWalletsTest extends TestCase
 
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -31,7 +23,7 @@ class GetWalletsTest extends TestCase
 
     /**
      *
-     * @var \JMS\Serializer\SerializerBuilder
+     * @var \JMS\Serializer\SerializerInterface
      */
     private static $serializer;
 
@@ -74,6 +66,9 @@ class GetWalletsTest extends TestCase
 
         $response = self::$api->getWallets(0, $resp[1]);
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(false, $response->getData()->success);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testGetWallets403()
