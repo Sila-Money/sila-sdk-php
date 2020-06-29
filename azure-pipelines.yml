@@ -1,0 +1,65 @@
+# PHP
+# Test and package your PHP project.
+# Add steps that run tests, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+strategy:
+  matrix:
+    php72:
+      phpVersion: 7.2
+    php73:
+      phpVersion: 7.3
+    php74:
+      phpVersion: 7.4
+      executeSonar: true
+
+steps:
+- script: |
+    sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+    sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+    sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+    sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+    sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+    php -version
+  displayName: 'Use PHP version $(phpVersion)'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'silamoney'
+    scannerMode: 'CLI'
+    configMode: 'file'
+  displayName: 'Prepare Sonar analysis'
+  condition: and(succeeded(), eq(variables['executeSonar'], true))
+
+- script: composer install --no-interaction --prefer-dist
+  displayName: 'composer install'
+
+- script: 'composer test:coverage'
+  env:
+    SILA_PRIVATE_KEY: $(silaPrivateKey)
+    SILA_PRIVATE_KEY_INVALID: $(silaPrivateKeyInvalid)
+  displayName: 'composer test'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/test-*.xml'
+  displayName: 'Publish test results'
+  condition: succeededOrFailed()
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Sonar analysis'
+  condition: and(succeededOrFailed(), eq(variables['executeSonar'], true))
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
+  displayName: 'Sonar quality gate'
+  condition: and(succeeded(), eq(variables['executeSonar'], true))
