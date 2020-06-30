@@ -83,9 +83,9 @@ class IssueSilaTest extends TestCase
 
         // Attempt to Issue w/o linking
         try {
-            $response = self::$api->issueSila($resp[0], 10000, 'default', $resp[1]);
-            // var_dump($response);
+            $response = self::$api->issueSila($resp[0], 10000, 'default', 'test descriptor', $resp[1]);
             $this->assertEquals(200, $response->getStatusCode());
+            $this->assertEquals('test descriptor', $response->getData()->getDescriptor());
         } catch (RequestException $e) {
             $response = $e->getResponse();
             $this->assertEquals(401, $response->getStatusCode());
@@ -107,7 +107,7 @@ class IssueSilaTest extends TestCase
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
-        $response = self::$api->issueSila(0, 100, 'default', 0);
+        $response = self::$api->issueSila(0, 100, 'default', 'test descriptor', 0);
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
@@ -121,7 +121,7 @@ class IssueSilaTest extends TestCase
         $handle = fopen($my_file, 'r');
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
-        $response = self::$api->issueSila($resp[0], 100, 'default', $resp[1]);
+        $response = self::$api->issueSila($resp[0], 100, 'default', 'test descriptor', $resp[1]);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

@@ -7,8 +7,13 @@
 
 namespace Silamoney\Client\Api;
 
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\Environments;
 
 /**
  * Check KYC Test
@@ -20,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 class RedeemSilaTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var \Silamoney\Client\Api\ApiClient
      */
     protected static $api;
 
@@ -30,7 +35,7 @@ class RedeemSilaTest extends TestCase
     protected static $config;
     
     /**
-     * @var \JMS\Serializer\SerializerInterface
+     * @var \JMS\Serializer\SerializerBuilder
      */
     private static $serializer;
 
@@ -85,10 +90,8 @@ class RedeemSilaTest extends TestCase
         $data = fread($handle, filesize($my_file));
         $resp = explode("||", $data);
         $response = self::$api->redeemSila(0, 10000, 'default', 0);
+        // var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
-        $this->assertStringContainsString('Bad request', $response->getData()->message);
-        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testRedeemSila401()
