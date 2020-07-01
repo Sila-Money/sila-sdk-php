@@ -10,6 +10,7 @@ namespace Silamoney\Client\Api;
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\User;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Register Test
@@ -79,6 +80,7 @@ class RegisterTest extends TestCase
         // Register
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         $wallet = self::$api->generateWallet();
+        DefaultConfig::$walletAddressForBalance = $wallet->getAddress();
         $user = new User(
             $handle,
             'Test',
@@ -122,15 +124,14 @@ class RegisterTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $response2 = self::$api->register($userDestination);
+        $this->assertEquals(200, $response2->getStatusCode());
 
-        $file = 'response.txt';
-        $filecreate = fopen($file, 'w') or die('Cannot open file:  ' . $file);
-        $current = file_get_contents($file);
+        $current = file_get_contents(DefaultConfig::FILE_NAME);
         $current .= $handle . '||';
         $current .= $wallet->getPrivateKey() . '||';
         $current .= $handle2 . '||';
         $current .= $wallet2->getPrivateKey();
-        file_put_contents($file, $current);
+        file_put_contents(DefaultConfig::FILE_NAME, $current);
     }
 
     public function testRegister400()
@@ -161,7 +162,7 @@ class RegisterTest extends TestCase
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
-    
+
     public function testRegister401()
     {
         self::setUpBeforeClassInvalidAuthSignature();
@@ -186,7 +187,7 @@ class RegisterTest extends TestCase
             $wallet->getAddress(),
             $birthDate
         );
-        
+
         $response = self::$api->register($user);
         $this->assertEquals(401, $response->getStatusCode());
     }

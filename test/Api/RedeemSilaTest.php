@@ -1,23 +1,19 @@
 <?php
 
 /**
- * Check KYC Test
+ * Redeem Sila Test
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Environments;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
- * Check KYC Test
- * Tests for the Check Handle endpoint in the Sila Api class.
+ * Redeem Sila Test
+ * Tests for the redeem sila endpoint in the Sila Api class.
  * @category Class
  * @package  Silamoney\Client
  * @author   Karlo Lorenzana <klorenzana@digitalgeko.com>
@@ -25,7 +21,12 @@ use Silamoney\Client\Domain\Environments;
 class RedeemSilaTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var string
+     */
+    protected const REDEEM_TRANS = 'Redeem Trans';
+
+    /**
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -33,19 +34,11 @@ class RedeemSilaTest extends TestCase
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-    
+
     /**
      * @var \JMS\Serializer\SerializerBuilder
      */
     private static $serializer;
-
-    private function uuid()
-    {
-        $data = random_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-    }
 
     public static function setUpBeforeClass(): void
     {
@@ -65,44 +58,72 @@ class RedeemSilaTest extends TestCase
         self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
-    /**
-     * @test
-     */
     public function testRedeemSila200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->redeemSila($resp[0], 10000, 'default', $resp[1]);
+        $response = self::$api->redeemSila($resp[0], 10000, DefaultConfig::DEFAULT_ACCOUNT, $resp[1]);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getTransactionId());
     }
 
-    // public function testRedeemSila200Failure()
-    // {
-    //     //Cant replicate this one, more information.
-    // }
+    public function testRedeemSila200Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->issueSila(
+            $resp[0],
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            $resp[1],
+            self::REDEEM_TRANS,
+            DefaultConfig::VALID_BUSINESS_UUID
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertEquals(self::REDEEM_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+    }
+
+    public function testRedeemSila400Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->issueSila(
+            $resp[0],
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            $resp[1],
+            self::REDEEM_TRANS,
+            DefaultConfig::INVALID_BUSINESS_UUID
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+    }
 
     public function testRedeemSila400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->redeemSila(0, 10000, 'default', 0);
-        // var_dump($response);
+        $response = self::$api->redeemSila(0, 10000, DefaultConfig::DEFAULT_ACCOUNT, 0);
         $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testRedeemSila401()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->redeemSila($resp[0], 10000, 'default', $resp[1]);
-        // var_dump($response);
+        $response = self::$api->redeemSila($resp[0], 10000, DefaultConfig::DEFAULT_ACCOUNT, $resp[1]);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

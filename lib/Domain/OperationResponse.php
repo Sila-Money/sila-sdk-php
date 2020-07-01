@@ -1,18 +1,17 @@
 <?php
 
 /**
- * Base Response
+ * Operation Response
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
-use phpDocumentor\Reflection\Types\Boolean;
 
 /**
- * Base Response
- * Response used for the majority of endpoints.
+ * Operation Response
+ * Response used for redeem, issue and transfer endpoints.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
@@ -39,6 +38,13 @@ class OperationResponse
      * @Type("string")
      */
     private $status;
+
+    /**
+     * Transaction Id
+     * @var string
+     * @Type("string")
+     */
+    private $transactionId;
 
     /**
      * Descriptor
@@ -83,17 +89,12 @@ class OperationResponse
         return $this->descriptor;
     }
 
-    /**
-     * Gets any response attribute.
-     * @param $attr string
-     * @return mixed
-     */
-    public function getAttr($attr)
+    public function getTransactionId(): string
     {
-        return property_exists($this, $attr) ? $this->{$attr} : null;
+        return $this->transactionId;
     }
 
-    public function getSuccess()
+    public function getSuccess(): bool
     {
         return $this->status === 'SUCCESS';
     }

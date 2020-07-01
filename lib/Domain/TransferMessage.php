@@ -47,7 +47,13 @@ class TransferMessage implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $destination_address;    
+    private $destinationAddress;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $destinationWallet;
 
     /**
      * @var string
@@ -56,11 +62,17 @@ class TransferMessage implements ValidInterface
     private $descriptor;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $businessUuid;
+
+    /**
      ** Constructor for TransferMessage object.
      *
      * @param string $userHandle
      * @param string $destination
-     * @param int $amount
+     * @param float $amount
      * @param string $appHandle
      * @param string $destination_address
      * @param string $descriptor
@@ -68,17 +80,21 @@ class TransferMessage implements ValidInterface
     public function __construct(
         string $userHandle,
         string $destination,
-        int $amount,
+        float $amount,
         string $appHandle,
-        ?string $destination_address,
-        string $descriptor
+        string $destinationAddress = null,
+        string $destinationWallet = null,
+        string $descriptor = null,
+        string $businessUuid = null
     ) {
         $this->amount = $amount;
         $this->destination = $destination;
-        $this->destination_address = $destination_address;
+        $this->destinationAddress = $destinationAddress;
+        $this->destinationWallet = $destinationWallet;
         $this->header = new Header($userHandle, $appHandle);
         $this->message = Message::TRANSFER;
         $this->descriptor = $descriptor;
+        $this->businessUuid = $businessUuid;
     }
 
     public function isValid(): bool
@@ -86,7 +102,7 @@ class TransferMessage implements ValidInterface
         return v::notOptional()->validate($this->header)
             && v::stringType()->notEmpty()->validate($this->message)
             && v::stringType()->notEmpty()->validate($this->destination)
-            && v::stringType()->notEmpty()->validate($this->destination_address)
+            && v::stringType()->notEmpty()->validate($this->destinationAddress)
             && v::floatType()->validate($this->amount);
     }
 }

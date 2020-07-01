@@ -4,6 +4,7 @@ namespace Silamoney\Client\Api;
 
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\DefaultConfig;
 
 
 class UpdateWalletTest extends TestCase
@@ -46,20 +47,22 @@ class UpdateWalletTest extends TestCase
 
     public function testUpdateWallet200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->updateWallet($resp[0], "wallet_php_upd2", false, $resp[1]);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->message);
+        $this->assertIsObject($response->getData()->wallet);
+        $this->assertIsArray($response->getData()->changes);
     }
 
     public function testUpdateWallet400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->updateWallet(0, "wallet_php_upd", false, $resp[1]);
@@ -72,9 +75,8 @@ class UpdateWalletTest extends TestCase
     public function testUpdateWallet403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->updateWallet($resp[0], "wallet_php_upd", false, $resp[1]);

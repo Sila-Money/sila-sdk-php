@@ -7,19 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\ {
-    Request,
-    Response
-};
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\{
-    BalanceEnvironments,
-    SilaBalanceMessage
-};
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Sila Balance Test
@@ -33,7 +23,7 @@ class SilaBalanceTest extends TestCase
 {
     /**
      *
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 
@@ -63,33 +53,19 @@ class SilaBalanceTest extends TestCase
      */
     public function testSilaBalance200()
     {
-        $responseValue = 1234;
-        $mock = new MockHandler([
-            new Response(200, [], $responseValue)
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getBalanceClient()->setApiHandler($handler);
-        $response = self::$api->silaBalance("address");
+        $response = self::$api->silaBalance(DefaultConfig::$walletAddressForBalance);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($responseValue, $response->getData());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::$walletAddressForBalance, $response->getData()->address);
+        $this->assertIsFloat($response->getData()->sila_balance);
     }
 
     /**
      * @test
      */
-    public function testSilaBalance500()
+    public function testSilaBalance400()
     {
-        $body = file_get_contents(__DIR__ . '/Data/SilaBalance500.json');
-        $mock = new MockHandler([
-            new ServerException(
-                "Internal Server Error",
-                new Request('POST', BalanceEnvironments::SANDBOX),
-                new Response(500, [], $body)
-            )
-        ]);
-        $handler = HandlerStack::create($mock);
-        self::$api->getBalanceClient()->setApiHandler($handler);
         $response = self::$api->silaBalance("address");
-        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 }

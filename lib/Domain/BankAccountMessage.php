@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Redeem Message
+ * Bank Account Message
  * PHP version 7.2
  */
 
@@ -11,13 +11,13 @@ use JMS\Serializer\Annotation\Type;
 use Respect\Validation\Validator as v;
 
 /**
- * Redeem Message
- * Object sent in redeem sila method.
+ * Bank Account Message
+ * Object sent in issue and redeem sila method.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class RedeemMessage implements ValidInterface
+class BankAccountMessage implements ValidInterface
 {
     /**
      * @var float
@@ -50,26 +50,37 @@ class RedeemMessage implements ValidInterface
     private $descriptor;
 
     /**
-     * Constructor for RedeemMsg object.
+     * @var string
+     * @Type("string")
+     */
+    private $businessUuid;
+
+    /**
+     * Constructor for BankAccountMessage object.
      *
      * @param string $userHandle
-     * @param int $amount
      * @param string $accountName
+     * @param float $amount
      * @param string $appHandle
-     * @param string $descriptor
+     * @param Message $message
+     * @param string|null $descriptor
+     * @param string|null $businessUuid
      */
     public function __construct(
         string $userHandle,
-        int $amount,
         string $accountName,
+        float $amount,
         string $appHandle,
-        string $descriptor
+        Message $message,
+        string $descriptor = null,
+        string $businessUuid = null
     ) {
         $this->header = new Header($userHandle, $appHandle);
         $this->amount = $amount;
         $this->accountName = $accountName;
-        $this->message = Message::REDEEM;
+        $this->message = $message;
         $this->descriptor = $descriptor;
+        $this->businessUuid = $businessUuid;
     }
 
     public function isValid(): bool

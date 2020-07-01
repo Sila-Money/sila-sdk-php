@@ -4,6 +4,7 @@ namespace Silamoney\Client\Api;
 
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\DefaultConfig;
 
 class DeleteWalletTest extends TestCase
 {
@@ -47,20 +48,21 @@ class DeleteWalletTest extends TestCase
 
     public function testDeleteWallet200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
-        $response = self::$api->deleteWallet($resp[0], $resp[1]);
+        $response = self::$api->deleteWallet($resp[0], DefaultConfig::$wallet->getPrivateKey());
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->message);
+        $this->assertIsString($response->getData()->reference);
     }
 
     public function testDeleteWallet400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->deleteWallet(0, $resp[1]);
@@ -73,9 +75,8 @@ class DeleteWalletTest extends TestCase
     public function testDeleteWallet403()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
 
         $response = self::$api->deleteWallet($resp[2], $resp[1]);

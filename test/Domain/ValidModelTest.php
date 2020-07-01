@@ -53,9 +53,9 @@ class ValidModelTest extends TestCase
             'Entity Message is valid' => array('EntityMessageValid.json', 'EntityMessage', true),
             'Link Account Message is valid' => array('LinkAccountMessageValid.json', 'LinkAccountMessage', true),
             'Get Accounts Message is valid' => array('GetAccountsMessageValid.json', 'GetAccountsMessage', true),
-            'Issue Message is valid' => array('IssueMessageValid.json', 'IssueMessage', true),
+            'Issue Message is valid' => array('IssueMessageValid.json', 'BankAccountMessage', true),
             'Transfer Message is valid' => array('TransferMessageValid.json', 'TransferMessage', true),
-            'Redeem Message is valid' => array('RedeemMessageValid.json', 'RedeemMessage', true),
+            'Redeem Message is valid' => array('RedeemMessageValid.json', 'BankAccountMessage', true),
             'Get Transactions Message is valid' => array(
                 'GetTransactionsMessageValid.json',
                 'GetTransactionsMessage',
@@ -82,9 +82,9 @@ class ValidModelTest extends TestCase
             'Entity Message is invalid' => array('MessageInvalid.json', 'HeaderMessage', false),
             'Link Account Message is invalid' => array('MessageInvalid.json', 'LinkAccountMessage', false),
             'Get Accounts Message is invalid' => array('MessageInvalid.json', 'GetAccountsMessage', false),
-            'Issue Message is invalid' => array('MessageInvalid.json', 'IssueMessage', false),
+            'Issue Message is invalid' => array('MessageInvalid.json', 'BankAccountMessage', false),
             'Transfer Message is invalid' => array('MessageInvalid.json', 'TransferMessage', false),
-            'Redeem Message is invalid' => array('MessageInvalid.json', 'RedeemMessage', false),
+            'Redeem Message is invalid' => array('MessageInvalid.json', 'BankAccountMessage', false),
             'Get Transactions Message is invalid' => array('MessageInvalid.json', 'GetTransactionsMessage', false),
             'Plaid Sameday Auth Message is invalid' => array('MessageInvalid.json', 'PlaidSamedayAuthMessage', false)
         );

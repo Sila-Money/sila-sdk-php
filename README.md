@@ -1,26 +1,32 @@
 # Silamoney\Client
 
-`Version 0.2.7-rc-2`
+`Version 0.2.8-rc`
 
 > **Note**: This SDK is a Release Candidate.
 
 ## Prerequisites
+
 ### PHP supported versions
-* 7.2 and above
+
+- 7.2 and above
+
 ### PHP extensions required
-* ext-curl
-* ext-json
-* ext-mbstring
-* ext-gmp (not usually enabled by default)
+
+- ext-curl
+- ext-json
+- ext-mbstring
+- ext-gmp (not usually enabled by default)
 
 ## Installation
+
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.7-rc-2
+composer require silamoney/php-sdk:0.2.8-rc
 ```
 
 ## Initialization
+
 ```php
 require_once 'vendor/autoload.php';
 
@@ -36,20 +42,27 @@ $client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url'
 $client = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey); // From predefined environments
 $client = SilaApi::fromDefault($appHandle, $privateKey); // From default sandbox environments
 ```
+
 ## Check Handle Endpoint
+
 Checks if a specific handle is already taken.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $response = $client->checkHandle($userHandle); // Returns Silamoney\Client\Api\ApiResponse
 ```
+
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // User is available
 ```
+
 ### Failure 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
@@ -58,10 +71,11 @@ echo $response->getData()->getMessage(); // User is already taken
 ```
 
 ## Generate Wallet
+
 This is a helper function that allows you to generate a wallet (private key & address)
 that you can then use to register a new user.
 
-##**Important!** Sila does not custody these private keys. They should *never* be sent to
+##**Important!** Sila does not custody these private keys. They should _never_ be sent to
 us or disclosed to any third party. The private key will be used to sign all
 requests from the associated user for authentication purposes.
 
@@ -82,11 +96,14 @@ print $wallet->getPrivateKey();     // e.g. 0xe62049e7ca71d9223c8db6751e007ce000
 ```
 
 Wallet has two attributes:
+
 - `address` is the public blockchain address that will be used when you call register()
 - `private_key` is the private key associated with this address. This will _only_ be used to sign requests. **Keep this safe!**
 
 ## Register endpoint
+
 Attaches KYC data and specified blockchain address to an assigned handle.
+
 ```php
 use Silamoney\Client\Domain\User;
 
@@ -106,14 +123,15 @@ $identityNumber = 'AAA-GG-SSSS'; // SSN format
 $birthDate = new DateTime::createFromFormat('m/d/Y', '1/8/1935'); // Only date part will be taken when sent to api
 
 // Create user object
-$user = new User($userHandle, $firstName, $lastName, $streetAddress1, $streetAddress2,
-    $city, $state, $postalCode, $phone, $email, $cryptoAdress, $identityNumber, $birthDate);
+$user = new User($userHandle, $firstName, $lastName, $streetAddress1, $streetAddress2, 
+    $city, $state, $postalCode, $phone, $email, $identityNumber, $cryptoAdress, $birthDate);
 
 // Call the api
 $response = $client->register($user);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
@@ -122,9 +140,11 @@ echo $response->getData()->getMessage(); // User was successfully register
 ```
 
 ## Request KYC endpoint
+
 Starts KYC verification process on a registered user handle.
 
 ### Normal flow
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -132,6 +152,7 @@ $response = $client->requestKYC($userHandle, $userPrivateKey);
 ```
 
 ### Custom flow
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -140,6 +161,7 @@ $response = $client->requestKYC($userHandle, $userPrivateKey, $kycLevel);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
@@ -148,7 +170,9 @@ echo $response->getData()->getMessage(); // User submitted for KYC review.
 ```
 
 ## Check KYC endpoint
+
 Returns whether the entity attached to the user handle is verified, not valid, or still pending.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -156,6 +180,7 @@ $response = $client->checkKYC($userHandle, $userPrivateKey);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
@@ -164,8 +189,10 @@ echo $response->getData()->getMessage(); // User has passed ID verification!
 ```
 
 ## Link Account endpoint
+
 Uses a provided Plaid public token to link a bank account to a verified entity.
 **Public token received in the /link/item/create [Plaid](https://plaid.com/docs/#integrating-with-link) endpoint.**
+
 ```php
 // SANDBOX ONLY: You can generate a testing public token instead of using the Plaid Link plugin with:
 $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
@@ -185,7 +212,9 @@ $content = json_decode($response->getBody()->getContents());
 $public_token = $content->public_token;             // Public Token to pass to linkAccount()
 $account_id = $content->accounts[0]->account_id;    // Optional Account ID to pass to linkAccount()
 ```
+
 ---
+
 **IMPORTANT!** If you do not specify an `$account_id` in `linkAccount()`, the first account returned by Plaid will be linked by default.
 
 ---
@@ -203,11 +232,12 @@ $response = $client->linkAccount($userHandle, $userPrivateKey, $publicToken, $ac
 ```
 
 **Direct account link method**
+
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $accountName = 'Custom Account Name';   // Defaults to 'default' if not provided. (not required)
-$routingNumber = '123456789';           // The routing number. 
+$routingNumber = '123456789';           // The routing number.
 $accountNumber = '123456789012';        // The bank account number
 $userPrivateKey = 'some private key';   // The private key used to register the specified user
 $accountType = 'CHECKING';              // The account type (not required). Only available value is CHECKING
@@ -217,13 +247,16 @@ $response = $client->linkAccountDirect($userHandle, $userPrivateKey, $accountNum
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode();        // 200
 echo $response->getData()->getStatus(); // SUCCESS
 ```
 
 ## Get Accounts endpoint
+
 Gets basic bank account names linked to user handle.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -231,6 +264,7 @@ $response = $client->getAccounts($userHandle, $userPrivateKey);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode();    // 200
 $accounts = $response->getData();   // Array of Silamoney\Client\Domain\Account
@@ -244,71 +278,120 @@ if (count($accounts)) {
 
 If no accounts are linked, `$accounts` in the above response example will be an empty array.
 
+## Get Account Balance endpoint
+
+Gets bank account balance for a bank account linked with Plaid
+
+```php
+$userHandle = 'user.silamoney.eth';
+$userPrivateKey = 'some private key'; // Hex format
+$accountName = 'Custom Account Name';
+$response = $client->getAccountBalance($userHandle, $userPrivateKey, $accountName);
+```
+
+### Success 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->availableBalance; // Available balance
+echo $response->getData()->currentBalance; // Current balance
+echo $response->getData()->maskedAccountNumber; // Masked account number
+echo $response->getData()->routingNumber; // Routing number
+echo $response->getData()->accountName; // Account name
+```
+
 ## Issue Sila endpoint
+
 Debits a specified account and issues tokens to the address belonging to the requested handle.
+
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
 $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
+$descriptor = 'Transaction Descriptor'; // Optional
+$businessUuid = 'you-business-uuid-code'; // Optional
 
 // Call the api
-$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey);
+$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
+echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
 ```
 
 ## Transfer Sila endpoint
-Burns given the amount of SILA at the handle's blockchain address and credits their named bank account in the equivalent monetary amount.
+
+Starts a transfer of the requested amount of SILA to the requested destination handle.
+
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $destination = 'user2.silamoney.eth';
 $amount = 1000;
 $userPrivateKey = 'some private key'; // Hex format
+$destinationAddress = 'some wallet address'; // Optional
+$destinationWalletName = 'the_wallet_name'; // Optional
+$descriptor = 'Transaction Descriptor'; // Optional
+$businessUuid = 'you-business-uuid-code'; // Optional
 
 // Call the api
-$response = $client->transferSila($userHandle, $destination, $amount, $userPrivateKey);
+$response = $client->transferSila($userHandle, $destination, $amount, $userPrivateKey, $destinationAddress, $destinationWalletName, $descriptor, $businessUuid);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(): // 200
 echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
+echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
+echo $response->getData()->getDestinationAddress(); // The destination wallet address.
 ```
 
 ## Redeem Sila endpoint
+
 Burns given the amount of SILA at the handle's blockchain address and credits their named bank account in the equivalent monetary amount.
+
 ```php
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
 $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
+$descriptor = 'Transaction Descriptor'; // optional
+$businessUuid = 'you-business-uuid-code'; // optional
 
 // Call the api
-$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey);
+$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
 echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // Transaction submitted to processing queue.
+echo $response->getData()->getDescriptor(); // Transaction Descriptor.
+echo $response->getData()->getTransactionId(); // The transaction id.
 ```
 
 ## Get Transactions endpoint
+
 Gets the array of user handle's transactions with detailed status information.
+
 ```php
 use Silamoney\Client\Domain\SearchFilters;
 
@@ -322,28 +405,41 @@ $response = $client->getTransactions($userHandle, $filters, $userPrivateKey);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 $results = $response->getData(); // Silamoney\Client\Domain\GetTransactionsResponse
 ```
 
 ## Get Wallets endpoint
+
 Gets a paginated list of "wallets"/blockchain addresses attached to a user handle.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
 $filters = new SearchFilters();
 
 // Call the api
-$response = $client->getWallets($userHandle, $filters, $userPrivateKey);
+$response = $client->getWallets($userHandle, $userPrivateKey, $filters);
 ```
+
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // [wallet list, total count, total requested, page]
+echo $response->getData()->success; // TRUE
+echo $response->getData()->wallets; // The list of wallets
+echo $response->getData()->page; // The current page of results
+echo $response->getData()->returned_count; // The amount of wallets returned
+echo $response->getData()->total_count; // The total amount of wallets
+echo $response->getData()->total_page_count; // The total amount of pages
 ```
+
 ## Register Wallet endpoint
+
 Adds another "wallet"/blockchain address to a user handle.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -352,19 +448,27 @@ $walletVerificationSignature = '(address to register to user_handle)';
 
 // Call the api
 $response = $client->registerWallet(
-  $userHandle, 
-  $wallet, 
-  $walletVerificationSignature, 
+  $userHandle,
+  $wallet,
+  $walletVerificationSignature,
   $userPrivateKey
 );
 ```
+
 ### Success 200
+
 ```php
 echo $response->getStatusCode();
+echo $response->getData()->success;
+echo $response->getData()->reference;
+echo $response->getData()->message;
+echo $response->getData()->wallet_nickname;
 ```
 
 ## Get Wallet endpoint
+
 Gets details about the user wallet used to generate the usersignature header.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -374,13 +478,20 @@ $response = $client->getWallet($userHandle, $userPrivateKey);
 ```
 
 ###Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // [wallet requested, is whitelisted, sila balance]
+echo $response->getData()->success; // TRUE
+echo $response->getData()->reference; // Random reference number
+echo $response->getData()->wallet; // The wallet requested
+echo $response->getData()->is_whitelisted; // Indicates if the wallet is whitelisted
+echo $response->getData()->sila_balance; // The current sila balance of the wallet
 ```
 
 ## Update Wallet endpoint
+
 Updates nickname and/or default status of a wallet.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -388,16 +499,23 @@ $nickname = 'new_wallet_nickname'
 $status = true
 
 // Call the api
-$response = $client->getWallet($userHandle, $nickname, $status, $userPrivateKey);
+$response = $client->updateWallet($userHandle, $nickname, $status, $userPrivateKey);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Message
+echo $response->getData()->wallet; // The wallet updated
+echo $response->getData()->changes; // An array with the changes made to the properties
 ```
 
 ## Delete Wallet endpoint
+
 Deletes a user wallet.
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $userPrivateKey = 'some private key'; // Hex format
@@ -407,18 +525,26 @@ $response = $client->deleteWallet($userHandle, $userPrivateKey);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Message
+echo $response->getData()->reference; // Random number reference
 ```
 
 ## Plaid Same Day Auth endpoint
+
 Handle a request for a Plaid public_token in order to complete Plaid's Same Day Microdeposit Authentication
+
 ```php
 $userHandle = 'user.silamoney.eth';
 $accountName = 'Custom Account Name';
 $response = $client->plaidSamedayAuth($userHandle, $accountName);
 ```
+
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
 echo $response->getData()->getReference(); // Random reference number
@@ -427,32 +553,20 @@ echo $response->getData()->getMessage(); // Plaid public token succesfully creat
 echo $response->getData()->getPublicToken(); // Token
 ```
 
-## Sila Balance endpoint
+## Get Sila Balance endpoint
+
 Gets Sila balance for a given blockchain address.
+
 ```php
 $address = '0xabc123abc123abc123'
 $response = $client->silaBalance($address);
 ```
 
 ### Success 200
+
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // 1000 (amount of sila tokens)
-```
-
-## Plaid Sameday Auth endpoint
-Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
-```php
-$userHandle = 'user.silamoney.eth';
-$accountName = 'Custom Account Name';
-$response = $client->plaidSamedayAuth($userHandle, $accountName);
-```
-
-### Success 200
-```php
-echo $response->getStatusCode(); // 200
-echo $response->getData()->getReference(); // Random reference number
-echo $response->getData()->getStatus(); // SUCCESS
-echo $response->getData()->getMessage(); // Plaid public token succesfully created
-echo $response->getData()->getPublicToken(); // Token
+echo $response->getData()->success; // TRUE
+echo $response->getData()->address; // The requested blockchain address
+echo $response->getData()->sila_balance; // The amount of sila tokens in the wallet
 ```

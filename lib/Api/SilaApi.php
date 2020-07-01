@@ -12,23 +12,25 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
-use Silamoney\Client\Domain\{Account,
+use Silamoney\Client\Domain\{
+    Account,
     BalanceEnvironments,
+    BankAccountMessage,
     BaseResponse,
     OperationResponse,
     EntityMessage,
     Environments,
     GetAccountBalanceMessage,
+    GetAccountBalanceResponse,
     GetAccountsMessage,
     GetTransactionsMessage,
     GetTransactionsResponse,
     HeaderMessage,
-    IssueMessage,
     LinkAccountMessage,
     LinkAccountResponse,
+    Message,
     PlaidSamedayAuthMessage,
     PlaidSamedayAuthResponse,
-    RedeemMessage,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
@@ -40,7 +42,9 @@ use Silamoney\Client\Domain\{Account,
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
-    GetWalletsMessage};
+    GetWalletsMessage,
+    TransferResponse
+};
 use Silamoney\Client\Security\EcdsaUtil;
 
 /**
@@ -95,6 +99,7 @@ class SilaApi
      * @param string $balanceEnvironment
      * @param string $appHandler
      * @param string $privateKey
+     * @return \Silamoney\Client\Api\SilaApi
      */
     public function __construct(string $environment, string $balanceEnvironment, string $appHandler, string $privateKey)
     {
@@ -268,12 +273,14 @@ class SilaApi
      * @param string|null $accountType
      * @return ApiResponse
      */
-    public function linkAccountDirect(string $userHandle,
-    string $userPrivateKey,
-    string $accountNumber,
-    string $routingNumber,
-    string $accountName = null,
-    string $accountType = null): ApiResponse {
+    public function linkAccountDirect(
+        string $userHandle,
+        string $userPrivateKey,
+        string $accountNumber,
+        string $routingNumber,
+        string $accountName = null,
+        string $accountType = null
+    ): ApiResponse {
         $body = new LinkAccountMessage(
             $userHandle,
             $this->configuration->getAuthHandle(),
@@ -325,7 +332,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response, GetAccountBalanceResponse::class);
     }
 
     /**
@@ -333,16 +340,29 @@ class SilaApi
      * the requested handle.
      *
      * @param string $userHandle
-     * @param int $amount
+     * @param float $amount
      * @param string $accountName
      * @param string $descriptor
      * @param string $userPrivateKey
      * @return ApiResponse
-     * @throws ClientException
      */
-    public function issueSila(string $userHandle, int $amount, string $accountName, string $descriptor = '', string $userPrivateKey): ApiResponse
-    {
-        $body = new IssueMessage($userHandle, $accountName, $amount, $this->configuration->getAuthHandle(), $descriptor);
+    public function issueSila(
+        string $userHandle,
+        float $amount,
+        string $accountName,
+        string $userPrivateKey,
+        string $descriptor = null,
+        string $businessUuid = null
+    ): ApiResponse {
+        $body = new BankAccountMessage(
+            $userHandle,
+            $accountName,
+            $amount,
+            $this->configuration->getAuthHandle(),
+            Message::ISSUE(),
+            $descriptor,
+            $businessUuid
+        );
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -358,28 +378,31 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $destination
-     * @param int $amount
+     * @param float $amount
      * @param string $userPrivateKey
      * @param string $destinationAddress
      * @param string $descriptor
      * @return ApiResponse
-     * @throws Exception
      */
     public function transferSila(
         string $userHandle,
         string $destination,
-        string $descriptor = '',
-        int $amount,
+        float $amount,
         string $userPrivateKey,
-        string $destinationAddress = ''
+        string $destinationAddress = null,
+        string $destinationWalletName = null,
+        string $descriptor = null,
+        string $businessUuid = null
     ): ApiResponse {
         $body = new TransferMessage(
             $userHandle,
             $destination,
             $amount,
             $this->configuration->getAuthHandle(),
-            ($destinationAddress != '' ? $destinationAddress : null),
-            $descriptor
+            $destinationAddress,
+            $destinationWalletName,
+            $descriptor,
+            $businessUuid
         );
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -388,7 +411,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, OperationResponse::class);
+        return $this->prepareResponse($response, TransferResponse::class);
     }
 
     /**
@@ -396,21 +419,29 @@ class SilaApi
      * their named bank account in the equivalent monetary amount.
      *
      * @param string $userHandle
-     * @param int $amount
+     * @param float $amount
      * @param string $accountName
      * @param string $descriptor
      * @param string $userPrivateKey
      * @return ApiResponse
-     * @throws ClientException
      */
     public function redeemSila(
         string $userHandle,
-        int $amount,
+        float $amount,
         string $accountName,
-        string $descriptor = '',
-        string $userPrivateKey
+        string $userPrivateKey,
+        string $descriptor = null,
+        string $businessUuid = null
     ): ApiResponse {
-        $body = new RedeemMessage($userHandle, $amount, $accountName, $this->configuration->getAuthHandle(), $descriptor);
+        $body = new BankAccountMessage(
+            $userHandle,
+            $accountName,
+            $amount,
+            $this->configuration->getAuthHandle(),
+            Message::REDEEM(),
+            $descriptor,
+            $businessUuid
+        );
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -456,13 +487,11 @@ class SilaApi
         $body = new SilaBalanceMessage($address);
         $path = '/get_sila_balance';
         $json = $this->serializer->serialize($body, 'json');
-        $headers = ['Content-Type' => 'application/json'];
-        $response = $this->configuration->getBalanceClient()->callUnversionedAPI($path, $json, $headers);
-        $json_string = $response->getBody()->getContents();
-        return $this->prepareJsonResponse($json_string, $response->getStatusCode(), $response->getHeaders());
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, []);
+        return $this->prepareResponse($response);
     }
 
-     /**
+    /**
      * Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
      *
      * @param string $userHandle
@@ -648,7 +677,7 @@ class SilaApi
         }
 
         if ($statusCode == 200 && $className != '') {
-                $body = $this->serializer->deserialize($contents, $className, 'json');
+            $body = $this->serializer->deserialize($contents, $className, 'json');
         } else {
             $body = json_decode($contents);
         }

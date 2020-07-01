@@ -1,25 +1,30 @@
 <?php
 
 /**
- * Check KYC Test
+ * Issue Sila Test
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\RequestException;
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
- * Check KYC Test
- * Tests for the Check Handle endpoint in the Sila Api class.
+ * Issue Sila Test
+ * Tests for the issue sila endpoint in the Sila Api class.
  * @category Class
  * @package  Silamoney\Client
  * @author   Karlo Lorenzana <klorenzana@digitalgeko.com>
  */
 class IssueSilaTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    protected const ISSUE_TRANS = 'Issue Trans';
+
     /**
      * @var \Silamoney\Client\Api\SilaApi
      */
@@ -29,7 +34,7 @@ class IssueSilaTest extends TestCase
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-    
+
     /**
      * @var \JMS\Serializer\SerializerBuilder
      */
@@ -53,61 +58,60 @@ class IssueSilaTest extends TestCase
         self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
-    /**
-     * @test
-     */
     public function testIssueSila200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $attempt = 0;
-        $success = false;
-        $mark = microtime(true);
-        while ($attempt < 12 && !$success) {
-            sleep(10);
-            print('.');
-            $response = self::$api->checkKYC($resp[0], $resp[1]);
-            $this->assertEquals(200, $response->getStatusCode());
-            if (
-                $response->getData()->getStatus() == 'SUCCESS' ||
-                strpos($response->getData()->getMessage(), 'failed')
-            ) {
-                $success = true;
-            }
 
-            $attempt++;
-        }
-        $this->assertStringContainsString('passed', $response->getData()->getMessage());
-
-        // Attempt to Issue w/o linking
-        try {
-            $response = self::$api->issueSila($resp[0], 10000, 'default', 'test descriptor', $resp[1]);
-            $this->assertEquals(200, $response->getStatusCode());
-            $this->assertEquals('test descriptor', $response->getData()->getDescriptor());
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertEquals(401, $response->getStatusCode());
-            $this->assertStringContainsString(
-                'No matching and unfrozen bank account',
-                $response->getBody()->getContents()
-            );
-        }
+        $response = self::$api->issueSila($resp[0], 1000, DefaultConfig::DEFAULT_ACCOUNT, $resp[1]);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getTransactionId());
     }
 
-    // public function testIssueSila200Failure()
-    // {
-    //     //Cant replicate this one, more information.
-    // }
+    public function testIssueSila200Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->issueSila(
+            $resp[0],
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            $resp[1],
+            self::ISSUE_TRANS,
+            DefaultConfig::VALID_BUSINESS_UUID
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertEquals(self::ISSUE_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+    }
+
+    public function testIssueSila400Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->issueSila(
+            $resp[0],
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            $resp[1],
+            self::ISSUE_TRANS,
+            DefaultConfig::INVALID_BUSINESS_UUID
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+    }
 
     public function testIssueSila400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->issueSila(0, 100, 'default', 'test descriptor', 0);
+        $response = self::$api->issueSila(0, 100, DefaultConfig::DEFAULT_ACCOUNT, 0, 'test descriptor');
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
@@ -117,11 +121,10 @@ class IssueSilaTest extends TestCase
     public function testIssueSila401()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->issueSila($resp[0], 100, 'default', 'test descriptor', $resp[1]);
+        $response = self::$api->issueSila($resp[0], 100, DefaultConfig::DEFAULT_ACCOUNT, $resp[1], 'test descriptor',);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }
