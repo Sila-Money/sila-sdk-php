@@ -126,6 +126,7 @@ class RegisterTest extends TestCase
         $response2 = self::$api->register($userDestination);
         $this->assertEquals(200, $response2->getStatusCode());
 
+        fopen(DefaultConfig::FILE_NAME, 'w') or die('Cannot open file:  ' . DefaultConfig::FILE_NAME);
         $current = file_get_contents(DefaultConfig::FILE_NAME);
         $current .= $handle . '||';
         $current .= $wallet->getPrivateKey() . '||';

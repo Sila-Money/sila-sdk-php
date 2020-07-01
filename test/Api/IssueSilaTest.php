@@ -124,7 +124,7 @@ class IssueSilaTest extends TestCase
         $handle = fopen(DefaultConfig::FILE_NAME, 'r');
         $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->issueSila($resp[0], 100, DefaultConfig::DEFAULT_ACCOUNT, $resp[1], 'test descriptor',);
+        $response = self::$api->issueSila($resp[0], 100, DefaultConfig::DEFAULT_ACCOUNT, $resp[1], 'test descriptor');
         $this->assertEquals(401, $response->getStatusCode());
     }
 }
