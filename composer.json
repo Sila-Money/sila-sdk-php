@@ -66,7 +66,7 @@
         ],
         "test:coverage": [
             "@test:pre:coverage",
-            "@test:coverage:base --prepend build/xdebug-filter.php --coverage-clover build/coverage-clover.xml"
+            "@test:coverage:base --prepend build/xdebug-filter.php --log-junit build/test-junit.xml --coverage-clover build/coverage-clover.xml"
         ],
         "test:coverage:base": "@test --whitelist ./lib",
         "test:coverage:human": [
