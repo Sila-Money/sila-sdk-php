@@ -59,7 +59,7 @@ class Header extends HeaderBase
      */
     public function __construct(string $userHandle, string $appHandle)
     {
-        parent::__construct($userHandle, $appHandle);
+        parent::__construct($appHandle, $userHandle);
         $this->crypto = CryptoCode::ETH;
         $this->reference = $this->uuid();
         $this->version = Version::ZERO_2;

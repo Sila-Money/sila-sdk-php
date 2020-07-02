@@ -43,6 +43,7 @@ use Silamoney\Client\Domain\{
     UpdateWalletMessage,
     DeleteWalletMessage,
     GetWalletsMessage,
+    HeaderBaseMessage,
     TransferResponse
 };
 use Silamoney\Client\Security\EcdsaUtil;
@@ -639,6 +640,22 @@ class SilaApi
     }
 
     /**
+     * Gets a list of available business types to use in KYB flow
+     * @return ApiResponse
+     */
+    public function getBusinessTypes(): ApiResponse
+    {
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
+        $path = '/get_business_types';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -687,11 +704,5 @@ class SilaApi
     private function prepareBaseResponse(Response $response): ApiResponse
     {
         return $this->prepareResponse($response, BaseResponse::class);
-    }
-
-    private function prepareJsonResponse(string $json, int $statusCode, array $headers)
-    {
-        $json = json_decode($json);
-        return new ApiResponse($statusCode, $headers, $json);
     }
 }

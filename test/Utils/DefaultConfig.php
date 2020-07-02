@@ -55,4 +55,9 @@ class DefaultConfig
      * @var string
      */
     public const SUCCESS_REGEX = 'Transaction submitted to processing queue';
+
+    /**
+     * @var string
+     */
+    public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
 }
