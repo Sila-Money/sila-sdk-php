@@ -15,6 +15,7 @@
       <file>test/Api/ClientExceptionTest.php</file>
       <file>test/Api/SilaApiTest.php</file>
       <file>test/Api/GetBusinessTypesTest.php</file>
+      <file>test/Api/GetBusinessRolesTest.php</file>
       <file>test/Api/RegisterTest.php</file>
       <file>test/Api/RequestKYCTest.php</file>
       <file>test/Api/CheckKYCTest.php</file>

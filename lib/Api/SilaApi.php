@@ -645,14 +645,18 @@ class SilaApi
      */
     public function getBusinessTypes(): ApiResponse
     {
-        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
         $path = '/get_business_types';
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
-        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
-        return $this->prepareResponse($response);
+        return $this->makeHeaderBaseRequest($path);
+    }
+
+    /**
+     * Gets a list of available business types to use in KYB flow
+     * @return ApiResponse
+     */
+    public function getBusinessRoles(): ApiResponse
+    {
+        $path = '/get_business_roles';
+        return $this->makeHeaderBaseRequest($path);
     }
 
     /**
@@ -682,6 +686,17 @@ class SilaApi
     public function getBalanceClient(): ApiClient
     {
         return $this->configuration->getBalanceClient();
+    }
+
+    private function makeHeaderBaseRequest(string $path)
+    {
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     private function prepareResponse(Response $response, string $className = ''): ApiResponse
