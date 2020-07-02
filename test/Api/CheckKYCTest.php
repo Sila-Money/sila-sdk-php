@@ -9,7 +9,7 @@ namespace Silamoney\Client\Api;
 
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\BadRequestResponse;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Check KYC Test
@@ -29,7 +29,7 @@ class CheckKYCTest extends TestCase
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-    
+
     /**
      * @var \JMS\Serializer\SerializerBuilder
      */
@@ -58,21 +58,30 @@ class CheckKYCTest extends TestCase
      */
     public function testCheckKYC200Sucess()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
         $response = self::$api->checkKYC($resp[0], $resp[1]);
-        $response2 = self::$api->checkKYC($resp[2], $resp[3]);
+        $statusCode = $response->getStatusCode();
+        $status = $response->getData()->getStatus();
+        $message = $response->getData()->getMessage();
+        while ($statusCode == 200 && $status == 'FAILURE' && preg_match('/pending/', $message)) {
+            sleep(30);
+            echo '.';
+            $response = self::$api->checkKYC($resp[0], $resp[1]);
+            $statusCode = $response->getStatusCode();
+            $status = $response->getData()->getStatus();
+            $message = $response->getData()->getMessage();
+        }
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(200, $response2->getStatusCode());
+        $this->assertEquals('SUCCESS', $response->getData()->getStatus());
+        $this->assertStringContainsString('passed', $response->getData()->getMessage());
     }
 
     public function testCheckKYC200Failure()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
         $response = self::$api->checkKYC($resp[0], 0);
         $this->assertEquals(200, $response->getStatusCode());
@@ -80,10 +89,6 @@ class CheckKYCTest extends TestCase
 
     public function testCheckHandle400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
         $response = self::$api->checkKYC(0, 0);
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
@@ -94,9 +99,8 @@ class CheckKYCTest extends TestCase
     public function testCheckHandle401()
     {
         self::setUpBeforeClassInvalidAuthSignature();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
         $response = self::$api->checkKYC($resp[0], 0);
         $this->assertEquals(401, $response->getStatusCode());

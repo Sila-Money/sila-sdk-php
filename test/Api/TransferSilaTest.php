@@ -9,6 +9,7 @@ namespace Silamoney\Client\Api;
 
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Check KYC Test
@@ -20,6 +21,11 @@ use PHPUnit\Framework\TestCase;
 class TransferSilaTest extends TestCase
 {
     /**
+     * @var string
+     */
+    protected const TRANSFER_TRANS = 'Transfer Trans';
+
+    /**
      * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
@@ -28,7 +34,7 @@ class TransferSilaTest extends TestCase
      * @var \Silamoney\Client\Utils\TestConfiguration
      */
     protected static $config;
-    
+
     /**
      * @var \JMS\Serializer\SerializerBuilder
      */
@@ -65,36 +71,69 @@ class TransferSilaTest extends TestCase
      */
     public function testTransferSila200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->transferSila($resp[0], $resp[2], 1000, $resp[1]);
+
+        $current = file_get_contents(DefaultConfig::FILE_NAME);
+        if ($response->getStatusCode() == 200) {
+            $current .= '||' . $response->getData()->getReference();
+            file_put_contents(DefaultConfig::FILE_NAME, $current);
+        }
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getTransactionId());
+        $this->assertIsString($response->getData()->getDestinationAddress());
+    }
+
+    public function testTransferSila200Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
         $response = self::$api->transferSila(
             $resp[0],
             $resp[2],
             1000,
             $resp[1],
-            ''
+            null,
+            null,
+            self::TRANSFER_TRANS,
+            DefaultConfig::VALID_BUSINESS_UUID
         );
-
-
-        $file = 'response.txt';
-        $current = file_get_contents($file);
-        if ($response->getStatusCode() == 200) {
-            $current .= '||' . $response->getData()->getReference();
-            file_put_contents($file, $current);
-        }
-
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(self::TRANSFER_TRANS, $response->getData()->getDescriptor());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertEquals(self::TRANSFER_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+        $this->assertIsString($response->getData()->getDestinationAddress());
     }
 
+    public function testTransferSila400Descriptor()
+    {
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
+        $resp = explode("||", $data);
+        $response = self::$api->transferSila(
+            $resp[0],
+            $resp[2],
+            1000,
+            $resp[1],
+            null,
+            null,
+            self::TRANSFER_TRANS,
+            DefaultConfig::INVALID_BUSINESS_UUID
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+    }
 
     public function testTransferSila400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
         $response = self::$api->transferSila(0, 0, 10000, 0, '');
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
@@ -105,11 +144,10 @@ class TransferSilaTest extends TestCase
     public function testTransferSila401()
     {
         $destination = 'phpSDK-' . $this->uuid();
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
+        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
+        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
         $resp = explode("||", $data);
-        $response = self::$api->transferSila($resp[0], $destination, 10000, $resp[1], '');
+        $response = self::$api->transferSila($resp[0], $destination, 100, $resp[1]);
         $this->assertEquals($response->getStatusCode(), $response->getStatusCode());
     }
 }
