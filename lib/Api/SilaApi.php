@@ -659,6 +659,12 @@ class SilaApi
         return $this->makeHeaderBaseRequest($path);
     }
 
+    public function getNaicsCategories(): ApiResponse
+    {
+        $path = '/get_naics_categories';
+        return $this->makeHeaderBaseRequest($path);
+    }
+
     /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
