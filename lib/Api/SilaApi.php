@@ -665,6 +665,19 @@ class SilaApi
         return $this->makeHeaderBaseRequest($path);
     }
 
+    public function getEntity(string $userHandle, string $userPrivateKey)
+    {
+        $path = '/get_entity';
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle(), $userHandle);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
     /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
@@ -694,7 +707,7 @@ class SilaApi
         return $this->configuration->getBalanceClient();
     }
 
-    private function makeHeaderBaseRequest(string $path)
+    private function makeHeaderBaseRequest(string $path): ApiResponse
     {
         $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
         $json = $this->serializer->serialize($body, 'json');

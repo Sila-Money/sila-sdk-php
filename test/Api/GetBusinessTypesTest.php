@@ -24,7 +24,7 @@ use Silamoney\Client\Utils\{
 class GetBusinessTypesTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiTestConfiguration
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
     private static $config;
 

@@ -24,7 +24,7 @@ use Silamoney\Client\Utils\{
 class GetBusinessRolesTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiTestConfiguration
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
     private static $config;
 
@@ -33,7 +33,7 @@ class GetBusinessRolesTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testGetBusinessTypes200()
+    public function testGetBusinessRoles200()
     {
         $response = self::$config->api->getBusinessRoles();
         $this->assertEquals(200, $response->getStatusCode());
@@ -44,7 +44,7 @@ class GetBusinessRolesTest extends TestCase
         $this->assertIsString($response->getData()->business_roles[0]->label);
     }
 
-    public function testGetBusinessTypes403()
+    public function testGetBusinessRoles403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $response = self::$config->api->getBusinessRoles();

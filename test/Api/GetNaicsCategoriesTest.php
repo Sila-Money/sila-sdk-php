@@ -29,7 +29,7 @@ class GetNaicsCategoriesTest extends TestCase
     private const CATEGORY = 'Accommodation and Food Services';
 
     /**
-     * @var \Silamoney\Client\Api\ApiTestConfiguration
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
     private static $config;
 
@@ -38,7 +38,7 @@ class GetNaicsCategoriesTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testGetBusinessTypes200()
+    public function testGetNaicsCategories200()
     {
         $response = self::$config->api->getNaicsCategories();
         $this->assertEquals(200, $response->getStatusCode());
@@ -49,7 +49,7 @@ class GetNaicsCategoriesTest extends TestCase
         $this->assertIsString($response->getData()->naics_categories->{self::CATEGORY}[0]->subcategory);
     }
 
-    public function testGetBusinessTypes403()
+    public function testGetNaicsCategories403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $response = self::$config->api->getNaicsCategories();

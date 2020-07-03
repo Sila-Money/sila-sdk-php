@@ -28,9 +28,9 @@ class HeaderBaseMessage
      * HeaderBaseMessage constructor.
      * @param string $appHandle
      */
-    public function __construct(string $appHandle)
+    public function __construct(string $appHandle, string $userHandle = null)
     {
-        $this->header = new HeaderBase($appHandle);
+        $this->header = new HeaderBase($appHandle, $userHandle);
     }
 
     public function getHeader(): HeaderBase
