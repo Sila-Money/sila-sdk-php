@@ -57,7 +57,7 @@ class Header extends HeaderBase
      * @param string $userHandle
      * @param string $appHandle
      */
-    public function __construct(string $userHandle, string $appHandle)
+    public function __construct(string $appHandle, string $userHandle = null)
     {
         parent::__construct($appHandle, $userHandle);
         $this->crypto = CryptoCode::ETH;

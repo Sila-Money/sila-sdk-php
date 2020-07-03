@@ -69,7 +69,7 @@ class EntityMessage implements ValidInterface
      */
     public function __construct(User $user, string $appHandle)
     {
-        $this->header = new Header($user->getHandle(), $appHandle);
+        $this->header = new Header($appHandle, $user->getHandle());
         $this->message = Message::ENTITY;
         $this->address = new Address($user);
         $this->identity = new Identity($user);

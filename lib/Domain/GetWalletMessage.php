@@ -35,7 +35,7 @@ class GetWalletMessage implements ValidInterface
         string $userHandle,
         string $appHandle
     ) {
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool

@@ -19,6 +19,7 @@
       <file>test/Api/GetNaicsCategoriesTest.php</file>
       <file>test/Api/RegisterTest.php</file>
       <file>test/Api/GetEntityTest.php</file>
+      <!--<file>test/Api/GetEntitiesTest.php</file>-->
       <file>test/Api/RequestKYCTest.php</file>
       <file>test/Api/CheckKYCTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>

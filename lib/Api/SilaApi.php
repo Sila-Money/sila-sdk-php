@@ -42,6 +42,7 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
     TransferResponse
@@ -673,6 +674,17 @@ class SilaApi
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    public function getEntities(string $entityType = null) {
+        $path = '/get_entities';
+        $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);

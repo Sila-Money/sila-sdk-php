@@ -55,13 +55,13 @@ class LinkAccountMessage implements ValidInterface
      * @Type("string")
      */
     private $account_number;
-    
+
     /**
      * @var string
      * @Type("string")
      */
     private $routing_number;
-    
+
     /**
      * @var string
      * @Type("string")
@@ -96,7 +96,7 @@ class LinkAccountMessage implements ValidInterface
         $this->account_number = $account_number;
         $this->routing_number = $routing_number;
         $this->account_type = $account_type;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::LINK_ACCOUNT;
     }
 

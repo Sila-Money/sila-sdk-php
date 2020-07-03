@@ -1,23 +1,22 @@
 <?php
 
 /**
- * Get Accounts Message
+ * Get Entities Message
  * PHP version 7.2
  */
 
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
-use Respect\Validation\Validator as v;
 
 /**
- * Get Accounts Message
- * Object sent in the Get Accounts method.
+ * Get Entities Message
+ * Object sent in the getEntities method.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class GetAccountsMessage implements ValidInterface
+class GetEntitiesMessage
 {
     /**
      * @var Silamoney\Client\Domain\Header
@@ -32,21 +31,21 @@ class GetAccountsMessage implements ValidInterface
     private $message;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $entityType;
+
+    /**
      * Constructor for GetAccountsMsg object.
      *
      * @param string $userHandle
      * @param string $appHandle
      */
-    public function __construct(string $userHandle, string $appHandle)
+    public function __construct(string $appHandle, string $entityType = null)
     {
-        $this->header = new Header($appHandle, $userHandle);
-        $this->message = Message::GET_ACCOUNTS;
-    }
-
-    public function isValid(): bool
-    {
-        return v::notOptional()->validate($this->header)
-            && $this->header->isValid()
-            && v::stringType()->notEmpty()->validate($this->message);
+        $this->header = new Header($appHandle);
+        $this->message = Message::HEADER;
+        $this->entityType = $entityType;
     }
 }

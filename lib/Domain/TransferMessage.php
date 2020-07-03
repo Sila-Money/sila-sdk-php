@@ -91,7 +91,7 @@ class TransferMessage implements ValidInterface
         $this->destination = $destination;
         $this->destinationAddress = $destinationAddress;
         $this->destinationWallet = $destinationWallet;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::TRANSFER;
         $this->descriptor = $descriptor;
         $this->businessUuid = $businessUuid;

@@ -39,7 +39,7 @@ class GetAccountBalanceMessage implements ValidInterface
      */
     public function __construct(string $userHandle, string $appHandle, string $accountName)
     {
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
         $this->accountName = $accountName;
     }
 

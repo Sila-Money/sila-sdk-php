@@ -51,7 +51,7 @@ class GetTransactionsMessage implements ValidInterface
     ) {
         $this->searchFilters = $searchFilters;
         $this->message = Message::GET_TRANSACTIONS;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool
