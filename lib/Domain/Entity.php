@@ -17,19 +17,13 @@ use Respect\Validation\Validator as v;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class Entity implements ValidInterface
+class Entity extends BaseEntity implements ValidInterface
 {
     /**
      * @var string
      * @Type("string")
      */
     private $birthdate;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-    private $entityName;
 
     /**
      * @var string
@@ -52,16 +46,17 @@ class Entity implements ValidInterface
     /**
      * Constructor for Entity object.
      *
-     * @param Silamoney\Client\Domian\User $user
+     * @param \Silamoney\Client\Domian\User $user
+     * @return \Silamoney\Client\Domain\Entity
      */
     public function __construct(User $user)
     {
+        parent::__construct($user->getFirstName() . " " . $user->getLastName(), 'individual');
         $pattern = 'Y-m-d';
         $date = $user->getBirthdate()->format($pattern);
         $this->birthdate = $date;
         $this->firstName = $user->getFirstName();
         $this->lastName = $user->getLastName();
-        $this->entityName = $this->firstName . " " . $this->lastName;
         $this->relationship = Relationship::USER;
     }
 

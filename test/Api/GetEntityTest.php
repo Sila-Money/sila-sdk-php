@@ -33,16 +33,19 @@ class GetEntityTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testGetEntityIndividual200()
+    /**
+     * @param string $handle
+     * @param string $privateKey
+     * @param string $entityType
+     * @dataProvider entityProvider
+     */
+    public function testGetEntityIndividual200($handle, $privateKey, $entityType)
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$config->api->getEntity($resp[0], $resp[1]);
+        $response = self::$config->api->getEntity($handle, $privateKey);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
-        $this->assertEquals(strtolower($resp[0]), $response->getData()->user_handle);
-        $this->assertEquals('individual', $response->getData()->entity_type);
+        $this->assertEquals(strtolower($handle), $response->getData()->user_handle);
+        $this->assertEquals($entityType, $response->getData()->entity_type);
         $this->assertIsObject($response->getData()->entity);
         $this->assertIsArray($response->getData()->addresses);
         $this->assertEquals(1, sizeof($response->getData()->addresses));
@@ -52,19 +55,37 @@ class GetEntityTest extends TestCase
         $this->assertEquals(1, sizeof($response->getData()->emails));
         $this->assertIsArray($response->getData()->phones);
         $this->assertEquals(1, sizeof($response->getData()->phones));
-        $this->assertIsArray($response->getData()->memberships);
-        $this->assertEquals(0, sizeof($response->getData()->memberships));
+        if ($entityType == 'individual') {
+            $this->assertIsArray($response->getData()->memberships);
+            $this->assertEquals(0, sizeof($response->getData()->memberships));
+        }
     }
 
     public function testGetEntity403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$config->api->getEntity($resp[0], $resp[1]);
+        $response = self::$config->api->getEntity(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey()
+        );
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function entityProvider()
+    {
+        return [
+            'get entity - individual' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(),
+                'individual'
+            ],
+            'get entity - business' => [
+                DefaultConfig::$businessUserHandle,
+                DefaultConfig::$businessUserWallet->getPrivateKey(),
+                'business'
+            ]
+        ];
     }
 }

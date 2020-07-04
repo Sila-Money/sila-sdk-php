@@ -46,6 +46,7 @@ class GetNaicsCategoriesTest extends TestCase
         $this->assertIsObject($response->getData()->naics_categories);
         $this->assertIsArray($response->getData()->naics_categories->{self::CATEGORY});
         $this->assertIsInt($response->getData()->naics_categories->{self::CATEGORY}[0]->code);
+        DefaultConfig::$naicsCode = $response->getData()->naics_categories->{self::CATEGORY}[0]->code;
         $this->assertIsString($response->getData()->naics_categories->{self::CATEGORY}[0]->subcategory);
     }
 

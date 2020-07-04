@@ -17,6 +17,8 @@ use Silamoney\Client\Domain\{
     BalanceEnvironments,
     BankAccountMessage,
     BaseResponse,
+    BusinessEntityMessage,
+    BusinessUser,
     OperationResponse,
     EntityMessage,
     Environments,
@@ -679,9 +681,22 @@ class SilaApi
         return $this->prepareResponse($response);
     }
 
-    public function getEntities(string $entityType = null) {
+    public function getEntities(string $entityType = null)
+    {
         $path = '/get_entities';
         $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    public function registerBusiness(BusinessUser $business): ApiResponse
+    {
+        $path = '/register';
+        $body = new BusinessEntityMessage($this->configuration->getAuthHandle(), $business);
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())

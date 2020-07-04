@@ -40,7 +40,9 @@ class GetBusinessTypesTest extends TestCase
         $this->assertTrue($response->getData()->success);
         $this->assertIsArray($response->getData()->business_types);
         $this->assertIsString($response->getData()->business_types[0]->uuid);
+        DefaultConfig::$businessTypeUuid = $response->getData()->business_types[0]->uuid;
         $this->assertIsString($response->getData()->business_types[0]->name);
+        DefaultConfig::$businessType = $response->getData()->business_types[0]->name;
         $this->assertIsString($response->getData()->business_types[0]->label);
     }
 

@@ -2,59 +2,30 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
 
 class GetAccountBalanceTest extends TestCase
 {
     /**
-     *
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected static $api;
-
-    /**
-     *
-     * @var \Silamoney\Client\Utils\TestConfiguration
-     */
-    protected static $config;
-
-    /**
-     *
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        self::$config = new ApiTestConfiguration();
     }
 
-    public static function setUpBeforeClassInvalidAuthSignature(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
-    }
-
-    /**
-     *
-     * @test
-     */
     public function testGetAccountBalance200()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->getAccountBalance($resp[0], $resp[1], DefaultConfig::DEFAULT_ACCOUNT);
+        $response = self::$config->api->getAccountBalance(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::DEFAULT_ACCOUNT
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsFloat($response->getData()->availableBalance);
@@ -66,14 +37,14 @@ class GetAccountBalanceTest extends TestCase
 
     public function testGetAccountBalance400()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->getAccountBalance(0, $resp[1], DefaultConfig::DEFAULT_ACCOUNT);
+        $response = self::$config->api->getAccountBalance(
+            0,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::DEFAULT_ACCOUNT
+        );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals(false, $response->getData()->success);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
-
 }

@@ -35,16 +35,13 @@ class GetEntitiesTest extends TestCase
 
     public function testGetEntitiesIndividual200()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
         $response = self::$config->api->getEntities();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
         $this->assertEquals(2, sizeof($response->getData()->entities->individuals));
-        $this->assertEquals(strtolower($resp[0]), $response->getData()->entities->individuals[0]->handle);
+        $this->assertEquals(strtolower(DefaultConfig::$firstUserHandle), $response->getData()->entities->individuals[0]->handle);
         $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
         $this->assertIsInt($response->getData()->entities->individuals[0]->created);
         $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);

@@ -9,6 +9,7 @@ namespace Silamoney\Client\Api;
 
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Register Test
@@ -71,46 +72,42 @@ class RequestKYCTest extends TestCase
      */
     public function testRegister200()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], $resp[1], '');
-        $response2 = self::$api->requestKYC($resp[2], $resp[3], '');
+        $response = self::$api->requestKYC(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            ''
+        );
+        $response2 = self::$api->requestKYC(
+            DefaultConfig::$secondUserHandle,
+            DefaultConfig::$secondUserWallet->getPrivateKey(),
+            ''
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(200, $response2->getStatusCode());
     }
 
     public function testRegister403KycLevel()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], $resp[1], 'test_php');
+        $response = self::$api->requestKYC(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'test_php'
+        );
         $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testRegister400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
         $response = self::$api->requestKYC(0, 0, '');
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
-    
+
     public function testRegister401()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], 0, '');
+        $response = self::$api->requestKYC(DefaultConfig::$firstUserHandle, 0, '');
         $this->assertEquals(401, $response->getStatusCode());
     }
 

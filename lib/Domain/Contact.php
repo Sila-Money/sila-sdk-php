@@ -43,9 +43,10 @@ class Contact implements ValidInterface
     /**
      * Constructor for contact object.
      *
-     * @param Silamoney\Client\Domain\User $user
+     * @param \Silamoney\Client\Domain\BaseUser $user
+     * @return \Silamoney\Client\Domain\Contact
      */
-    public function __construct(User $user)
+    public function __construct(BaseUser $user)
     {
         $this->contactAlias = "";
         $this->email = $user->getEmail();

@@ -17,7 +17,9 @@
       <file>test/Api/GetBusinessRolesTest.php</file>
       <file>test/Api/GetBusinessTypesTest.php</file>
       <file>test/Api/GetNaicsCategoriesTest.php</file>
+      <file>test/Api/CheckHandleTest.php</file>
       <file>test/Api/RegisterTest.php</file>
+      <file>test/Api/RegisterBusinessTest.php</file>
       <file>test/Api/GetEntityTest.php</file>
       <!--<file>test/Api/GetEntitiesTest.php</file>-->
       <file>test/Api/RequestKYCTest.php</file>
