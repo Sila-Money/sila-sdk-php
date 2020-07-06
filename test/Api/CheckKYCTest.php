@@ -8,8 +8,10 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Utils\ApiTestConfiguration;
-use Silamoney\Client\Utils\DefaultConfig;
+use Silamoney\Client\Utils\{
+    ApiTestConfiguration,
+    DefaultConfig
+};
 
 /**
  * Check KYC Test
@@ -29,26 +31,31 @@ class CheckKYCTest extends TestCase
     {
         self::$config = new ApiTestConfiguration();
     }
-    
-    public function testCheckKYC200Sucess()
+
+    /**
+     * @param string $handle
+     * @param string $privateKey
+     * @param string $expectedStatus
+     * @param string $messageRegex
+     * @dataProvider checkKycProvider
+     */
+    public function testCheckKYC200Sucess($handle, $privateKey, $expectedStatus, $messageRegex)
     {
-        $handle = DefaultConfig::$firstUserHandle;
-        $privateKey = DefaultConfig::$firstUserWallet->getPrivateKey();
         $response = self::$config->api->checkKYC($handle, $privateKey);
         $statusCode = $response->getStatusCode();
-        $status = $response->getData()->getStatus();
-        $message = $response->getData()->getMessage();
-        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending/', $message)) {
+        $status = $response->getData()->status;
+        $message = $response->getData()->message;
+        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/', $message)) {
             sleep(30);
             echo '.';
             $response = self::$config->api->checkKYC($handle, $privateKey);
             $statusCode = $response->getStatusCode();
-            $status = $response->getData()->getStatus();
-            $message = $response->getData()->getMessage();
+            $status = $response->getData()->status;
+            $message = $response->getData()->message;
         }
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
-        $this->assertStringContainsString('passed', $response->getData()->getMessage());
+        $this->assertEquals(200, $statusCode);
+        $this->assertEquals($expectedStatus, $status);
+        $this->assertStringContainsString($messageRegex, $message);
     }
 
     public function testCheckHandle400()
@@ -67,5 +74,29 @@ class CheckKYCTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function checkKycProvider()
+    {
+        return [
+            'check kyc - first user' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                'has passed ID verification'
+            ],
+            'check kyc - second user' => [
+                DefaultConfig::$secondUserHandle,
+                DefaultConfig::$secondUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                'has passed ID verification'
+            ],
+            'check kyc - business user' => [
+                DefaultConfig::$businessUserHandle,
+                DefaultConfig::$businessUserWallet->getPrivateKey(),
+                DefaultConfig::FAILURE,
+                'Business has passed verification'
+            ]
+        ];
     }
 }
