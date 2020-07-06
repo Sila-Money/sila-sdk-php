@@ -22,6 +22,7 @@
       <file>test/Api/RegisterBusinessTest.php</file>
       <file>test/Api/GetEntityTest.php</file>
       <!--<file>test/Api/GetEntitiesTest.php</file>-->
+      <file>test/Api/LinkBusinessMemberTest.php</file>
       <file>test/Api/RequestKYCTest.php</file>
       <file>test/Api/CheckKYCTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>

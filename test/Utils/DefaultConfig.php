@@ -94,6 +94,11 @@ class DefaultConfig
     public static $businessUserWallet;
 
     /**
+     * @var array
+     */
+    public static $businessRoles;
+
+    /**
      * @var string
      */
     public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';

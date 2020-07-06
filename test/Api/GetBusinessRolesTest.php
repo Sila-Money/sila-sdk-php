@@ -39,6 +39,7 @@ class GetBusinessRolesTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsArray($response->getData()->business_roles);
+        DefaultConfig::$businessRoles = $response->getData()->business_roles;
         $this->assertIsString($response->getData()->business_roles[0]->uuid);
         $this->assertIsString($response->getData()->business_roles[0]->name);
         $this->assertIsString($response->getData()->business_roles[0]->label);
