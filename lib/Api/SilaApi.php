@@ -16,6 +16,7 @@ use Silamoney\Client\Domain\{
     Account,
     BalanceEnvironments,
     BankAccountMessage,
+    BaseBusinessMessage,
     BaseResponse,
     BusinessEntityMessage,
     BusinessUser,
@@ -784,16 +785,13 @@ class SilaApi
             $details
         );
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey),
-            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessPrivateKey)
-        ];
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
 
     /**
+     * Unlinks the specified role from an existing user associated to the business handle
      * @param string $businessHandle The business handle
      * @param string $businessPrivateKey The business private key for the request signature
      * @param string $userHandle The user handle to be unlinked
@@ -818,11 +816,32 @@ class SilaApi
             $roleUuid
         );
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey),
-            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessPrivateKey)
-        ];
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Certification process for the specified business
+     * @param string $businessHandle The business handle to certify
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle of an administrator
+     * @param string $userPrivateKey The user private key for the request signature
+     */
+    public function certifyBusiness(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey
+    ): ApiResponse {
+        $path = '/certify_business';
+        $body = new BaseBusinessMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $businessHandle,
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -865,6 +884,15 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
+    }
+
+    private function makeBusinessHeaders(string $json, string $businessKey, string $userKey): array
+    {
+        return [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userKey),
+            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessKey)
+        ];
     }
 
     private function prepareResponse(Response $response, string $className = ''): ApiResponse

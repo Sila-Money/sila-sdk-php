@@ -16,14 +16,8 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class UnlinkBusinessMemberMessage
+class UnlinkBusinessMemberMessage extends BaseBusinessMessage
 {
-    /**
-     * @var \Silamoney\Client\Domain\HeaderBusiness
-     * @Type("Silamoney\Client\Domain\HeaderBusiness")
-     */
-    protected $header;
-
     /**
      * @var string
      * @Type("string")
@@ -51,7 +45,7 @@ class UnlinkBusinessMemberMessage
         string $role = null,
         string $roleUuid = null
     ) {
-        $this->header = new HeaderBusiness($appHandle, $userHandle, $businessHandle);
+        parent::__construct($appHandle, $userHandle, $businessHandle);
         $this->role = $role;
         $this->roleUuid = $roleUuid;
     }
