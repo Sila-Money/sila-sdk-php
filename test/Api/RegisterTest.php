@@ -71,11 +71,26 @@ class RegisterTest extends TestCase
         DefaultConfig::$walletAddressForBalance = DefaultConfig::$firstUserWallet->getAddress();
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
-        $firstUser = DefaultConfig::generateUser(DefaultConfig::$firstUserHandle, 'First', DefaultConfig::$firstUserWallet);
-        $secondUser = DefaultConfig::generateUser(DefaultConfig::$secondUserHandle, 'Second', DefaultConfig::$secondUserWallet);
+        DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
+        $firstUser = DefaultConfig::generateUser(
+            DefaultConfig::$firstUserHandle,
+            'First',
+            DefaultConfig::$firstUserWallet
+        );
+        $secondUser = DefaultConfig::generateUser(
+            DefaultConfig::$secondUserHandle,
+            'Second',
+            DefaultConfig::$secondUserWallet
+        );
+        $tempAdmin = DefaultConfig::generateUser(
+            DefaultConfig::$businessTempAdminHandle,
+            'TempAdmin',
+            DefaultConfig::$businessTempAdminWallet
+        );
         return [
             'register - first user' => [$firstUser],
-            'register - second user' => [$secondUser]
+            'register - second user' => [$secondUser],
+            'register - business temp admin user' => [$tempAdmin]
         ];
     }
 }

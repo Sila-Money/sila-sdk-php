@@ -23,6 +23,11 @@ use Silamoney\Client\Utils\{
 class CheckKYCTest extends TestCase
 {
     /**
+     * @var string
+     */
+    private const INDIVIDUAL_VERIFICATION = 'has passed ID verification';
+
+    /**
      * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
     private static $config;
@@ -83,13 +88,19 @@ class CheckKYCTest extends TestCase
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(),
                 DefaultConfig::SUCCESS,
-                'has passed ID verification'
+                self::INDIVIDUAL_VERIFICATION
             ],
             'check kyc - second user' => [
                 DefaultConfig::$secondUserHandle,
                 DefaultConfig::$secondUserWallet->getPrivateKey(),
                 DefaultConfig::SUCCESS,
-                'has passed ID verification'
+                self::INDIVIDUAL_VERIFICATION
+            ],
+            'check kyc - business temp admin user' => [
+                DefaultConfig::$businessTempAdminHandle,
+                DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
             ],
             'check kyc - business user' => [
                 DefaultConfig::$businessUserHandle,

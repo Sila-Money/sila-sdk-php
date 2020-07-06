@@ -48,7 +48,8 @@ use Silamoney\Client\Domain\{
     GetWalletsMessage,
     HeaderBaseMessage,
     LinkBusinessMemberMessage,
-    TransferResponse
+    TransferResponse,
+    UnlinkBusinessMemberMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -702,9 +703,23 @@ class SilaApi
      * @param string|null $entityType Filters the results for 'individual' or 'business'
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function getEntities(string $entityType = null)
-    {
-        $path = '/get_entities';
+    public function getEntities(
+        string $entityType = null,
+        int $page = null,
+        int $perPage = null
+    ) {
+        $params = '';
+        if ($page != null) {
+            $params = "?page={$page}";
+        }
+        if ($perPage != null) {
+            if ($params != '') {
+                $params = "{$params}&per_page={$perPage}";
+            } else {
+                $params = "?per_page={$perPage}";
+            }
+        }
+        $path = "/get_entities{$params}";
         $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -767,6 +782,40 @@ class SilaApi
             $ownershipStake,
             $memberHandle,
             $details
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey),
+            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * @param string $businessHandle The business handle
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle to be unlinked
+     * @param string $userPrivateKey The user private key for the request signature
+     * @param string|null $role The member role to unlink. This is required unless the role uuid is set.
+     * @param string|null $roleUuid The role uuid to unlink. This is required unless the role is set.
+     */
+    public function unlinkBusinessMember(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey,
+        string $role = null,
+        string $roleUuid = null
+    ): ApiResponse {
+        $path = '/unlink_business_member';
+        $body = new UnlinkBusinessMemberMessage(
+            $this->configuration->getAuthHandle(),
+            $businessHandle,
+            $userHandle,
+            $role,
+            $roleUuid
         );
         $json = $this->serializer->serialize($body, 'json');
         $headers = [

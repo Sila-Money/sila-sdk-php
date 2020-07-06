@@ -85,6 +85,10 @@ class RequestKYCTest extends TestCase
                 DefaultConfig::$secondUserHandle,
                 DefaultConfig::$secondUserWallet->getPrivateKey()
             ],
+            'request kyc - business temp admin user' => [
+                DefaultConfig::$businessTempAdminHandle,
+                DefaultConfig::$businessTempAdminWallet->getPrivateKey()
+            ],
             'request kyc - business user' => [
                 DefaultConfig::$businessUserHandle,
                 DefaultConfig::$businessUserWallet->getPrivateKey()

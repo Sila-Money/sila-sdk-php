@@ -70,6 +70,7 @@ class CheckHandleTest extends TestCase
         DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessTempAdminHandle = DefaultConfig::generateHandle();
         DefaultConfig::$invalidHandle = DefaultConfig::generateHandle();
         return [
             'check handle -first user handle' => [
@@ -84,6 +85,11 @@ class CheckHandleTest extends TestCase
             ],
             'check handle - business user handle' => [
                 DefaultConfig::$businessUserHandle,
+                DefaultConfig::SUCCESS,
+                self::HANDLE_AVAILABLE
+            ],
+            'check handle - business temp admin handle' => [
+                DefaultConfig::$businessTempAdminHandle,
                 DefaultConfig::SUCCESS,
                 self::HANDLE_AVAILABLE
             ],

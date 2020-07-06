@@ -33,27 +33,44 @@ class GetEntitiesTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testGetEntitiesIndividual200()
+    public function testGetEntities200()
     {
-        $response = self::$config->api->getEntities();
+        $response = self::$config->api->getEntities(null, null, 4);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
-        $this->assertEquals(2, sizeof($response->getData()->entities->individuals));
-        $this->assertEquals(strtolower(DefaultConfig::$firstUserHandle), $response->getData()->entities->individuals[0]->handle);
+        $this->assertEquals(3, sizeof($response->getData()->entities->individuals));
+        $this->assertEquals(strtolower(DefaultConfig::$businessTempAdminHandle), $response->getData()->entities->individuals[0]->handle);
         $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
         $this->assertIsInt($response->getData()->entities->individuals[0]->created);
         $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);
         $this->assertIsArray($response->getData()->entities->individuals[0]->blockchain_addresses);
         $this->assertEquals(1, sizeof($response->getData()->entities->individuals[0]->blockchain_addresses));
         $this->assertIsArray($response->getData()->entities->businesses);
-        $this->assertEquals(0, sizeof($response->getData()->entities->businesses));
+        $this->assertEquals(1, sizeof($response->getData()->entities->businesses));
+        $this->assertEquals(strtolower(DefaultConfig::$businessUserHandle), $response->getData()->entities->businesses[0]->handle);
+        $this->assertIsString($response->getData()->entities->businesses[0]->full_name);
+        $this->assertIsInt($response->getData()->entities->businesses[0]->created);
+        $this->assertEquals('active', $response->getData()->entities->businesses[0]->status);
+        $this->assertIsArray($response->getData()->entities->businesses[0]->blockchain_addresses);
+        $this->assertEquals(1, sizeof($response->getData()->entities->businesses[0]->blockchain_addresses));
+        $this->assertIsString($response->getData()->entities->businesses[0]->uuid);
+        $this->assertIsString($response->getData()->entities->businesses[0]->business_type);
+        $this->assertIsString($response->getData()->entities->businesses[0]->dba);
         $this->assertIsObject($response->getData()->pagination);
-        $this->assertEquals(1, $response->getData()->pagination->returned_count);
-        $this->assertEquals(1, $response->getData()->pagination->total_count);
+        $this->assertEquals(4, $response->getData()->pagination->returned_count);
+        $this->assertGreaterThanOrEqual(4, $response->getData()->pagination->total_count);
         $this->assertEquals(1, $response->getData()->pagination->current_page);
-        $this->assertEquals(1, $response->getData()->pagination->total_pages);
+        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
+    }
+
+    public function testGetEntities400()
+    {
+        $response = self::$config->api->getEntities('invalid_type');
+        $this->assertFalse($response->getData()->success);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testGetEntities403()

@@ -37,9 +37,10 @@ class GetEntityTest extends TestCase
      * @param string $handle
      * @param string $privateKey
      * @param string $entityType
+     * @param int|null $numberOfMemberships
      * @dataProvider entityProvider
      */
-    public function testGetEntityIndividual200($handle, $privateKey, $entityType)
+    public function testGetEntityIndividual200($handle, $privateKey, $entityType, $numberOfMemberships)
     {
         $response = self::$config->api->getEntity($handle, $privateKey);
         $this->assertEquals(200, $response->getStatusCode());
@@ -55,10 +56,19 @@ class GetEntityTest extends TestCase
         $this->assertEquals(1, sizeof($response->getData()->emails));
         $this->assertIsArray($response->getData()->phones);
         $this->assertEquals(1, sizeof($response->getData()->phones));
-        if ($entityType == 'individual') {
+        if ($entityType == DefaultConfig::INDIVIDUAL) {
             $this->assertIsArray($response->getData()->memberships);
-            $this->assertEquals(0, sizeof($response->getData()->memberships));
+            $this->assertEquals($numberOfMemberships, sizeof($response->getData()->memberships));
         }
+    }
+
+    public function testGetEntity400()
+    {
+        $response = self::$config->api->getEntity('', DefaultConfig::$firstUserWallet->getPrivateKey());
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testGetEntity403()
@@ -76,15 +86,29 @@ class GetEntityTest extends TestCase
     public function entityProvider()
     {
         return [
-            'get entity - individual' => [
+            'get entity - first user' => [
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(),
-                'individual'
+                DefaultConfig::INDIVIDUAL,
+                1
+            ],
+            'get entity - second user' => [
+                DefaultConfig::$secondUserHandle,
+                DefaultConfig::$secondUserWallet->getPrivateKey(),
+                DefaultConfig::INDIVIDUAL,
+                1
+            ],
+            'get entity - business temp admin user' => [
+                DefaultConfig::$businessTempAdminHandle,
+                DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
+                DefaultConfig::INDIVIDUAL,
+                0
             ],
             'get entity - business' => [
                 DefaultConfig::$businessUserHandle,
                 DefaultConfig::$businessUserWallet->getPrivateKey(),
-                'business'
+                'business',
+                null
             ]
         ];
     }

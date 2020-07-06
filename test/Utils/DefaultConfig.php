@@ -64,6 +64,11 @@ class DefaultConfig
     public static $businessUserHandle;
 
     /**
+     * @var string
+     */
+    public static $businessTempAdminHandle;
+
+    /**
      * @var int
      */
     public static $naicsCode;
@@ -92,6 +97,11 @@ class DefaultConfig
      * @var \Silamoney\Client\Domain\SilaWallet
      */
     public static $businessUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $businessTempAdminWallet;
 
     /**
      * @var array
@@ -127,6 +137,11 @@ class DefaultConfig
      * @var string
      */
     public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+
+    /**
+     * @var string
+     */
+    public const INDIVIDUAL = 'individual';
 
     public static function generateHandle(): string
     {

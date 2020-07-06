@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Link Business Member Test
+ * Unlink Business Member Test
  * PHP version 7.2
  */
 
@@ -14,14 +14,14 @@ use Silamoney\Client\Utils\{
 };
 
 /**
- * LinkBusinessMember Test
- * Tests for the link_business_member endpoint in the Sila Api class.
+ * UnlinkBusinessMember Test
+ * Tests for the unlink_business_member endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
  * @author José Morales <jmorales@digitalgeko.com>
  */
-class LinkBusinessMemberTest extends TestCase
+class UnlinkBusinessMemberTest extends TestCase
 {
     /**
      * @var \Silamoney\Client\Utils\ApiTestConfiguration
@@ -33,36 +33,24 @@ class LinkBusinessMemberTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    /**
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param int $roleIndex
-     * @param string $details
-     * @dataProvider linkBusinessMemberProvider
-     */
-    public function testLinkBusinessMember200($userHandle, $userPrivateKey, $roleIndex, $details)
+    public function testUnlinkBusinessMember200()
     {
-        $businessRole = DefaultConfig::$businessRoles[$roleIndex];
-        $response = self::$config->api->linkBusinessMember(
+        $businessRole = DefaultConfig::$businessRoles[2];
+        $response = self::$config->api->unlinkBusinessMember(
             DefaultConfig::$businessUserHandle,
             DefaultConfig::$businessUserWallet->getPrivateKey(),
-            $userHandle,
-            $userPrivateKey,
+            DefaultConfig::$businessTempAdminHandle,
+            DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
             null,
-            $businessRole->uuid,
-            null,
-            null,
-            $details
+            $businessRole->uuid
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals($businessRole->name, $response->getData()->role);
-        $this->assertStringContainsString("has been made a {$businessRole->label}", $response->getData()->message);
-        $this->assertEquals($details, $response->getData()->details);
-        $this->assertEquals(null, $response->getData()->verification_uuid);
+        $this->assertStringContainsString("has been unlinked as a {$businessRole->label}", $response->getData()->message);
     }
 
-    public function testLinkBusinessMember400()
+    public function testUnlinkBusinessMember400()
     {
         $response = self::$config->api->linkBusinessMember(
             DefaultConfig::$businessUserHandle,
@@ -76,7 +64,7 @@ class LinkBusinessMemberTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
-    public function testLinkBusinessMember403()
+    public function testUnlinkBusinessMember403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $response = self::$config->api->linkBusinessMember(
@@ -84,34 +72,10 @@ class LinkBusinessMemberTest extends TestCase
             DefaultConfig::$businessUserWallet->getPrivateKey(),
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            DefaultConfig::$businessRoles[0]->name
+            DefaultConfig::$businessRoles[2]->name
         );
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
-    }
-
-    public function linkBusinessMemberProvider()
-    {
-        return [
-            'link business member - administrator' => [
-                DefaultConfig::$firstUserHandle,
-                DefaultConfig::$firstUserWallet->getPrivateKey(),
-                2,
-                'Adding an administrator'
-            ],
-            'link business member - controlling officer' => [
-                DefaultConfig::$secondUserHandle,
-                DefaultConfig::$secondUserWallet->getPrivateKey(),
-                0,
-                'Adding a controlling officer'
-            ],
-            'link business member - temp administrator' => [
-                DefaultConfig::$businessTempAdminHandle,
-                DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
-                2,
-                'Adding a temp administrator'
-            ]
-        ];
     }
 }
