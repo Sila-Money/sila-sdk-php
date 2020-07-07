@@ -872,7 +872,7 @@ class SilaApi
         $body = new BaseBusinessMessage(
             $this->configuration->getAuthHandle(),
             $userHandle,
-            $businessHandle,
+            $businessHandle
         );
         $json = $this->serializer->serialize($body, 'json');
         $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
