@@ -41,7 +41,7 @@ class GetEntitiesTest extends TestCase
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
         $this->assertEquals(4, sizeof($response->getData()->entities->individuals));
-        $this->assertEquals(strtolower(DefaultConfig::$beneficialUserHandle), $response->getData()->entities->individuals[0]->handle);
+        $this->assertIsString($response->getData()->entities->individuals[0]->handle);
         $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
         $this->assertIsInt($response->getData()->entities->individuals[0]->created);
         $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);
@@ -49,7 +49,7 @@ class GetEntitiesTest extends TestCase
         $this->assertEquals(1, sizeof($response->getData()->entities->individuals[0]->blockchain_addresses));
         $this->assertIsArray($response->getData()->entities->businesses);
         $this->assertEquals(1, sizeof($response->getData()->entities->businesses));
-        $this->assertEquals(strtolower(DefaultConfig::$businessUserHandle), $response->getData()->entities->businesses[0]->handle);
+        $this->assertIsString($response->getData()->entities->businesses[0]->handle);
         $this->assertIsString($response->getData()->entities->businesses[0]->full_name);
         $this->assertIsInt($response->getData()->entities->businesses[0]->created);
         $this->assertEquals('active', $response->getData()->entities->businesses[0]->status);

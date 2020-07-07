@@ -40,7 +40,7 @@ class CertifyBeneficialOwnerTest extends TestCase
             DefaultConfig::$businessUserWallet->getPrivateKey(),
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            DefaultConfig::$beneficialUserHandle,
+            strtolower(DefaultConfig::$beneficialUserHandle),
             DefaultConfig::$beneficialOwnerToken
         );
         $this->assertEquals(200, $response->getStatusCode());
