@@ -20,6 +20,7 @@ use Silamoney\Client\Domain\{
     BaseResponse,
     BusinessEntityMessage,
     BusinessUser,
+    CertifyBeneficialOwnerMessage,
     OperationResponse,
     EntityMessage,
     Environments,
@@ -508,8 +509,7 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $accountName
-     * @return ApiResponse
-     * @throws ClientException
+     * @return \Silamoney\Client\Api\ApiResponse
      */
     public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
     {
@@ -798,6 +798,7 @@ class SilaApi
      * @param string $userPrivateKey The user private key for the request signature
      * @param string|null $role The member role to unlink. This is required unless the role uuid is set.
      * @param string|null $roleUuid The role uuid to unlink. This is required unless the role is set.
+     * @return \Silamoney\Client\Api\ApiResponse
      */
     public function unlinkBusinessMember(
         string $businessHandle,
@@ -822,11 +823,44 @@ class SilaApi
     }
 
     /**
+     * Certification process for the specified beneficial owner in the business
+     * @param string $businessHandle The business handle
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle of an administrator
+     * @param string $userPrivateKey The user private key for the request signature
+     * @param string $memberHandle The beneficial owner handle to certify
+     * @param string $certificationToken The certification token obtained from getEntity method for the specified beneficial owner handle
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function certifyBeneficialOwner(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey,
+        string $memberHandle,
+        string $certificationToken
+    ): ApiResponse {
+        $path = '/certify_beneficial_owner';
+        $body = new CertifyBeneficialOwnerMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $businessHandle,
+            $memberHandle,
+            $certificationToken
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
      * Certification process for the specified business
      * @param string $businessHandle The business handle to certify
      * @param string $businessPrivateKey The business private key for the request signature
      * @param string $userHandle The user handle of an administrator
      * @param string $userPrivateKey The user private key for the request signature
+     * @return \Silamoney\Client\Api\ApiResponse
      */
     public function certifyBusiness(
         string $businessHandle,

@@ -69,6 +69,16 @@ class DefaultConfig
     public static $businessTempAdminHandle;
 
     /**
+     * @var string
+     */
+    public static $beneficialUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $beneficialOwnerToken;
+
+    /**
      * @var int
      */
     public static $naicsCode;
@@ -102,6 +112,11 @@ class DefaultConfig
      * @var \Silamoney\Client\Domain\SilaWallet
      */
     public static $businessTempAdminWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $beneficialUserWallet;
 
     /**
      * @var array

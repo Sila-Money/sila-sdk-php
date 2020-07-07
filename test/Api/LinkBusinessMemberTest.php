@@ -38,9 +38,11 @@ class LinkBusinessMemberTest extends TestCase
      * @param string $userPrivateKey
      * @param int $roleIndex
      * @param string $details
+     * @param float $ownershipStake
+     * @param string $memberHandle
      * @dataProvider linkBusinessMemberProvider
      */
-    public function testLinkBusinessMember200($userHandle, $userPrivateKey, $roleIndex, $details)
+    public function testLinkBusinessMember200($userHandle, $userPrivateKey, $roleIndex, $details, $ownershipStake, $memberHandle)
     {
         $businessRole = DefaultConfig::$businessRoles[$roleIndex];
         $response = self::$config->api->linkBusinessMember(
@@ -50,8 +52,8 @@ class LinkBusinessMemberTest extends TestCase
             $userPrivateKey,
             null,
             $businessRole->uuid,
-            null,
-            null,
+            $ownershipStake,
+            $memberHandle,
             $details
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -98,19 +100,33 @@ class LinkBusinessMemberTest extends TestCase
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(),
                 2,
-                'Adding an administrator'
+                'Adding an administrator',
+                null,
+                null
             ],
             'link business member - controlling officer' => [
                 DefaultConfig::$secondUserHandle,
                 DefaultConfig::$secondUserWallet->getPrivateKey(),
                 0,
-                'Adding a controlling officer'
+                'Adding a controlling officer',
+                null,
+                null
             ],
             'link business member - temp administrator' => [
                 DefaultConfig::$businessTempAdminHandle,
                 DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
                 2,
-                'Adding a temp administrator'
+                'Adding a temp administrator',
+                null,
+                null
+            ],
+            'link business member - beneficial owner' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(),
+                1,
+                'Adding a beneficial owner',
+                50,
+                DefaultConfig::$beneficialUserHandle
             ]
         ];
     }

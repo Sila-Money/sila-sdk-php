@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Unlink Business Member Test
+ * Certify Beneficial Owner Test
  * PHP version 7.2
  */
 
@@ -14,14 +14,14 @@ use Silamoney\Client\Utils\{
 };
 
 /**
- * UnlinkBusinessMember Test
- * Tests for the unlink_business_member endpoint in the Sila Api class.
+ * CertifyBeneficialOwner Test
+ * Tests for the certify_beneficial_owner endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
  * @author José Morales <jmorales@digitalgeko.com>
  */
-class UnlinkBusinessMemberTest extends TestCase
+class CertifyBeneficialOwnerTest extends TestCase
 {
     /**
      * @var \Silamoney\Client\Utils\ApiTestConfiguration
@@ -33,30 +33,30 @@ class UnlinkBusinessMemberTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testUnlinkBusinessMember200()
+    public function testCertifyBeneficialOwner200()
     {
-        $businessRole = DefaultConfig::$businessRoles[2];
-        $response = self::$config->api->unlinkBusinessMember(
-            DefaultConfig::$businessUserHandle,
-            DefaultConfig::$businessUserWallet->getPrivateKey(),
-            DefaultConfig::$businessTempAdminHandle,
-            DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
-            null,
-            $businessRole->uuid
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertEquals($businessRole->name, $response->getData()->role);
-        $this->assertStringContainsString("has been unlinked as a {$businessRole->label}", $response->getData()->message);
-    }
-
-    public function testUnlinkBusinessMember400()
-    {
-        $response = self::$config->api->unlinkBusinessMember(
+        $response = self::$config->api->certifyBeneficialOwner(
             DefaultConfig::$businessUserHandle,
             DefaultConfig::$businessUserWallet->getPrivateKey(),
             DefaultConfig::$firstUserHandle,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::$beneficialUserHandle,
+            DefaultConfig::$beneficialOwnerToken
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertStringContainsString('successfully certified', $response->getData()->message);
+    }
+
+    public function testCertifyBeneficialOwner400()
+    {
+        $response = self::$config->api->certifyBeneficialOwner(
+            '',
+            DefaultConfig::$businessUserWallet->getPrivateKey(),
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::$beneficialUserHandle,
+            DefaultConfig::$beneficialOwnerToken
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
@@ -64,15 +64,16 @@ class UnlinkBusinessMemberTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
-    public function testUnlinkBusinessMember403()
+    public function testCertifyBeneficialOwner403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
-        $response = self::$config->api->unlinkBusinessMember(
+        $response = self::$config->api->certifyBeneficialOwner(
             DefaultConfig::$businessUserHandle,
             DefaultConfig::$businessUserWallet->getPrivateKey(),
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            DefaultConfig::$businessRoles[2]->name
+            DefaultConfig::$beneficialUserHandle,
+            DefaultConfig::$beneficialOwnerToken
         );
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);

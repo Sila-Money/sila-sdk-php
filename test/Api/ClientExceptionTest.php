@@ -25,7 +25,7 @@ use Silamoney\Client\Domain\Environments;
 class ClientExceptionTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\ApiClient
+     * @var \Silamoney\Client\Api\SilaApi
      */
     protected static $api;
 

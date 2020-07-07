@@ -35,13 +35,13 @@ class GetEntitiesTest extends TestCase
 
     public function testGetEntities200()
     {
-        $response = self::$config->api->getEntities(null, null, 4);
+        $response = self::$config->api->getEntities(null, null, 5);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
-        $this->assertEquals(3, sizeof($response->getData()->entities->individuals));
-        $this->assertEquals(strtolower(DefaultConfig::$businessTempAdminHandle), $response->getData()->entities->individuals[0]->handle);
+        $this->assertEquals(4, sizeof($response->getData()->entities->individuals));
+        $this->assertEquals(strtolower(DefaultConfig::$beneficialUserHandle), $response->getData()->entities->individuals[0]->handle);
         $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
         $this->assertIsInt($response->getData()->entities->individuals[0]->created);
         $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);
@@ -59,7 +59,7 @@ class GetEntitiesTest extends TestCase
         $this->assertIsString($response->getData()->entities->businesses[0]->business_type);
         $this->assertIsString($response->getData()->entities->businesses[0]->dba);
         $this->assertIsObject($response->getData()->pagination);
-        $this->assertEquals(4, $response->getData()->pagination->returned_count);
+        $this->assertEquals(5, $response->getData()->pagination->returned_count);
         $this->assertGreaterThanOrEqual(4, $response->getData()->pagination->total_count);
         $this->assertEquals(1, $response->getData()->pagination->current_page);
         $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);

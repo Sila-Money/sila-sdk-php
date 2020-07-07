@@ -11,7 +11,7 @@ use JMS\Serializer\Annotation\Type;
 
 /**
  * Unlink Business Member Message
- * Object used in the link_business_member endpoint
+ * Object used in the unlink_business_member endpoint
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>

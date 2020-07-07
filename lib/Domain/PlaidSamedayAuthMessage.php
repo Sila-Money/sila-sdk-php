@@ -33,7 +33,7 @@ class PlaidSamedayAuthMessage implements ValidInterface
 
     public function __construct(string $userHandle, string $accountName, string $appHandle)
     {
-        $this->header = new HeaderBase($userHandle, $appHandle);
+        $this->header = new HeaderBase($appHandle, $userHandle);
         $this->accountName = $accountName;
     }
 

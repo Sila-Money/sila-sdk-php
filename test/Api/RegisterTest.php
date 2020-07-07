@@ -72,6 +72,7 @@ class RegisterTest extends TestCase
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
+        DefaultConfig::$beneficialUserWallet = DefaultConfig::generateWallet();
         $firstUser = DefaultConfig::generateUser(
             DefaultConfig::$firstUserHandle,
             'First',
@@ -87,10 +88,16 @@ class RegisterTest extends TestCase
             'TempAdmin',
             DefaultConfig::$businessTempAdminWallet
         );
+        $beneficialUser = DefaultConfig::generateUser(
+            DefaultConfig::$beneficialUserHandle,
+            'Beneficial',
+            DefaultConfig::$beneficialUserWallet
+        );
         return [
             'register - first user' => [$firstUser],
             'register - second user' => [$secondUser],
-            'register - business temp admin user' => [$tempAdmin]
+            'register - business temp admin user' => [$tempAdmin],
+            'register - beneficial user' => [$beneficialUser]
         ];
     }
 }

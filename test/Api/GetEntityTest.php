@@ -38,9 +38,10 @@ class GetEntityTest extends TestCase
      * @param string $privateKey
      * @param string $entityType
      * @param int|null $numberOfMemberships
+     * @param bool $beneficialOwner
      * @dataProvider entityProvider
      */
-    public function testGetEntityIndividual200($handle, $privateKey, $entityType, $numberOfMemberships)
+    public function testGetEntityIndividual200($handle, $privateKey, $entityType, $numberOfMemberships, $beneficialOwner)
     {
         $response = self::$config->api->getEntity($handle, $privateKey);
         $this->assertEquals(200, $response->getStatusCode());
@@ -59,6 +60,9 @@ class GetEntityTest extends TestCase
         if ($entityType == DefaultConfig::INDIVIDUAL) {
             $this->assertIsArray($response->getData()->memberships);
             $this->assertEquals($numberOfMemberships, sizeof($response->getData()->memberships));
+        }
+        if ($beneficialOwner) {
+            DefaultConfig::$beneficialOwnerToken = $response->getData()->memberships[0]->certification_token;
         }
     }
 
@@ -90,25 +94,36 @@ class GetEntityTest extends TestCase
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(),
                 DefaultConfig::INDIVIDUAL,
-                1
+                1,
+                false
             ],
             'get entity - second user' => [
                 DefaultConfig::$secondUserHandle,
                 DefaultConfig::$secondUserWallet->getPrivateKey(),
                 DefaultConfig::INDIVIDUAL,
-                1
+                1,
+                false
             ],
             'get entity - business temp admin user' => [
                 DefaultConfig::$businessTempAdminHandle,
                 DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
                 DefaultConfig::INDIVIDUAL,
-                0
+                0,
+                false
+            ],
+            'get entity - beneficial user' => [
+                DefaultConfig::$beneficialUserHandle,
+                DefaultConfig::$beneficialUserWallet->getPrivateKey(),
+                DefaultConfig::INDIVIDUAL,
+                1,
+                true
             ],
             'get entity - business' => [
                 DefaultConfig::$businessUserHandle,
                 DefaultConfig::$businessUserWallet->getPrivateKey(),
                 'business',
-                null
+                null,
+                false
             ]
         ];
     }

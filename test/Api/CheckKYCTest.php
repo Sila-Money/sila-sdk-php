@@ -102,6 +102,12 @@ class CheckKYCTest extends TestCase
                 DefaultConfig::SUCCESS,
                 self::INDIVIDUAL_VERIFICATION
             ],
+            'check kyc - beneficial user' => [
+                DefaultConfig::$beneficialUserHandle,
+                DefaultConfig::$beneficialUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
+            ],
             'check kyc - business user' => [
                 DefaultConfig::$businessUserHandle,
                 DefaultConfig::$businessUserWallet->getPrivateKey(),
