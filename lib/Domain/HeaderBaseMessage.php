@@ -26,7 +26,8 @@ class HeaderBaseMessage
 
     /**
      * HeaderBaseMessage constructor.
-     * @param string $appHandle
+     * @param string $appHandle The app handle of the request
+     * @param string $userHandle Optional. The user handle of the request
      */
     public function __construct(string $appHandle, string $userHandle = null)
     {

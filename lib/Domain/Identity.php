@@ -34,7 +34,9 @@ class Identity implements ValidInterface
     /**
      * Constructor for the Identity object.
      *
-     * @param \Silamoney\Client\Domain\BaseUser $user
+     * @param \Silamoney\Client\Domain\BaseUser $user The user with the identity number
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @return \Silamoney\Client\Domain\Identity
      */
     public function __construct(BaseUser $user, IdentityAlias $identityAlias)
     {

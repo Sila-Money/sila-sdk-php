@@ -651,7 +651,7 @@ class SilaApi
     }
 
     /**
-     * Gets a list of available business types to use in KYB flow
+     * Gets a list of valid business types that can be registered.
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function getBusinessTypes(): ApiResponse
@@ -661,7 +661,7 @@ class SilaApi
     }
 
     /**
-     * Gets a list of available business types to use in KYB flow
+     * Retrieves the list of pre-defined business roles.
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function getBusinessRoles(): ApiResponse
@@ -671,7 +671,7 @@ class SilaApi
     }
 
     /**
-     * Gets a list of available Naics categories to use in the KYB flow
+     * Gets a list of valid Naics categories that can be registered.
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function getNaicsCategories(): ApiResponse
@@ -702,6 +702,8 @@ class SilaApi
     /**
      * Gets all the entities registered in the app handle
      * @param string|null $entityType Filters the results for 'individual' or 'business'
+     * @param int|null $page Indicates the page to retrieve
+     * @param int|null $perPage Indicates the number of entities per page to retrieve
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function getEntities(
@@ -731,7 +733,7 @@ class SilaApi
     }
 
     /**
-     * Registers a new business in the app handle
+     * Creates a new end-user managed by the app. This user can be verified, have bank accounts, and create transactions.
      * @param \Silamoney\Client\Domain\BusinessUser $business The new business information
      * @return \Silamoney\Client\Api\ApiResponse
      */
@@ -891,13 +893,13 @@ class SilaApi
 
     /**
      * Create a new SilaWallet
-     * @param string|null $private_key
+     * @param string|null $privateKey
      * @param string|null $address
      * @return SilaWallet
      */
-    public function generateWallet($private_key = null, $address = null): SilaWallet
+    public function generateWallet($privateKey = null, $address = null): SilaWallet
     {
-        return new SilaWallet($private_key, $address);
+        return new SilaWallet($privateKey, $address);
     }
 
     /**
@@ -909,6 +911,11 @@ class SilaApi
         return $this->configuration->getBalanceClient();
     }
 
+    /**
+     * Makes a call to the specified path using only the HeaderBaseMessage as payload
+     * @param string $path
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     private function makeHeaderBaseRequest(string $path): ApiResponse
     {
         $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
@@ -920,6 +927,13 @@ class SilaApi
         return $this->prepareResponse($response);
     }
 
+    /**
+     * Makes the signing headers for request that uses auth_signature, user_signature and business_signature
+     * @param string $json The json string body to sign
+     * @param string $businessKey The business private key for the business_signature
+     * @param string $userKey The user private key for the user_signature
+     * @return array An associative array with the signatures
+     */
     private function makeBusinessHeaders(string $json, string $businessKey, string $userKey): array
     {
         return [
@@ -929,6 +943,12 @@ class SilaApi
         ];
     }
 
+    /**
+     * Makes the response object of multiple requests in the SDK
+     * @param \GuzzleHttp\Psr7\Response The response from the request
+     * @param string $className Optional. The object class name to deserialize the response to
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     private function prepareResponse(Response $response, string $className = ''): ApiResponse
     {
         $statusCode = $response->getStatusCode();
@@ -946,6 +966,11 @@ class SilaApi
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
     }
 
+    /**
+     * Makes the response object for some requests in the SDK that return a BaseResponse object message
+     * @param \GuzzleHttp\Psr7\Response The response from the request
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     private function prepareBaseResponse(Response $response): ApiResponse
     {
         return $this->prepareResponse($response, BaseResponse::class);

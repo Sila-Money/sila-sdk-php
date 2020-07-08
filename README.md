@@ -22,7 +22,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.8-rc
+composer require silamoney/php-sdk:0.2.9-rc
 ```
 
 ## Initialization
@@ -165,7 +165,7 @@ $naicsCode = 123; // The Naics code.
 $businessType = 'Type'; // Required if $businessTypeUuid is not set. The business type name.
 $businessTypeUuid = null; // Required if $businessType is not set. The business type uuid.
 $doingBusinessAs = 'Your Business'; // Optional. If your business name is different from its legal name
-$businessWebsite = 'www.yourdomain.com'; // Optional. The business website.
+$businessWebsite = 'http://www.yourdomain.com'; // Optional. The business website.
 
 
 // Create business user object
