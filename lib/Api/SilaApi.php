@@ -16,7 +16,11 @@ use Silamoney\Client\Domain\{
     Account,
     BalanceEnvironments,
     BankAccountMessage,
+    BaseBusinessMessage,
     BaseResponse,
+    BusinessEntityMessage,
+    BusinessUser,
+    CertifyBeneficialOwnerMessage,
     OperationResponse,
     EntityMessage,
     Environments,
@@ -42,8 +46,12 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    GetEntitiesMessage,
     GetWalletsMessage,
-    TransferResponse
+    HeaderBaseMessage,
+    LinkBusinessMemberMessage,
+    TransferResponse,
+    UnlinkBusinessMemberMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -80,6 +88,11 @@ class SilaApi
      * @var string
      */
     private const USER_SIGNATURE = 'usersignature';
+
+    /**
+     * @var string
+     */
+    private const BUSINESS_SIGNATURE = 'businesssignature';
 
     /**
      *
@@ -220,7 +233,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareResponse($response);
     }
 
     /**
@@ -496,8 +509,7 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $accountName
-     * @return ApiResponse
-     * @throws ClientException
+     * @return \Silamoney\Client\Api\ApiResponse
      */
     public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
     {
@@ -639,6 +651,238 @@ class SilaApi
     }
 
     /**
+     * Gets a list of valid business types that can be registered.
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getBusinessTypes(): ApiResponse
+    {
+        $path = '/get_business_types';
+        return $this->makeHeaderBaseRequest($path);
+    }
+
+    /**
+     * Retrieves the list of pre-defined business roles.
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getBusinessRoles(): ApiResponse
+    {
+        $path = '/get_business_roles';
+        return $this->makeHeaderBaseRequest($path);
+    }
+
+    /**
+     * Gets a list of valid Naics categories that can be registered.
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getNaicsCategories(): ApiResponse
+    {
+        $path = '/get_naics_categories';
+        return $this->makeHeaderBaseRequest($path);
+    }
+
+    /**
+     * Gets a particular entity registered in the app handle
+     * @param string $userHandle The user handle to retrieve information from
+     * @param string $userPrivateKey The user private key to sign the request
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getEntity(string $userHandle, string $userPrivateKey)
+    {
+        $path = '/get_entity';
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle(), $userHandle);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Gets all the entities registered in the app handle
+     * @param string|null $entityType Filters the results for 'individual' or 'business'
+     * @param int|null $page Indicates the page to retrieve
+     * @param int|null $perPage Indicates the number of entities per page to retrieve
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getEntities(
+        string $entityType = null,
+        int $page = null,
+        int $perPage = null
+    ) {
+        $params = '';
+        if ($page != null) {
+            $params = "?page={$page}";
+        }
+        if ($perPage != null) {
+            if ($params != '') {
+                $params = "{$params}&per_page={$perPage}";
+            } else {
+                $params = "?per_page={$perPage}";
+            }
+        }
+        $path = "/get_entities{$params}";
+        $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Creates a new end-user managed by the app. This user can be verified, have bank accounts, and create transactions.
+     * @param \Silamoney\Client\Domain\BusinessUser $business The new business information
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function registerBusiness(BusinessUser $business): ApiResponse
+    {
+        $path = '/register';
+        $body = new BusinessEntityMessage($this->configuration->getAuthHandle(), $business);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Links an existing user to the indicated business with the role provided.
+     * If the user is a beneficial owner you must provide the ownership stake.
+     * If you don't provide the member handle, the user handle will be used to apply the requested role
+     * @param string $businessHandle The business handle
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle. This can be a new user or an administrator if the member handle is provided
+     * @param string $userPrivateKey The user private key for the request signature
+     * @param string|null $role The member role. This is required unless the role uuid is set.
+     * @param string|null $roleUuid The role uuid. This is required unless the role is set.
+     * @param float|null $ownershipStake The onwership stake. This is required if the role or role uuid is a beneficial owner
+     * @param string|null $memberHandle The member handle. This is optional, but if set the user handle must be an administrator of the business
+     * @param string|null $details An optional descriptive text for the link operation
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function linkBusinessMember(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey,
+        string $role = null,
+        string $roleUuid = null,
+        float $ownershipStake = null,
+        string $memberHandle = null,
+        string $details = null
+    ): ApiResponse {
+        $path = '/link_business_member';
+        $body = new LinkBusinessMemberMessage(
+            $this->configuration->getAuthHandle(),
+            $businessHandle,
+            $userHandle,
+            $role,
+            $roleUuid,
+            $ownershipStake,
+            $memberHandle,
+            $details
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Unlinks the specified role from an existing user associated to the business handle
+     * @param string $businessHandle The business handle
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle to be unlinked
+     * @param string $userPrivateKey The user private key for the request signature
+     * @param string|null $role The member role to unlink. This is required unless the role uuid is set.
+     * @param string|null $roleUuid The role uuid to unlink. This is required unless the role is set.
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function unlinkBusinessMember(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey,
+        string $role = null,
+        string $roleUuid = null
+    ): ApiResponse {
+        $path = '/unlink_business_member';
+        $body = new UnlinkBusinessMemberMessage(
+            $this->configuration->getAuthHandle(),
+            $businessHandle,
+            $userHandle,
+            $role,
+            $roleUuid
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Certification process for the specified beneficial owner in the business
+     * @param string $businessHandle The business handle
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle of an administrator
+     * @param string $userPrivateKey The user private key for the request signature
+     * @param string $memberHandle The beneficial owner handle to certify
+     * @param string $certificationToken The certification token obtained from getEntity method for the specified beneficial owner handle
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function certifyBeneficialOwner(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey,
+        string $memberHandle,
+        string $certificationToken
+    ): ApiResponse {
+        $path = '/certify_beneficial_owner';
+        $body = new CertifyBeneficialOwnerMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $businessHandle,
+            $memberHandle,
+            $certificationToken
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Certification process for the specified business
+     * @param string $businessHandle The business handle to certify
+     * @param string $businessPrivateKey The business private key for the request signature
+     * @param string $userHandle The user handle of an administrator
+     * @param string $userPrivateKey The user private key for the request signature
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function certifyBusiness(
+        string $businessHandle,
+        string $businessPrivateKey,
+        string $userHandle,
+        string $userPrivateKey
+    ): ApiResponse {
+        $path = '/certify_business';
+        $body = new BaseBusinessMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $businessHandle
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeBusinessHeaders($json, $businessPrivateKey, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -649,13 +893,13 @@ class SilaApi
 
     /**
      * Create a new SilaWallet
-     * @param string|null $private_key
+     * @param string|null $privateKey
      * @param string|null $address
      * @return SilaWallet
      */
-    public function generateWallet($private_key = null, $address = null): SilaWallet
+    public function generateWallet($privateKey = null, $address = null): SilaWallet
     {
-        return new SilaWallet($private_key, $address);
+        return new SilaWallet($privateKey, $address);
     }
 
     /**
@@ -667,6 +911,44 @@ class SilaApi
         return $this->configuration->getBalanceClient();
     }
 
+    /**
+     * Makes a call to the specified path using only the HeaderBaseMessage as payload
+     * @param string $path
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    private function makeHeaderBaseRequest(string $path): ApiResponse
+    {
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Makes the signing headers for request that uses auth_signature, user_signature and business_signature
+     * @param string $json The json string body to sign
+     * @param string $businessKey The business private key for the business_signature
+     * @param string $userKey The user private key for the user_signature
+     * @return array An associative array with the signatures
+     */
+    private function makeBusinessHeaders(string $json, string $businessKey, string $userKey): array
+    {
+        return [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userKey),
+            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessKey)
+        ];
+    }
+
+    /**
+     * Makes the response object of multiple requests in the SDK
+     * @param \GuzzleHttp\Psr7\Response The response from the request
+     * @param string $className Optional. The object class name to deserialize the response to
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     private function prepareResponse(Response $response, string $className = ''): ApiResponse
     {
         $statusCode = $response->getStatusCode();
@@ -684,14 +966,13 @@ class SilaApi
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
     }
 
+    /**
+     * Makes the response object for some requests in the SDK that return a BaseResponse object message
+     * @param \GuzzleHttp\Psr7\Response The response from the request
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     private function prepareBaseResponse(Response $response): ApiResponse
     {
         return $this->prepareResponse($response, BaseResponse::class);
-    }
-
-    private function prepareJsonResponse(string $json, int $statusCode, array $headers)
-    {
-        $json = json_decode($json);
-        return new ApiResponse($statusCode, $headers, $json);
     }
 }

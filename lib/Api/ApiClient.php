@@ -29,7 +29,7 @@ class ApiClient
     private $client;
 
     private const BASE_URI = 'base_uri';
-    
+
     /**
      * Api Client constructor
      * @param string $basePath
@@ -52,7 +52,7 @@ class ApiClient
     public function callAPI(string $url, string $data, array $headers): Response
     {
         try {
-            return $this->client->post('0.2/' . $url, ['body' => $data, 'headers' => $headers]);
+            return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {

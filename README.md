@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.8-rc`
+`Version 0.2.9-rc`
 
 > **Note**: This SDK is a Release Candidate.
 
@@ -22,7 +22,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.8-rc
+composer require silamoney/php-sdk:0.2.9-rc
 ```
 
 ## Initialization
@@ -104,6 +104,8 @@ Wallet has two attributes:
 
 Attaches KYC data and specified blockchain address to an assigned handle.
 
+### For Individual users
+
 ```php
 use Silamoney\Client\Domain\User;
 
@@ -118,19 +120,19 @@ $state = 'NY'; // 2 characters code only
 $postalCode = '12345'; // can be 5 or 9 digits format
 $phone = '123-456-7890';
 $email = 'you@awesomedomain.com';
-$cryptoAdress = '0xabc123abc123abc123'; // Hex-encoded blockchain address (prefixed with "0x")
 $identityNumber = 'AAA-GG-SSSS'; // SSN format
+$cryptoAddress = '0xabc123abc123abc123'; // Hex-encoded blockchain address (prefixed with "0x")
 $birthDate = new DateTime::createFromFormat('m/d/Y', '1/8/1935'); // Only date part will be taken when sent to api
 
 // Create user object
-$user = new User($userHandle, $firstName, $lastName, $streetAddress1, $streetAddress2, 
-    $city, $state, $postalCode, $phone, $email, $identityNumber, $cryptoAdress, $birthDate);
+$user = new User($userHandle, $firstName, $lastName, $streetAddress1, $streetAddress2,
+    $city, $state, $postalCode, $phone, $email, $identityNumber, $cryptoAddress, $birthDate);
 
 // Call the api
 $response = $client->register($user);
 ```
 
-### Success 200
+#### Success 200
 
 ```php
 echo $response->getStatusCode(); // 200
@@ -139,9 +141,52 @@ echo $response->getData()->getStatus(); // SUCCESS
 echo $response->getData()->getMessage(); // User was successfully register
 ```
 
+### For Business Users
+
+- For Naics code see [Get Naics Categories](#get-naics-categories)
+- For business types see [Get Business Types](#get-business-types)
+
+```php
+use Silamoney\Client\Domain\BusinessUser;
+
+// Fill your data
+$businessHandle = 'business.silamoney.eth';
+$name = 'Your Business Inc.';
+$streetAddress1 = 'Some location';
+$streetAddress2 = 'In the world'; // Optional.
+$city = 'your beautiful city';
+$state = 'NY'; // 2 characters code only
+$postalCode = '12345'; // can be 5 or 9 digits format
+$phone = '123-456-7890';
+$email = 'you@awesomedomain.com';
+$identityNumber = '12-3456789'; // EIN format
+$cryptoAddress = '0xabc123abc123abc123'; // Hex-encoded blockchain address (prefixed with "0x")
+$naicsCode = 123; // The Naics code.
+$businessType = 'Type'; // Required if $businessTypeUuid is not set. The business type name.
+$businessTypeUuid = null; // Required if $businessType is not set. The business type uuid.
+$doingBusinessAs = 'Your Business'; // Optional. If your business name is different from its legal name
+$businessWebsite = 'http://www.yourdomain.com'; // Optional. The business website.
+
+
+// Create business user object
+$businessUser = new BusinessUser($businessHandle, $name, $streetAddress1, $streetAddress2, $city, $state, $postalCode, $phone, $email, $identityNumber, $cryptoAddress, $naicsCode, $businessType, $businessTypeUuid, $doingBusinessAs, $businessWebsite);
+
+// Call the api
+$response = $client->registerBusiness($businessUser);
+```
+
+#### Success 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->reference; // Random reference number
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Business was successfully register
+```
+
 ## Request KYC endpoint
 
-Starts KYC verification process on a registered user handle.
+Starts KYC verification process on a registered user/business handle.
 
 ### Normal flow
 
@@ -171,7 +216,7 @@ echo $response->getData()->getMessage(); // User submitted for KYC review.
 
 ## Check KYC endpoint
 
-Returns whether the entity attached to the user handle is verified, not valid, or still pending.
+Returns whether the entity attached to the user/business handle is verified, not valid, or still pending.
 
 ```php
 $userHandle = 'user.silamoney.eth';
@@ -179,13 +224,35 @@ $userPrivateKey = 'some private key'; // Hex format
 $response = $client->checkKYC($userHandle, $userPrivateKey);
 ```
 
-### Success 200
+### Success 200 (Individual)
 
 ```php
 echo $response->getStatusCode(); // 200
-echo $response->getData()->getReference(); // Random reference number
-echo $response->getData()->getStatus(); // SUCCESS
-echo $response->getData()->getMessage(); // User has passed ID verification!
+echo $response->getData()->reference; // Random reference number
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // User has passed ID verification!
+echo $response->getData()->entity_type; // individual
+echo $response->getData()->verification_status; // passed
+echo $response->getData()->verification_history; // An array of all the verifications executed for the business (verification status, kyc level...)
+echo $response->getData()->valid_kyc_levels; // An array of kyc levels valid for the business
+```
+
+### Success 200 (Business)
+
+**If status is FAILURE, you can review the members array and verify if a beneficial owner requires certification with the [Certify Beneficial Owner](#certify-beneficial-owner) method**
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->reference; // Random reference number
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // business has passed ID verification!
+echo $response->getData()->entity_type; // business
+echo $response->getData()->verification_status; // passed
+echo $response->getData()->verification_history; // An array of all the verifications executed for the business (verification status, kyc level...)
+echo $response->getData()->valid_kyc_levels; // An array of kyc levels valid for the business
+echo $response->getData()->certification_status; // certified
+echo $response->getData()->certification_history; // An array of all the certifications executed for the business (administrator user handle, created, expires after...)
+echo $response->getData()->members; // An array of users linked to the business and their verification and certification status (user handle, role, beneficial owner certification status...)
 ```
 
 ## Link Account endpoint
@@ -533,6 +600,112 @@ echo $response->getData()->message; // Message
 echo $response->getData()->reference; // Random number reference
 ```
 
+## Link Business Member
+
+Links a role to a registered user in the specified business.
+
+- For business roles see [Get Business Roles](#get-business-roles)
+
+```php
+$businessHandle = 'business.silamoney.eth';
+$businessPrivateKey = 'some private key';
+$userHandle = 'user.silamoney.eth'; // The user handle to apply the role to. See the $memberHandle for more information
+$userPrivateKey = 'some other private key';
+$businessRole = 'administrator'; // Required if $businessRoleUuid is not set. The business role to set
+$businessRoleUuid = null; // Required if $businessRole is not set. The business role uuid to set
+$ownershipStake = null; // Required only if the role is 'beneficial_owner'
+$memberHandle = 'other_user.silamoney.eth'; // If set the $userHandle must be a user with the administrator role in the business
+$details = 'some details about the operation'; // Optional. A text description of the operation
+
+$response = $client->linkBusinessMember($businessHandle, $businessPrivateKey, $userHandle, $userPrivateKey, $businessRole, $businessRoleUuid, $ownershipStake, $memberHandle, $details);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // User has been made a... for business...
+echo $response->getData()->role; // The role name applied
+echo $response->getData()->details; // The details set in the request
+echo $response->getData()->verification_uuid; // Is null if KYC hasn't been applied to the business
+```
+
+## Unlink Business Member
+
+Unlinks a role from a registered user in the specified business.
+
+- For business roles see [Get Business Roles](#get-business-roles)
+
+```php
+$businessHandle = 'business.silamoney.eth';
+$businessPrivateKey = 'some private key';
+$userHandle = 'user.silamoney.eth'; // The user handle to apply the role to
+$userPrivateKey = 'some other private key';
+$businessRole = 'administrator'; // Required if $businessRoleUuid is not set. The business role to set
+$businessRoleUuid = null; // Required if $businessRole is not set. The business role uuid to set
+
+$response = $client->unlinkBusinessMember($businessHandle, $businessPrivateKey, $userHandle, $userPrivateKey, $businessRole, $businessRoleUuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // User has been unlinked as a... for business...
+echo $response->getData()->role; // The role name unliked
+```
+
+## Certify Beneficial Owner
+
+Certification process for beneficial owners that required it.
+
+- See [Check KYC](#check-kyc) for more information
+- See [Get Entity](#get-entity) for token information
+
+```php
+$businessHandle = 'business.silamoney.eth';
+$businessPrivateKey = 'some private key';
+$userHandle = 'user.silamoney.eth'; // Must be a registered administrator in the business
+$userPrivateKey = 'some other private key';
+$beneficialHandle = 'beneficial_owner.silamoney.eth';
+$beneficialToken = 'some token'; // The token for the certification.
+
+$response = $client->certifyBeneficialOwner($businessHandle, $businessPrivateKey, $userHandle, $userPrivateKey, $beneficialHandle, $beneficialToken);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Beneficial owner successfully certified
+```
+
+## Certify Business
+
+Certification process for the business.
+
+- See [Check KYC](#check-kyc) for mor information
+
+```php
+$businessHandle = 'business.silamoney.eth';
+$businessPrivateKey = 'some private key';
+$userHandle = 'user.silamoney.eth'; // Must be a registered administrator in the business
+$userPrivateKey = 'some other private key';
+
+$response = $client->certifyBusiness($businessHandle, $businessPrivateKey, $userHandle, $userPrivateKey);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->message; // Business successfully certified
+```
+
 ## Plaid Same Day Auth endpoint
 
 Handle a request for a Plaid public_token in order to complete Plaid's Same Day Microdeposit Authentication
@@ -569,4 +742,118 @@ echo $response->getStatusCode(); // 200
 echo $response->getData()->success; // TRUE
 echo $response->getData()->address; // The requested blockchain address
 echo $response->getData()->sila_balance; // The amount of sila tokens in the wallet
+```
+
+## Get Entity
+
+Gets the details for a registered entity. This method returns the token needed in the [Certify Beneficial Owner](#certify-beneficial-owner)
+
+```php
+$handle = 'user.silamoney.eth'; // The user to retrieve details from
+$privateKey = 'some private key';
+
+$response = $client->getEntity($handle, $privateKey);
+```
+
+### Response 200 (individual)
+
+**If the entity has a beneficial owner role in some business, the token can be found in the memberships array.**
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->user_handle; // The requested user handle
+echo $response->getData()->entity_type; // individual
+echo $response->getData()->entity; // Details for the entity (first name, last name, birthdate...)
+echo $response->getData()->addresses; // An array of registered addresses to the entity (street address 1, city...)
+echo $response->getData()->identities; // An array of registered identity numbers to the entity (identity type, identity)
+echo $response->getData()->emails; // An array of registered emails to the entity (email)
+echo $response->getData()->phones; // An array of registered phones to the entity (phone)
+echo $response->getData()->memberships; // An array of registered roles in businesses (business handle, entity name, role, certification token...)
+```
+
+### Response 200 (business)
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->user_handle; // The requested user handle
+echo $response->getData()->entity_type; // business
+echo $response->getData()->entity; // Details for the entity (entity name, business type, naics code...)
+echo $response->getData()->addresses; // An array of registered addresses to the entity (street address 1, city...)
+echo $response->getData()->identities; // An array of registered identity numbers to the entity (identity type, identity)
+echo $response->getData()->emails; // An array of registered emails to the entity (email)
+echo $response->getData()->phones; // An array of registered phones to the entity (phone)
+echo $response->getData()->members; // An array of linked individuals to the entity (user handle, first name, role...)
+```
+
+## Get Entities
+
+Gets an array of entities registered in the app handle
+
+```php
+$type = null; // Optional. Can be set to 'individual' or 'business'
+$page = 1; // Optional. The page number to get
+$perPage = 5; // Optional. The number of entities per page
+$response = $client->getEntities($type, $page, $perPage);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->entities; // An object that contains the results (individuals and businesses)
+echo $response->getData()->entities->individuals; // An array of individual entities (handle, full name, status...)
+echo $response->getData()->entities->businesses; // An array of business entities (handle, full name, status...)
+echo $response->getData()->pagination; // Pagination details (returned count, total count, current page, total pages)
+```
+
+## Get Business Roles
+
+Gets an array of allowed business roles
+
+```php
+$response = $client->getBusinessRoles();
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->business_roles; // An array of business roles (uuid, name, label)
+```
+
+## Get Business Types
+
+Gets an array of allowed business types
+
+```php
+$response = $client->getBusinessTypes();
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->business_types; // An array of business types (uuid, name, label)
+```
+
+## Get Naics Categories
+
+Gets an object of allowed Naics categories and an array of subcategories for each one
+
+```php
+$response = $client->getNaicsCategories();
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->naics_categories; // An object of Naics categories
+echo $response->getData()->naics_categories->{'Accommodation and Food Services'} // Each category has an array of subcategories (code, subcategory)
 ```

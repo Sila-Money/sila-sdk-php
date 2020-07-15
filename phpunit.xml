@@ -14,10 +14,20 @@
       <file>test/Api/BaseResponseTest.php</file>
       <file>test/Api/ClientExceptionTest.php</file>
       <file>test/Api/SilaApiTest.php</file>
-
+      <file>test/Api/GetBusinessRolesTest.php</file>
+      <file>test/Api/GetBusinessTypesTest.php</file>
+      <file>test/Api/GetNaicsCategoriesTest.php</file>
+      <file>test/Api/CheckHandleTest.php</file>
       <file>test/Api/RegisterTest.php</file>
+      <file>test/Api/RegisterBusinessTest.php</file>
+      <file>test/Api/LinkBusinessMemberTest.php</file>
+      <file>test/Api/UnlinkBusinessMemberTest.php</file>
       <file>test/Api/RequestKYCTest.php</file>
       <file>test/Api/CheckKYCTest.php</file>
+      <file>test/Api/GetEntityTest.php</file>
+      <file>test/Api/GetEntitiesTest.php</file>
+      <file>test/Api/CertifyBeneficialOwnerTest.php</file>
+      <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>

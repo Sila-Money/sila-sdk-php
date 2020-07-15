@@ -75,7 +75,7 @@ class BankAccountMessage implements ValidInterface
         string $descriptor = null,
         string $businessUuid = null
     ) {
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
         $this->amount = $amount;
         $this->accountName = $accountName;
         $this->message = $message;

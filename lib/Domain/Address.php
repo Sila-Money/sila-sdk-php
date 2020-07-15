@@ -70,7 +70,11 @@ class Address implements ValidInterface
      */
     private $streetAddress2;
 
-    public function __construct(User $user)
+    /**
+     * @param \Silamoney\Client\Domain\BaseUser
+     * @return \Silamoney\Client\Domain\Address
+     */
+    public function __construct(BaseUser $user)
     {
         $this->addressAlias = "";
         $this->city = $user->getCity();

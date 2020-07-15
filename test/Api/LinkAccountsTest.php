@@ -7,8 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\ApiTestConfiguration;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Link Accounts Test
@@ -20,41 +21,15 @@ use PHPUnit\Framework\TestCase;
 class LinkAccountsTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected static $api;
-
-    /**
-     * @var \Silamoney\Client\Utils\TestConfiguration
-     */
-    protected static $config;
-    
-    /**
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        self::$config = new ApiTestConfiguration();
     }
 
-    public static function setUpBeforeClassInvalidAuthSignature(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
-    }
-
-    /**
-     * @test
-     */
     public function testLinkAccounts200Success(): void
     {
         $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
@@ -73,29 +48,26 @@ class LinkAccountsTest extends TestCase
         $content = json_decode($response->getBody()->getContents());
         $publicToken = $content->public_token;
 
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->linkAccount(
-            $resp[0],
-            $resp[1],
+        $response = self::$config->api->linkAccount(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
             $publicToken,
             null,
             null
         );
-        // var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getSuccess());
     }
 
-    public function testLinkAccountDirect200() {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        // var_dump($data);
-        $resp = explode("||", $data);
-        $response = self::$api->linkAccountDirect($resp[0], $resp[1], '123456789012', '123456789', 'sync_direct');
+    public function testLinkAccountDirect200()
+    {
+        $response = self::$config->api->linkAccountDirect(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            '123456789012',
+            '123456789',
+            'sync_direct'
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getSuccess());
         $this->assertStringContainsString('manually linked', $response->getData()->getMessage());
@@ -122,13 +94,9 @@ class LinkAccountsTest extends TestCase
      */
     public function testLinkAccounts400(): void
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->linkAccount(
-            $resp[0],
-            $resp[1],
+        $response = self::$config->api->linkAccount(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
             'public-xxx-xxx'
         );
         $this->assertEquals(400, $response->getStatusCode());
@@ -137,12 +105,12 @@ class LinkAccountsTest extends TestCase
         $this->assertStringContainsString('public token is in an invalid format', $response->getData()->message);
     }
 
-        /**
+    /**
      * @test
      */
     public function testLinkAccounts401(): void
     {
-        self::setUpBeforeClassInvalidAuthSignature();
+        self::$config->setUpBeforeClassInvalidAuthSignature();
         $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
         $options = [
             'json' => [
@@ -160,13 +128,9 @@ class LinkAccountsTest extends TestCase
         $publicToken = $content->public_token;
         $accountId = $content->accounts[0]->account_id;
 
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->linkAccount(
-            $resp[0],
-            $resp[1],
+        $response = self::$config->api->linkAccount(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
             $publicToken,
             'default',
             $accountId

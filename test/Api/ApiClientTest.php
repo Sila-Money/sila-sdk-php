@@ -7,7 +7,6 @@
 
 namespace Silamoney\Client\Api;
 
-use GuzzleHttp\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,7 +24,7 @@ class ApiClientTest extends TestCase
      * Tests CallAPI()
      */
     public function testCallAPI()
-    {        
+    {
         $baseUri = 'https://sandbox.silamoney.com';
         $ac = new ApiClient($baseUri);
         $json = '{"header": {"created": 1234567890,"auth_handle": "handle.silamoney.eth",'

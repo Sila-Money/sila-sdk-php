@@ -34,11 +34,13 @@ class Identity implements ValidInterface
     /**
      * Constructor for the Identity object.
      *
-     * @param Silamoney\Client\Domain\User $user
+     * @param \Silamoney\Client\Domain\BaseUser $user The user with the identity number
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @return \Silamoney\Client\Domain\Identity
      */
-    public function __construct(User $user)
+    public function __construct(BaseUser $user, IdentityAlias $identityAlias)
     {
-        $this->identityAlias = IdentityAlias::SSN;
+        $this->identityAlias = $identityAlias;
         $this->identityValue = $user->getIdentityNumber();
     }
 

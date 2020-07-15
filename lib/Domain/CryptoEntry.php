@@ -40,9 +40,10 @@ class CryptoEntry implements ValidInterface
     /**
      * Constructor for the CryptoEntry object.
      *
-     * @param Silamoney\Client\Domain\User $user
+     * @param \Silamoney\Client\Domain\BaseUser $user
+     * @return \Silamoney\Client\Domain\CryptoEntry
      */
-    public function __construct(User $user)
+    public function __construct(BaseUser $user)
     {
         $this->cryptoAddress = $user->getCryptoAddress();
         $this->cryptoAlias = "";

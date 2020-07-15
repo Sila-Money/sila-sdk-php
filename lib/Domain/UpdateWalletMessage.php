@@ -29,14 +29,14 @@ class UpdateWalletMessage implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $nickname;    
+    private $nickname;
 
-    
+
     /**
      * @var boolean
      * @Type("boolean")
      */
-    private $status;    
+    private $status;
 
 
     /**
@@ -55,7 +55,7 @@ class UpdateWalletMessage implements ValidInterface
     ) {
         $this->nickname = $nickname;
         $this->status = $status;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool

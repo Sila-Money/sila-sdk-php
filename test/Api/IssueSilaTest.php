@@ -7,8 +7,8 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
 /**
@@ -20,51 +20,25 @@ use Silamoney\Client\Utils\DefaultConfig;
  */
 class IssueSilaTest extends TestCase
 {
+    private const ISSUE_TRANS = 'Issue Trans';
     /**
-     * @var string
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected const ISSUE_TRANS = 'Issue Trans';
-
-    /**
-     * @var \Silamoney\Client\Api\SilaApi
-     */
-    protected static $api;
-
-    /**
-     * @var \Silamoney\Client\Utils\TestConfiguration
-     */
-    protected static $config;
-
-    /**
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
-    }
-
-    public static function setUpBeforeClassInvalidAuthSignature(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
+        self::$config = new ApiTestConfiguration();
     }
 
     public function testIssueSila200()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-
-        $response = self::$api->issueSila($resp[0], 1000, DefaultConfig::DEFAULT_ACCOUNT, $resp[1]);
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            1000,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey()
+        );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
@@ -73,14 +47,11 @@ class IssueSilaTest extends TestCase
 
     public function testIssueSila200Descriptor()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->issueSila(
-            $resp[0],
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
             100,
             DefaultConfig::DEFAULT_ACCOUNT,
-            $resp[1],
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
             self::ISSUE_TRANS,
             DefaultConfig::VALID_BUSINESS_UUID
         );
@@ -93,38 +64,38 @@ class IssueSilaTest extends TestCase
 
     public function testIssueSila400Descriptor()
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->issueSila(
-            $resp[0],
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
             100,
             DefaultConfig::DEFAULT_ACCOUNT,
-            $resp[1],
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
             self::ISSUE_TRANS,
             DefaultConfig::INVALID_BUSINESS_UUID
         );
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
     }
 
     public function testIssueSila400()
     {
-        $response = self::$api->issueSila(0, 100, DefaultConfig::DEFAULT_ACCOUNT, 0, 'test descriptor');
+        $response = self::$config->api->issueSila(0, 100, DefaultConfig::DEFAULT_ACCOUNT, 0, 'test descriptor');
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testIssueSila401()
     {
-        self::setUpBeforeClassInvalidAuthSignature();
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->issueSila($resp[0], 100, DefaultConfig::DEFAULT_ACCOUNT, $resp[1], 'test descriptor');
+        self::$config->setUpBeforeClassInvalidAuthSignature();
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'test descriptor'
+        );
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

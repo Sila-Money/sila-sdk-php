@@ -29,13 +29,13 @@ class RegisterWalletMessage implements ValidInterface
      * @var Silamoney\Client\Domain\Wallet
      * @Type("Silamoney\Client\Domain\Wallet")
      */
-    private $wallet;    
+    private $wallet;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $wallet_verification_signature;    
+    private $wallet_verification_signature;
 
     /**
      ** Constructor for RegisterWalletMessage object.
@@ -53,13 +53,13 @@ class RegisterWalletMessage implements ValidInterface
     ) {
         $this->wallet = $wallet;
         $this->wallet_verification_signature = $wallet_verification_signature;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header)
-        && v::notOptional()->validate($this->wallet)
-        && v::notOptional()->validate($this->wallet_verification_signature);
+            && v::notOptional()->validate($this->wallet)
+            && v::notOptional()->validate($this->wallet_verification_signature);
     }
 }

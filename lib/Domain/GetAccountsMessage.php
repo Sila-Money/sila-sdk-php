@@ -39,7 +39,7 @@ class GetAccountsMessage implements ValidInterface
      */
     public function __construct(string $userHandle, string $appHandle)
     {
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::GET_ACCOUNTS;
     }
 

@@ -43,7 +43,7 @@ class HeaderBase implements ValidInterface
      * @param string $userHandle
      * @param string $appHandle
      */
-    public function __construct(string $userHandle, string $appHandle)
+    public function __construct(string $appHandle, string $userHandle = null)
     {
         $this->authHandle = $appHandle;
         $this->userHandle = $userHandle;

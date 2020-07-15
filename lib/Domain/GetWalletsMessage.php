@@ -29,7 +29,7 @@ class GetWalletsMessage implements ValidInterface
      * @var Silamoney\Client\Domain\SearchFilters
      * @Type("Silamoney\Client\Domain\SearchFilters")
      */
-    private $searchFilters;    
+    private $searchFilters;
 
     /**
      ** Constructor for GetWalletsMessage object.
@@ -44,12 +44,12 @@ class GetWalletsMessage implements ValidInterface
         SearchFilters $searchFilters = null
     ) {
         $this->searchFilters = $searchFilters;
-        $this->header = new Header($userHandle, $appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header)
-        && ($this->searchFilters === null || $this->searchFilters->isValid());
+            && ($this->searchFilters === null || $this->searchFilters->isValid());
     }
 }

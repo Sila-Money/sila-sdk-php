@@ -7,9 +7,11 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Utils\DefaultConfig;
+use Silamoney\Client\Utils\{
+    ApiTestConfiguration,
+    DefaultConfig
+};
 
 /**
  * Check KYC Test
@@ -21,88 +23,97 @@ use Silamoney\Client\Utils\DefaultConfig;
 class CheckKYCTest extends TestCase
 {
     /**
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var string
      */
-    protected static $api;
+    private const INDIVIDUAL_VERIFICATION = 'has passed ID verification';
 
     /**
-     * @var \Silamoney\Client\Utils\TestConfiguration
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected static $config;
-
-    /**
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
-    }
-
-    public static function setUpBeforeClassInvalidAuthSignature(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
+        self::$config = new ApiTestConfiguration();
     }
 
     /**
-     * @test
+     * @param string $handle
+     * @param string $privateKey
+     * @param string $expectedStatus
+     * @param string $messageRegex
+     * @dataProvider checkKycProvider
      */
-    public function testCheckKYC200Sucess()
+    public function testCheckKYC200Sucess($handle, $privateKey, $expectedStatus, $messageRegex)
     {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->checkKYC($resp[0], $resp[1]);
+        $response = self::$config->api->checkKYC($handle, $privateKey);
         $statusCode = $response->getStatusCode();
-        $status = $response->getData()->getStatus();
-        $message = $response->getData()->getMessage();
-        while ($statusCode == 200 && $status == 'FAILURE' && preg_match('/pending/', $message)) {
+        $status = $response->getData()->status;
+        $message = $response->getData()->message;
+        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/', $message)) {
             sleep(30);
             echo '.';
-            $response = self::$api->checkKYC($resp[0], $resp[1]);
+            $response = self::$config->api->checkKYC($handle, $privateKey);
             $statusCode = $response->getStatusCode();
-            $status = $response->getData()->getStatus();
-            $message = $response->getData()->getMessage();
+            $status = $response->getData()->status;
+            $message = $response->getData()->message;
         }
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('SUCCESS', $response->getData()->getStatus());
-        $this->assertStringContainsString('passed', $response->getData()->getMessage());
-    }
-
-    public function testCheckKYC200Failure()
-    {
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->checkKYC($resp[0], 0);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $statusCode);
+        $this->assertEquals($expectedStatus, $status);
+        $this->assertStringContainsString($messageRegex, $message);
     }
 
     public function testCheckHandle400()
     {
-        $response = self::$api->checkKYC(0, 0);
+        $response = self::$config->api->checkKYC(0, 0);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
     public function testCheckHandle401()
     {
-        self::setUpBeforeClassInvalidAuthSignature();
-        $handle = fopen(DefaultConfig::FILE_NAME, 'r');
-        $data = fread($handle, filesize(DefaultConfig::FILE_NAME));
-        $resp = explode("||", $data);
-        $response = self::$api->checkKYC($resp[0], 0);
+        self::$config->setUpBeforeClassInvalidAuthSignature();
+        $response = self::$config->api->checkKYC(DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey());
         $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function checkKycProvider()
+    {
+        return [
+            'check kyc - first user' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
+            ],
+            'check kyc - second user' => [
+                DefaultConfig::$secondUserHandle,
+                DefaultConfig::$secondUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
+            ],
+            'check kyc - business temp admin user' => [
+                DefaultConfig::$businessTempAdminHandle,
+                DefaultConfig::$businessTempAdminWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
+            ],
+            'check kyc - beneficial user' => [
+                DefaultConfig::$beneficialUserHandle,
+                DefaultConfig::$beneficialUserWallet->getPrivateKey(),
+                DefaultConfig::SUCCESS,
+                self::INDIVIDUAL_VERIFICATION
+            ],
+            'check kyc - business user' => [
+                DefaultConfig::$businessUserHandle,
+                DefaultConfig::$businessUserWallet->getPrivateKey(),
+                DefaultConfig::FAILURE,
+                'Business has passed verification'
+            ]
+        ];
     }
 }

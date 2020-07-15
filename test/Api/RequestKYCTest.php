@@ -7,8 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Utils\ApiTestConfiguration;
+use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * Register Test
@@ -22,99 +23,80 @@ class RequestKYCTest extends TestCase
 {
 
     /**
-     *
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected static $api;
-
-    /**
-     *
-     * @var \Silamoney\Client\Utils\TestConfiguration
-     */
-    protected static $config;
-
-    /**
-     *
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
-
-    private function uuid()
-    {
-        $data = random_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-    }
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
-    }
-
-    public static function setUpBeforeClassInvalidAuthSignature(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
+        self::$config = new ApiTestConfiguration();
     }
 
     /**
-     *
-     * @test
+     * @param string $handle
+     * @param string $privateKey
+     * @dataProvider requestKYCProvider
      */
-    public function testRegister200()
+    public function testRegister200($handle, $privateKey)
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], $resp[1], '');
-        $response2 = self::$api->requestKYC($resp[2], $resp[3], '');
+        $response = self::$config->api->requestKYC($handle, $privateKey);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(200, $response2->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertIsString($response->getData()->getReference());
+        $this->assertStringContainsString('submitted for KYC review', $response->getData()->getMessage());
     }
 
     public function testRegister403KycLevel()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], $resp[1], 'test_php');
+        $response = self::$config->api->requestKYC(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'test_php'
+        );
         $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testRegister400()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC(0, 0, '');
+        $response = self::$config->api->requestKYC(0, 0, '');
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('FAILURE', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
         $this->assertTrue($response->getData()->validation_details != null);
     }
-    
+
     public function testRegister401()
     {
-        $my_file = 'response.txt';
-        $handle = fopen($my_file, 'r');
-        $data = fread($handle, filesize($my_file));
-        $resp = explode("||", $data);
-        $response = self::$api->requestKYC($resp[0], 0, '');
+        $this::$config->setUpBeforeClassInvalidAuthSignature();
+        $response = self::$config->api->requestKYC(DefaultConfig::$firstUserHandle, 0, '');
         $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    // public function testRegister403(){
-    //     We expect more information about this response code.
-    // }
+    public function requestKYCProvider()
+    {
+        return [
+            'request kyc - first user' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey()
+            ],
+            'request kyc - second user' => [
+                DefaultConfig::$secondUserHandle,
+                DefaultConfig::$secondUserWallet->getPrivateKey()
+            ],
+            'request kyc - business temp admin user' => [
+                DefaultConfig::$businessTempAdminHandle,
+                DefaultConfig::$businessTempAdminWallet->getPrivateKey()
+            ],
+            'request kyc - beneficial user' => [
+                DefaultConfig::$beneficialUserHandle,
+                DefaultConfig::$beneficialUserWallet->getPrivateKey()
+            ],
+            'request kyc - business user' => [
+                DefaultConfig::$businessUserHandle,
+                DefaultConfig::$businessUserWallet->getPrivateKey()
+            ]
+        ];
+    }
 }

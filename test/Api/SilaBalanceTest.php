@@ -7,9 +7,11 @@
 
 namespace Silamoney\Client\Api;
 
-use JMS\Serializer\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Utils\DefaultConfig;
+use Silamoney\Client\Utils\{
+    ApiTestConfiguration,
+    DefaultConfig
+};
 
 /**
  * Sila Balance Test
@@ -22,50 +24,27 @@ use Silamoney\Client\Utils\DefaultConfig;
 class SilaBalanceTest extends TestCase
 {
     /**
-     *
-     * @var \Silamoney\Client\Api\SilaApi
+     * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    protected static $api;
-
-    /**
-     *
-     * @var \Silamoney\Client\Utils\TestConfiguration
-     */
-    protected static $config;
-
-    /**
-     *
-     * @var \JMS\Serializer\SerializerBuilder
-     */
-    private static $serializer;
+    private static $config;
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-        self::$serializer = SerializerBuilder::create()->build();
-        $json = file_get_contents(__DIR__ . '/Data/Configuration.json');
-        self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');
-        self::$api = SilaApi::fromDefault(self::$config->appHandle, self::$config->privateKey);
+        self::$config = new ApiTestConfiguration();
     }
 
-    /**
-     * @test
-     */
     public function testSilaBalance200()
     {
-        $response = self::$api->silaBalance(DefaultConfig::$walletAddressForBalance);
+        $response = self::$config->api->silaBalance(DefaultConfig::$walletAddressForBalance);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::$walletAddressForBalance, $response->getData()->address);
         $this->assertIsFloat($response->getData()->sila_balance);
     }
 
-    /**
-     * @test
-     */
     public function testSilaBalance400()
     {
-        $response = self::$api->silaBalance("address");
+        $response = self::$config->api->silaBalance("address");
         $this->assertEquals(400, $response->getStatusCode());
     }
 }

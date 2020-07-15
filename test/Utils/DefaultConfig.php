@@ -7,6 +7,9 @@
 
 namespace Silamoney\Client\Utils;
 
+use Silamoney\Client\Domain\SilaWallet;
+use Silamoney\Client\Domain\User;
+
 /**
  * Default Config
  * Contains default configuration for test execution
@@ -37,6 +40,90 @@ class DefaultConfig
     public static $walletAddressForBalance;
 
     /**
+     * First user handle
+     * @var string
+     */
+    public static $firstUserHandle;
+
+    /**
+     * Second user handle
+     * @var string
+     */
+    public static $secondUserHandle;
+
+    /**
+     * Invalid registrations handle
+     * @var string
+     */
+    public static $invalidHandle;
+
+    /**
+     * The business user handle
+     * @var string
+     */
+    public static $businessUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $businessTempAdminHandle;
+
+    /**
+     * @var string
+     */
+    public static $beneficialUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $beneficialOwnerToken;
+
+    /**
+     * @var int
+     */
+    public static $naicsCode;
+
+    /**
+     * @var string
+     */
+    public static $businessTypeUuid;
+
+    /**
+     * @var string
+     */
+    public static $businessType;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $firstUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $secondUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $businessUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $businessTempAdminWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $beneficialUserWallet;
+
+    /**
+     * @var array
+     */
+    public static $businessRoles;
+
+    /**
      * @var string
      */
     public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
@@ -54,5 +141,58 @@ class DefaultConfig
     /**
      * @var string
      */
+    public const FAILURE = 'FAILURE';
+
+    /**
+     * @var string
+     */
     public const SUCCESS_REGEX = 'Transaction submitted to processing queue';
+
+    /**
+     * @var string
+     */
+    public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+
+    /**
+     * @var string
+     */
+    public const INDIVIDUAL = 'individual';
+
+    public static function generateHandle(): string
+    {
+        return 'phpSDK-' . self::uuid();
+    }
+
+    public static function generateWallet(): SilaWallet
+    {
+        return new SilaWallet(null, null);
+    }
+
+    public static function generateUser(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate
+        );
+    }
+
+    private static function uuid(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
 }
