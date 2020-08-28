@@ -465,6 +465,22 @@ use Silamoney\Client\Domain\SearchFilters;
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $filters = new SearchFilters(); // https://docs.silamoney.com/?plaintext#search_filters
+$filters->setTransactionId(transaction_id);
+$filters->setReferenceId('reference_id');
+$filters->showTimelines();
+$filters->sortAscending();
+$filters->setMaxSilaAmount(10000.00)
+$filters->setMinSilaAmount(100.00);
+$filters->setStatuses(['status','status']);
+$filters->setStartEpoch(12345678);
+$filters->setEndEpoch(12345678);
+$filters->setPerPage(1);
+$filters->setPage(1);
+$filters->setTransactionTypes(['types']);
+$filters->setAccountNumber('12345678');
+$filters->setRoutingNumber('12345678');
+$filters->setAccountType('account_type')
+
 $userPrivateKey = 'some private key'; // Hex format
 
 // Call the api
