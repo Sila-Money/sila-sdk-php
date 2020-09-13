@@ -37,7 +37,7 @@ use Silamoney\Client\Domain\{BalanceEnvironments,Environments};
 $appHandle = 'your app handle';
 $privateKey = 'your private key';
 
-// Create your client
+// Create your client using **ONE** of the following ways:
 $client = new SilaApi('your sila endpoint url', 'your sila balance endpoint url', $appHandle, $privateKey); // From custom URL
 $client = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey); // From predefined environments
 $client = SilaApi::fromDefault($appHandle, $privateKey); // From default sandbox environments
