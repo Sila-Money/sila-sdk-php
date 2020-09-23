@@ -17,9 +17,11 @@ use Silamoney\Client\Domain\{
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
+    BaseMessage,
     BaseResponse,
     BusinessEntityMessage,
     BusinessUser,
+    CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
     OperationResponse,
     EntityMessage,
@@ -882,9 +884,29 @@ class SilaApi
     {
         $params = $this->pageParams($page, $perPage);
         $path = "/document_types{$params}";
-        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
+        $body = new BaseMessage($this->configuration->getAuthHandle());
         $json = $this->serializer->serialize($body, 'json');
         $headers = [self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Cancel a pending transaction under certain circumstances
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $transactionId The transaction id to cancel
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function cancelTransaction(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
+    {
+        $path = '/cancel_transaction';
+        $body = new CancelTransactionMessage($this->configuration->getAuthHandle(), $userHandle, $transactionId);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }

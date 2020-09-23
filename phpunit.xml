@@ -31,6 +31,7 @@
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>
       <file>test/Api/IssueSilaTest.php</file>
+      <file>test/Api/CancelTransactionTest.php</file>
       <file>test/Api/TransferSilaTest.php</file>
       <file>test/Api/RedeemSilaTest.php</file>
       <file>test/Api/GetTransactionsTest.php</file>

@@ -809,6 +809,25 @@ echo $response->getData()->entities->businesses; // An array of business entitie
 echo $response->getData()->pagination; // Pagination details (returned count, total count, current page, total pages)
 ```
 
+## Cancel Transaction
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$transactionId = 'some-transac-id'; // This field is obtained from the issueSila response (getTransactionId)
+$response = $client->cancelTransaction($userHandle, $privateKey, $transactionId);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Transaction some-transac-id has been canceled.
+echo $response->getData()->reference; // Random number reference
+```
+
 ## Document Types
 
 List the document types for KYC supporting documentation

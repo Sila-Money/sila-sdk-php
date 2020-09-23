@@ -55,7 +55,7 @@ class GetDocumentTypesTest extends TestCase
         $response = self::$config->api->getDocumentTypes(1, 40);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
-        $this->assertEquals('SUCCESS', $response->getData()->status);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertStringContainsString('Document type details returned.', $response->getData()->message);
         $this->assertIsArray($response->getData()->document_types);
         $this->assertGreaterThan(20, count($response->getData()->document_types));
