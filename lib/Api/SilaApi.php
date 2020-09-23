@@ -711,17 +711,7 @@ class SilaApi
         int $page = null,
         int $perPage = null
     ) {
-        $params = '';
-        if ($page != null) {
-            $params = "?page={$page}";
-        }
-        if ($perPage != null) {
-            if ($params != '') {
-                $params = "{$params}&per_page={$perPage}";
-            } else {
-                $params = "?per_page={$perPage}";
-            }
-        }
+        $params = $this->pageParams($page, $perPage);
         $path = "/get_entities{$params}";
         $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
         $json = $this->serializer->serialize($body, 'json');
@@ -883,6 +873,23 @@ class SilaApi
     }
 
     /**
+     * List the document types for KYC supporting documentation
+     * @param int|null $page Indicates the page to retrieve
+     * @param int|null $perPage Indicates the number of document types per page to retrieve
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getDocumentTypes(int $page = null, int $perPage = null): ApiResponse
+    {
+        $params = $this->pageParams($page, $perPage);
+        $path = "/document_types{$params}";
+        $body = new HeaderBaseMessage($this->configuration->getAuthHandle());
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -909,6 +916,22 @@ class SilaApi
     public function getBalanceClient(): ApiClient
     {
         return $this->configuration->getBalanceClient();
+    }
+
+    private function pageParams(int $page = null, int $perPage = null): string
+    {
+        $params = '';
+        if ($page != null) {
+            $params = "?page={$page}";
+        }
+        if ($perPage != null) {
+            if ($params != '') {
+                $params = "{$params}&per_page={$perPage}";
+            } else {
+                $params = "?per_page={$perPage}";
+            }
+        }
+        return $params;
     }
 
     /**
