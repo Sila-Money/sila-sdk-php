@@ -809,6 +809,27 @@ echo $response->getData()->entities->businesses; // An array of business entitie
 echo $response->getData()->pagination; // Pagination details (returned count, total count, current page, total pages)
 ```
 
+## Document Types
+
+List the document types for KYC supporting documentation
+
+```php
+$page = 1; // Optional. The page number to get
+$perPage = 5 // Optional. The n umber of document types per page. The default value is 20 and the maxium is 100.
+$response = $client->getDocumentTypes($page, $perPage);
+```
+
+### Respone 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Document type details returned.
+echo $response->getData()->document_types; // An array of document types (name, label, identity_type)
+echo $response->getData()->pagination; // Pagination details (returned_count, total_count, current_page, total_pages)
+```
+
 ## Get Business Roles
 
 Gets an array of allowed business roles

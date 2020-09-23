@@ -12,8 +12,8 @@ use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
 /**
- * GetBusinessTypes Test
- * Tests for the get_business_types endpoint in the Sila Api class.
+ * GetDocumentTypes Test
+ * Tests for the document_types endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client
@@ -43,6 +43,11 @@ class GetDocumentTypesTest extends TestCase
         $this->assertIsString($response->getData()->document_types[0]->name);
         $this->assertIsString($response->getData()->document_types[0]->label);
         $this->assertIsString($response->getData()->document_types[0]->identity_type);
+        $this->assertIsObject($response->getData()->pagination);
+        $this->assertEquals(20, $response->getData()->pagination->returned_count);
+        $this->assertGreaterThan(20, $response->getData()->pagination->total_count);
+        $this->assertEquals(1, $response->getData()->pagination->current_page);
+        $this->assertGreaterThan(1, $response->getData()->pagination->total_pages);
     }
 
     public function testGetDocumentTypesWithParams200()
@@ -57,6 +62,11 @@ class GetDocumentTypesTest extends TestCase
         $this->assertIsString($response->getData()->document_types[0]->name);
         $this->assertIsString($response->getData()->document_types[0]->label);
         $this->assertIsString($response->getData()->document_types[0]->identity_type);
+        $this->assertIsObject($response->getData()->pagination);
+        $this->assertGreaterThan(20, $response->getData()->pagination->returned_count);
+        $this->assertGreaterThan(20, $response->getData()->pagination->total_count);
+        $this->assertEquals(1, $response->getData()->pagination->current_page);
+        $this->assertEquals(1, $response->getData()->pagination->total_pages);
     }
 
     public function testGetDocumentTypes403()
