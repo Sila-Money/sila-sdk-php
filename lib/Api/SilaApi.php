@@ -17,6 +17,7 @@ use Silamoney\Client\Domain\{
     Account,
     AchType,
     AddEmailMessage,
+    AddIdentityMessage,
     AddPhoneMessage,
     BalanceEnvironments,
     BankAccountMessage,
@@ -27,6 +28,7 @@ use Silamoney\Client\Domain\{
     BusinessUser,
     CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
+    DeleteRegistrationMessage,
     OperationResponse,
     EntityMessage,
     Environments,
@@ -55,7 +57,9 @@ use Silamoney\Client\Domain\{
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
+    IdentityAlias,
     LinkBusinessMemberMessage,
+    RegistrationDataType,
     TransferResponse,
     UnlinkBusinessMemberMessage
 };
@@ -933,13 +937,55 @@ class SilaApi
     public function addEmail(string $userHandle, string $userPrivateKey, string $email): ApiResponse
     {
         $body = new AddEmailMessage($this->configuration->getAuthHandle(), $userHandle, $email);
-        return $this->addRegistrationData($userPrivateKey, $body);
+        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::EMAIL(), $body);
     }
 
+    /**
+     * Add a phone number to a registered entity.
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $phone
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
     public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
     {
         $body = new AddPhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
-        return $this->addRegistrationData($userPrivateKey, $body);
+        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::PHONE(), $body);
+    }
+
+    /**
+     * Add a new identity to a registered entity.
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias
+     * @param string $identityValue
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addIdentity(string $userHandle, string $userPrivateKey, IdentityAlias $identityAlias, string $identityValue): ApiResponse
+    {
+        $body = new AddIdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
+        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::IDENTITY(), $body);
+    }
+
+    /**
+     * Delete an existing email, phone number, street address, or identity.
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\RegistrationDataType $dataType Indicates which type of registration data to delete
+     * @param string $uuid The registration data uuid
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function deleteRegistrationData(string $userHandle, string $userPrivateKey, RegistrationDataType $dataType, string $uuid): ApiResponse
+    {
+        $path = "/delete/{$dataType}";
+        $body = new DeleteRegistrationMessage($this->configuration->getAuthHandle(), $userHandle, $uuid);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     /**
@@ -973,21 +1019,19 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\AddEmailMessage $body
+     * @param \Silamoney\Client\Domain\AddEmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    private function addRegistrationData(string $userPrivateKey, $body): ApiResponse
+    private function addRegistrationData(string $userPrivateKey, RegistrationDataType $dataType, $body): ApiResponse
     {
-        $dataType = '';
         switch (get_class($body)) {
             case AddEmailMessage::class:
-                $dataType = 'email';
-                break;
             case AddPhoneMessage::class:
-                $dataType = 'phone';
+            case AddIdentityMessage::class:
                 break;
             default:
-                throw new InvalidArgumentException('addRegistrationData function only accepts ' . AddEmailMessage::class . '. Input was: ' . get_class($body));
+                throw new InvalidArgumentException('addRegistrationData function only accepts: '
+                    . AddEmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/add/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');

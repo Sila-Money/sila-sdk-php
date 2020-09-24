@@ -124,6 +124,11 @@ class DefaultConfig
     public static $businessRoles;
 
     /**
+     * @var array
+     */
+    public static $registrationDataUuids = [];
+
+    /**
      * @var string
      */
     public static $issueTransactionId;

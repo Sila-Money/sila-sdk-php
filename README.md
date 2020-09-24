@@ -904,6 +904,53 @@ echo $response->getData()->phone->uuid; // The phone uuid
 echo $response->getData()->phone->phone; // 1234567890
 ```
 
+## Add Indentity
+
+```php
+use Silamoney\Client\Domain\IdentityAlias;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$identityAlias = IdentityAlias::SSN();
+$identityValue = '543212222';
+$response = $client->addIdentity($userHandle, $privateKey, $identityAlias, $identityValue);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->identity->added_epoch;
+echo $response->getData()->identity->modified_epoch;
+echo $response->getData()->identity->uuid; // The phone uuid
+echo $response->getData()->identity->identity_type; // SSN
+echo $response->getData()->identity->identity; // 543212222
+```
+
+## Delete Registration Data
+
+```php
+use Silamoney\Client\Domain\RegistrationDataType;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$dataType = RegistrationDataType::EMAIL(); // Enum with the valid data types for the endpoint (address, email, identity and phone)
+$uuid = 'some-uuid-code'; // You can obtain the id's through the getEntity method.
+$response = $client->deleteRegistrationData($userHandle, $privateKey, $dataType, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully deleted email with UUID some-uuid-code.
+```
+
 ## Document Types
 
 List the document types for KYC supporting documentation

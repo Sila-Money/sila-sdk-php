@@ -29,7 +29,7 @@ class AddPhoneMessage extends HeaderBaseMessage
      * @param string $appHandle
      * @param string $userHandle
      * @param string $phone
-     * @return \Silamoney\Client\Domain\AddEmailMessage
+     * @return \Silamoney\Client\Domain\AddPhoneMessage
      */
     public function __construct(string $appHandle, string $userHandle, string $phone)
     {
