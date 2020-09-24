@@ -16,30 +16,25 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class EmailMessage extends HeaderBaseMessage
+class EmailMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
      * @Type("string")
      */
     private $email;
-    /**
-     * @var string
-     * @Type("string")
-     */
-    private $uuid;
 
     /**
      * Constructor for Add Email Message object.
      * @param string $appHandle
      * @param string $userHandle
      * @param string $email
+     * @param string|null $uuid
      * @return \Silamoney\Client\Domain\AddEmailMessage
      */
     public function __construct(string $appHandle, string $userHandle, string $email, string $uuid = null)
     {
-        parent::__construct($appHandle, $userHandle);
+        parent::__construct($appHandle, $userHandle, $uuid);
         $this->email = $email;
-        $this->uuid = $uuid;
     }
 }

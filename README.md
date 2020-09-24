@@ -989,6 +989,29 @@ echo $response->getData()->email->uuid; // some-uuid-code
 echo $response->getData()->email->email; // your.updated.email@domain.com
 ```
 
+## Update Phone
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$phone = '1234567890';
+$uuid = 'some-uuid-code';
+$response = $client->updatePhone($userHandle, $privateKey, $phone, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated phone with uuid some-uuid-code.
+echo $response->getData()->phone->added_epoch;
+echo $response->getData()->phone->modified_epoch;
+echo $response->getData()->phone->uuid; // some-uuid-code
+echo $response->getData()->phone->phone; // 1234567890
+```
+
 ## Delete Registration Data
 
 ```php

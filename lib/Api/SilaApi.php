@@ -18,7 +18,6 @@ use Silamoney\Client\Domain\{
     AchType,
     AddAddressMessage,
     AddIdentityMessage,
-    AddPhoneMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -61,6 +60,7 @@ use Silamoney\Client\Domain\{
     HeaderBaseMessage,
     IdentityAlias,
     LinkBusinessMemberMessage,
+    PhoneMessage,
     RegistrationDataOperation,
     RegistrationDataType,
     TransferResponse,
@@ -965,8 +965,21 @@ class SilaApi
      */
     public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
     {
-        $body = new AddPhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
+    }
+
+    /**
+     * Update an existing phone number of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $phone The new phone
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $phone, $uuid): ApiResponse
+    {
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
     }
 
     /**
@@ -1080,13 +1093,13 @@ class SilaApi
     {
         switch (get_class($body)) {
             case EmailMessage::class:
-            case AddPhoneMessage::class:
+            case PhoneMessage::class:
             case AddIdentityMessage::class:
             case AddAddressMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . EmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class
+                    . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . AddIdentityMessage::class
                     . ', ' . AddAddressMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";
