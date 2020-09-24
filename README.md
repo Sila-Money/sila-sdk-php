@@ -481,7 +481,33 @@ $response = $client->getTransactions($userHandle, $filters, $userPrivateKey);
 
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // Silamoney\Client\Domain\GetTransactionsResponse
+$data = $response->getData();
+echo $data->success; // TRUE
+$data->status; // SUCCESS
+$data->page; // The current page
+$data->returnedCount; // The amount of results returned in this request
+$data->totalCount; // The total amount of results that satisfies the filters
+$transactions = $data->transactions; // Array of transactions
+$transactions[0]->userHandle; // The user handle
+$transactions[0]->referenceId; // The transaction reference
+$transactions[0]->transactionId; // The transaction id
+$transactions[0]->transactionHash; // The transaction hash
+$transactions[0]->transactionType; // The transaction type
+$transactions[0]->silaAmount; // The amount of sila tokens in the transaction
+$transactions[0]->status; // The current status of the transaction
+$transactions[0]->usdStatus; // The status of the transaction
+$transactions[0]->tokenStatus; // The status of the token
+$transactions[0]->created; // The date of creation of the transaction
+$transactions[0]->lastUpdate; // The date of last modification of the transaction 
+$transactions[0]->createdEpoch;
+$transactions[0]->lastUpdateEpoch;
+$transactions[0]->descriptor; // The descriptor of the transaction
+$transactions[0]->descriptorAch;
+$transactions[0]->achName;
+$transactions[0]->destinationAddress; // Just for 'transfer' transactions.
+$transactions[0]->destinationHandle; // Just for 'transfer' transactions.
+$transactions[0]->handleAddress;
+$transactions[0]->processingType; // Just for 'issue' and 'redeem' transactions.
 ```
 
 ## Get Wallets endpoint

@@ -126,6 +126,11 @@ class DefaultConfig
     /**
      * @var string
      */
+    public static $issueTransactionId;
+
+    /**
+     * @var string
+     */
     public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
 
     /**

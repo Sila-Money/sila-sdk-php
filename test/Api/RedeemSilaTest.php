@@ -37,7 +37,7 @@ class RedeemSilaTest extends TestCase
     {
         $response = self::$config->api->redeemSila(
             DefaultConfig::$firstUserHandle,
-            10000,
+            100,
             DefaultConfig::DEFAULT_ACCOUNT,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
