@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add Address Message
+ * Address Message
  * PHP version 7.2
  */
 
@@ -10,13 +10,13 @@ namespace Silamoney\Client\Domain;
 use JMS\Serializer\Annotation\{SerializedName, Type};
 
 /**
- * Add Address Message
- * Object used as the message in add/address endpoint.
+ * Address Message
+ * Object used as the message in [add|update]/address endpoint.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class AddAddressMessage extends HeaderBaseMessage
+class AddressMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
@@ -60,27 +60,29 @@ class AddAddressMessage extends HeaderBaseMessage
      * Constructor for Add Email Message object.
      * @param string $appHandle
      * @param string $userHandle
-     * @param string $addressAlias
-     * @param string $streetAddress1
-     * @param string $city
-     * @param string $state
-     * @param \Silamoney\Client\Domain\Country $country
-     * @param string $postalCode
-     * @param string $streetAddress2
-     * @return \Silamoney\Client\Domain\AddAddressMessage
+     * @param string|null $addressAlias
+     * @param string|null $streetAddress1
+     * @param string|null $city
+     * @param string|null $state
+     * @param \Silamoney\Client\Domain\Country|null $country
+     * @param string|null $postalCode
+     * @param string|null $streetAddress2
+     * @param string|null $uuid
+     * @return \Silamoney\Client\Domain\AddressMessage
      */
     public function __construct(
         string $appHandle,
         string $userHandle,
-        string $addressAlias,
-        string $streetAddress1,
-        string $city,
-        string $state,
-        Country $country,
-        string $postalCode,
-        string $streetAddress2 = null
+        string $addressAlias = null,
+        string $streetAddress1 = null,
+        string $city = null,
+        string $state = null,
+        Country $country = null,
+        string $postalCode = null,
+        string $streetAddress2 = null,
+        string $uuid = null
     ) {
-        parent::__construct($appHandle, $userHandle);
+        parent::__construct($appHandle, $userHandle, $uuid);
         $this->addressAlias = $addressAlias;
         $this->streetAddress1 = $streetAddress1;
         $this->city = $city;

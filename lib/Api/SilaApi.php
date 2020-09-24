@@ -16,7 +16,7 @@ use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
     AchType,
-    AddAddressMessage,
+    AddressMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -1037,7 +1037,7 @@ class SilaApi
         string $postalCode,
         string $streetAddress2 = null
     ): ApiResponse {
-        $body = new AddAddressMessage(
+        $body = new AddressMessage(
             $this->configuration->getAuthHandle(),
             $userHandle,
             $addressAlias,
@@ -1049,6 +1049,47 @@ class SilaApi
             $streetAddress2
         );
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::ADDRESS(), $body);
+    }
+
+    /**
+     * Update an existing address of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param string $addressAlias Optional. This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+     * @param string $streetAddress1 Optional. This is line 1 of a street address. Post office boxes are not accepted in this field.
+     * @param string $city Optional. Name of the city where the person being verified is a current resident
+     * @param string $state Optional. Name of state where verified person is a current resident.
+     * @param \Silamoney\Client\Domain\Country $country Opational. Two-letter country code.
+     * @param string $postalCode Optional. In the US, this can be the 5-digit ZIP code or ZIP+4 code
+     * @param string $streetAddress2 Optional. This is line 2 of a street address. This may include suite or apartment numbers
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateAddress(
+        string $userHandle,
+        string $userPrivateKey,
+        string $uuid,
+        string $addressAlias = null,
+        string $streetAddress1 = null,
+        string $city = null,
+        string $state = null,
+        Country $country = null,
+        string $postalCode = null,
+        string $streetAddress2 = null
+    ): ApiResponse {
+        $body = new AddressMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $addressAlias,
+            $streetAddress1,
+            $city,
+            $state,
+            $country,
+            $postalCode,
+            $streetAddress2,
+            $uuid
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ADDRESS(), $body);
     }
 
     /**
@@ -1103,7 +1144,7 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
@@ -1112,12 +1153,12 @@ class SilaApi
             case EmailMessage::class:
             case PhoneMessage::class:
             case IdentityMessage::class:
-            case AddAddressMessage::class:
+            case AddressMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
                     . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
-                    . ', ' . AddAddressMessage::class . '. Input was: ' . get_class($body));
+                    . ', ' . AddressMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');

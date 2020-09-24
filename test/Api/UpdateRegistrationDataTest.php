@@ -110,6 +110,34 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->identity->identity);
     }
 
+    public function testUpdateAddress200()
+    {
+        $response = self::$config->api->updateAddress(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::$registrationDataUuids[7],
+            'updated_address',
+            null,
+            null,
+            'CA'
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Successfully updated address', $response->getData()->message);
+        $this->assertIsObject($response->getData()->address);
+        $this->assertIsInt($response->getData()->address->added_epoch);
+        $this->assertIsInt($response->getData()->address->modified_epoch);
+        $this->assertIsString($response->getData()->address->uuid);
+        $this->assertIsString($response->getData()->address->nickname);
+        $this->assertIsString($response->getData()->address->street_address_1);
+        $this->assertIsString($response->getData()->address->street_address_2);
+        $this->assertIsString($response->getData()->address->city);
+        $this->assertIsString($response->getData()->address->state);
+        $this->assertIsString($response->getData()->address->country);
+        $this->assertIsString($response->getData()->address->postal_code);
+    }
+
     /**
      * @test
      * @dataProvider updateRegistrationData400Provider
@@ -150,8 +178,8 @@ class UpdateRegistrationDataTest extends TestCase
         return [
             'update email - 400' => ['updateEmail', ['', '']],
             'update phone - 400' => ['updatePhone', ['', '']],
-            'update identity - 400' => ['updateIdentity', ['', IdentityAlias::SSN(), '']]/*,
-            'update address - 400' => ['updateAddress', ['', '', '', '', Country::US(), '']]*/
+            'update identity - 400' => ['updateIdentity', ['', IdentityAlias::SSN(), '']],
+            'update address - 400' => ['updateAddress', ['', '', '', '', '', Country::US(), '']]
         ];
     }
 
@@ -160,8 +188,8 @@ class UpdateRegistrationDataTest extends TestCase
         return [
             'update email - 403' => ['updateEmail', ['', 'some.signature.email@domain.com']],
             'update phone - 403' => ['updatePhone', ['', '1234567890']],
-            'update identity - 403' => ['updateIdentity', ['', IdentityAlias::SSN(), '543212222']]/*,
-            'update address - 403' => ['updateAddress', ['new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']]*/
+            'update identity - 403' => ['updateIdentity', ['', IdentityAlias::SSN(), '543212222']],
+            'update address - 403' => ['updateAddress', ['', 'new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']]
         ];
     }
 }

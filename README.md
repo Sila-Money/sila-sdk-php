@@ -1039,6 +1039,43 @@ echo $response->getData()->identity->identity_type; // SSN
 echo $response->getData()->identity->identity; // 654322222
 ```
 
+## Update Address
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$nickname = 'update_address'; // Optional. This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+$streetAddress1 = '124 Main St'; // Optional. This is line 1 of a street address. Post office boxes are not accepted in this field.
+$city = 'Sometown'; // Optional. Name of the city where the person being verified is a current resident.
+$state = 'CA'; // Optional. Name of state where verified person is a current resident.
+$country = Country::US(); // Optional. Two-letter country code.
+$postalCode = '54321'; // Optional. In the US, this can be the 5-digit ZIP code or ZIP+4 code.
+$streetAddress2 = '' // Optional. This is line 2 of a street address. This may include suite or apartment numbers.
+$uuid = 'some-uuid-code';
+$response = $client->addIdentity($userHandle, $privateKey, $uuid, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->address->added_epoch;
+echo $response->getData()->address->modified_epoch;
+echo $response->getData()->address->uuid; // some-uuid-code
+echo $response->getData()->address->nickname; // update_address
+echo $response->getData()->address->street_address_1; // 124 Main St
+echo $response->getData()->address->street_address_2; //
+echo $response->getData()->address->city; // Sometown
+echo $response->getData()->address->state; // CA
+echo $response->getData()->address->country; // US
+echo $response->getData()->address->postal_code; // 54321
+```
+
 ## Delete Registration Data
 
 ```php
