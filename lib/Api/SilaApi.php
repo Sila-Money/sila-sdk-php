@@ -17,7 +17,6 @@ use Silamoney\Client\Domain\{
     Account,
     AchType,
     AddAddressMessage,
-    AddIdentityMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -59,6 +58,7 @@ use Silamoney\Client\Domain\{
     GetWalletsMessage,
     HeaderBaseMessage,
     IdentityAlias,
+    IdentityMessage,
     LinkBusinessMemberMessage,
     PhoneMessage,
     RegistrationDataOperation,
@@ -947,10 +947,11 @@ class SilaApi
      * Update an existing email of a registered entity.
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
+     * @param string $uuid
      * @param string $email The new email
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updateEmail(string $userHandle, string $userPrivateKey, string $email, string $uuid)
+    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, string $email)
     {
         $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::EMAIL(), $body);
@@ -973,10 +974,11 @@ class SilaApi
      * Update an existing phone number of a registered entity.
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
+     * @param string $uuid
      * @param string $phone The new phone
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updatePhone(string $userHandle, string $userPrivateKey, string $phone, $uuid): ApiResponse
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  string $phone): ApiResponse
     {
         $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
@@ -992,8 +994,23 @@ class SilaApi
      */
     public function addIdentity(string $userHandle, string $userPrivateKey, IdentityAlias $identityAlias, string $identityValue): ApiResponse
     {
-        $body = new AddIdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
+        $body = new IdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::IDENTITY(), $body);
+    }
+
+    /**
+     * Update an existing identity of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @param string $identityValue The identity number
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateIdentity(string $userHandle, string $userPrivateKey, string $uuid, IdentityAlias $identityAlias, string $identityValue): ApiResponse
+    {
+        $body = new IdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::IDENTITY(), $body);
     }
 
     /**
@@ -1086,7 +1103,7 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
@@ -1094,12 +1111,12 @@ class SilaApi
         switch (get_class($body)) {
             case EmailMessage::class:
             case PhoneMessage::class:
-            case AddIdentityMessage::class:
+            case IdentityMessage::class:
             case AddAddressMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . AddIdentityMessage::class
+                    . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
                     . ', ' . AddAddressMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";

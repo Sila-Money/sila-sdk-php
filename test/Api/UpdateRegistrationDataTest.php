@@ -39,7 +39,6 @@ class UpdateRegistrationDataTest extends TestCase
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
-        var_dump($response->getData());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
@@ -57,8 +56,8 @@ class UpdateRegistrationDataTest extends TestCase
         $response = self::$config->api->updateEmail(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            'some.updated.email@domain.com',
-            DefaultConfig::$registrationDataUuids[4]
+            DefaultConfig::$registrationDataUuids[4],
+            'some.updated.email@domain.com'
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
@@ -76,8 +75,8 @@ class UpdateRegistrationDataTest extends TestCase
         $response = self::$config->api->updatePhone(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            '9876543210',
-            DefaultConfig::$registrationDataUuids[5]
+            DefaultConfig::$registrationDataUuids[5],
+            '9876543210'
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
@@ -88,6 +87,27 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertIsInt($response->getData()->phone->modified_epoch);
         $this->assertIsString($response->getData()->phone->uuid);
         $this->assertIsString($response->getData()->phone->phone);
+    }
+
+    public function testUpdateIdentity200()
+    {
+        $response = self::$config->api->updateIdentity(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            DefaultConfig::$registrationDataUuids[6],
+            IdentityAlias::SSN(),
+            '654322222'
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Successfully updated identity', $response->getData()->message);
+        $this->assertIsObject($response->getData()->identity);
+        $this->assertIsInt($response->getData()->identity->added_epoch);
+        $this->assertIsInt($response->getData()->identity->modified_epoch);
+        $this->assertIsString($response->getData()->identity->uuid);
+        $this->assertIsString($response->getData()->identity->identity_type);
+        $this->assertIsString($response->getData()->identity->identity);
     }
 
     /**
@@ -129,8 +149,8 @@ class UpdateRegistrationDataTest extends TestCase
     {
         return [
             'update email - 400' => ['updateEmail', ['', '']],
-            'update phone - 400' => ['updatePhone', ['', '']]/*,
-            'update identity - 400' => ['updateIdentity', [IdentityAlias::SSN(), '']],
+            'update phone - 400' => ['updatePhone', ['', '']],
+            'update identity - 400' => ['updateIdentity', ['', IdentityAlias::SSN(), '']]/*,
             'update address - 400' => ['updateAddress', ['', '', '', '', Country::US(), '']]*/
         ];
     }
@@ -138,9 +158,9 @@ class UpdateRegistrationDataTest extends TestCase
     public function updateRegistrationData403Provider(): array
     {
         return [
-            'update email - 403' => ['updateEmail', ['some.signature.email@domain.com', '']],
-            'update phone - 403' => ['updatePhone', ['1234567890', '']]/*,
-            'update identity - 403' => ['updateIdentity', [IdentityAlias::SSN(), '543212222']],
+            'update email - 403' => ['updateEmail', ['', 'some.signature.email@domain.com']],
+            'update phone - 403' => ['updatePhone', ['', '1234567890']],
+            'update identity - 403' => ['updateIdentity', ['', IdentityAlias::SSN(), '543212222']]/*,
             'update address - 403' => ['updateAddress', ['new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']]*/
         ];
     }

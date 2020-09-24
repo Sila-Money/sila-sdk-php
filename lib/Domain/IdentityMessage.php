@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add Identity Message
+ * Identity Message
  * PHP version 7.2
  */
 
@@ -10,13 +10,13 @@ namespace Silamoney\Client\Domain;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Add Identity Message
- * Object used as the message in add/identity endpoint.
+ * Identity Message
+ * Object used as the message in [add|update]/identity endpoint.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class AddIdentityMessage extends HeaderBaseMessage
+class IdentityMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
@@ -35,11 +35,12 @@ class AddIdentityMessage extends HeaderBaseMessage
      * @param string $userHandle
      * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias
      * @param string $identityValue
+     * @param string|null $uuid
      * @return \Silamoney\Client\Domain\AddIdentityMessage
      */
-    public function __construct(string $appHandle, string $userHandle, IdentityAlias $identityAlias, string $identityValue)
+    public function __construct(string $appHandle, string $userHandle, IdentityAlias $identityAlias, string $identityValue, string $uuid = null)
     {
-        parent::__construct($appHandle, $userHandle);
+        parent::__construct($appHandle, $userHandle, $uuid);
         $this->identityAlias = $identityAlias;
         $this->identityValue = $identityValue;
     }

@@ -973,7 +973,7 @@ $userHandle = 'user.silamoney.eth';
 $privateKey = 'some private key';
 $email = 'your.updated.email@domain.com';
 $uuid = 'some-uuid-code';
-$response = $client->updateEmail($userHandle, $privateKey, $email, $uuid);
+$response = $client->updateEmail($userHandle, $privateKey, $uuid, $email);
 ```
 
 ### Response 200
@@ -996,7 +996,7 @@ $userHandle = 'user.silamoney.eth';
 $privateKey = 'some private key';
 $phone = '1234567890';
 $uuid = 'some-uuid-code';
-$response = $client->updatePhone($userHandle, $privateKey, $phone, $uuid);
+$response = $client->updatePhone($userHandle, $privateKey, $uuid, $phone);
 ```
 
 ### Response 200
@@ -1005,11 +1005,38 @@ $response = $client->updatePhone($userHandle, $privateKey, $phone, $uuid);
 echo $response->getStatusCode(); // 200
 echo $response->getData()->success; // TRUE
 echo $response->getData()->status; // SUCCESS
-echo $response->getData()->message; // Successfully updated phone with uuid some-uuid-code.
+echo $response->getData()->message; // Successfully updated phone with UUID some-uuid-code.
 echo $response->getData()->phone->added_epoch;
 echo $response->getData()->phone->modified_epoch;
 echo $response->getData()->phone->uuid; // some-uuid-code
 echo $response->getData()->phone->phone; // 1234567890
+```
+
+## Update Indentity
+
+```php
+use Silamoney\Client\Domain\IdentityAlias;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$identityAlias = IdentityAlias::SSN();
+$identityValue = '654322222';
+$uuid = 'some-uuid-code';
+$response = $client->updateIdentity($userHandle, $privateKey, $uuid,  $identityAlias, $identityValue);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated identity with UUID some-uuid-code.
+echo $response->getData()->identity->added_epoch;
+echo $response->getData()->identity->modified_epoch;
+echo $response->getData()->identity->uuid; // some-uuid-code
+echo $response->getData()->identity->identity_type; // SSN
+echo $response->getData()->identity->identity; // 654322222
 ```
 
 ## Delete Registration Data
