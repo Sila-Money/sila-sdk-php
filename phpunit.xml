@@ -21,6 +21,7 @@
       <file>test/Api/RegisterBusinessTest.php</file>
       <file>test/Api/DeleteRegistrationDataTest.php</file>
       <file>test/Api/AddRegistrationDataTest.php</file>
+      <file>test/Api/UpdateRegistrationDataTest.php</file>
       <file>test/Api/LinkBusinessMemberTest.php</file>
       <file>test/Api/UnlinkBusinessMemberTest.php</file>
       <file>test/Api/RequestKYCTest.php</file>

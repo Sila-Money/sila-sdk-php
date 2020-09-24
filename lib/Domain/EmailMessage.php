@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add Email Message
+ * Email Message
  * PHP version 7.2
  */
 
@@ -10,19 +10,24 @@ namespace Silamoney\Client\Domain;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Add Email Message
- * Object used as the message in add/email endpoint.
+ * Email Message
+ * Object used as the message in [add|update]/email endpoint.
  * @category Class
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class AddEmailMessage extends HeaderBaseMessage
+class EmailMessage extends HeaderBaseMessage
 {
     /**
      * @var string
      * @Type("string")
      */
     private $email;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $uuid;
 
     /**
      * Constructor for Add Email Message object.
@@ -31,9 +36,10 @@ class AddEmailMessage extends HeaderBaseMessage
      * @param string $email
      * @return \Silamoney\Client\Domain\AddEmailMessage
      */
-    public function __construct(string $appHandle, string $userHandle, string $email)
+    public function __construct(string $appHandle, string $userHandle, string $email, string $uuid = null)
     {
         parent::__construct($appHandle, $userHandle);
         $this->email = $email;
+        $this->uuid = $uuid;
     }
 }

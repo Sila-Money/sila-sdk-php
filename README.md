@@ -966,6 +966,29 @@ echo $response->getData()->address->country; // US
 echo $response->getData()->address->postal_code; // 12345
 ```
 
+## Update Email
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$email = 'your.updated.email@domain.com';
+$uuid = 'some-uuid-code';
+$response = $client->updateEmail($userHandle, $privateKey, $email, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated email with UUID some-uuid-code.
+echo $response->getData()->email->added_epoch;
+echo $response->getData()->email->modified_epoch;
+echo $response->getData()->email->uuid; // some-uuid-code
+echo $response->getData()->email->email; // your.updated.email@domain.com
+```
+
 ## Delete Registration Data
 
 ```php

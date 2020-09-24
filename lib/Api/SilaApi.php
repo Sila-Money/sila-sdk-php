@@ -17,7 +17,6 @@ use Silamoney\Client\Domain\{
     Account,
     AchType,
     AddAddressMessage,
-    AddEmailMessage,
     AddIdentityMessage,
     AddPhoneMessage,
     BalanceEnvironments,
@@ -56,11 +55,13 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    EmailMessage,
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
     IdentityAlias,
     LinkBusinessMemberMessage,
+    RegistrationDataOperation,
     RegistrationDataType,
     TransferResponse,
     UnlinkBusinessMemberMessage
@@ -938,8 +939,21 @@ class SilaApi
      */
     public function addEmail(string $userHandle, string $userPrivateKey, string $email): ApiResponse
     {
-        $body = new AddEmailMessage($this->configuration->getAuthHandle(), $userHandle, $email);
-        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::EMAIL(), $body);
+        $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::EMAIL(), $body);
+    }
+
+    /**
+     * Update an existing email of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $email The new email
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateEmail(string $userHandle, string $userPrivateKey, string $email, string $uuid)
+    {
+        $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::EMAIL(), $body);
     }
 
     /**
@@ -952,7 +966,7 @@ class SilaApi
     public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
     {
         $body = new AddPhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
-        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::PHONE(), $body);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
     }
 
     /**
@@ -966,7 +980,7 @@ class SilaApi
     public function addIdentity(string $userHandle, string $userPrivateKey, IdentityAlias $identityAlias, string $identityValue): ApiResponse
     {
         $body = new AddIdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
-        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::IDENTITY(), $body);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::IDENTITY(), $body);
     }
 
     /**
@@ -1004,7 +1018,7 @@ class SilaApi
             $postalCode,
             $streetAddress2
         );
-        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::ADDRESS(), $body);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::ADDRESS(), $body);
     }
 
     /**
@@ -1059,23 +1073,23 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\AddEmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    private function addRegistrationData(string $userPrivateKey, RegistrationDataType $dataType, $body): ApiResponse
+    private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
     {
         switch (get_class($body)) {
-            case AddEmailMessage::class:
+            case EmailMessage::class:
             case AddPhoneMessage::class:
             case AddIdentityMessage::class:
             case AddAddressMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . AddEmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class
+                    . EmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class
                     . ', ' . AddAddressMessage::class . '. Input was: ' . get_class($body));
         }
-        $path = "/add/{$dataType}";
+        $path = "/{$operation}/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
