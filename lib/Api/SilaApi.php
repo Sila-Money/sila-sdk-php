@@ -356,10 +356,12 @@ class SilaApi
      * the requested handle.
      *
      * @param string $userHandle
-     * @param float $amount
-     * @param string $accountName
-     * @param string $descriptor
+     * @param float $amount Min Length 1, Max digits 35
+     * @param string $accountName Max Length 40
      * @param string $userPrivateKey
+     * @param string|null $descriptor Optional. Max Length 100
+     * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
+     * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
      * @return ApiResponse
      */
     public function issueSila(
@@ -437,10 +439,12 @@ class SilaApi
      * their named bank account in the equivalent monetary amount.
      *
      * @param string $userHandle
-     * @param float $amount
-     * @param string $accountName
-     * @param string $descriptor
+     * @param float $amount Min Length 1, Max digits 35
+     * @param string $accountName Max Length 40
      * @param string $userPrivateKey
+     * @param string|null $descriptor Optional. Max Length 100
+     * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
+     * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
      * @return ApiResponse
      */
     public function redeemSila(
@@ -449,7 +453,8 @@ class SilaApi
         string $accountName,
         string $userPrivateKey,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        AchType $processingType = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -458,7 +463,8 @@ class SilaApi
             $this->configuration->getAuthHandle(),
             Message::REDEEM(),
             $descriptor,
-            $businessUuid
+            $businessUuid,
+            $processingType
         );
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');

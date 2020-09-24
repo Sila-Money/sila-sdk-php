@@ -435,6 +435,8 @@ echo $response->getData()->getDestinationAddress(); // The destination wallet ad
 Burns given the amount of SILA at the handle's blockchain address and credits their named bank account in the equivalent monetary amount.
 
 ```php
+use Silamoney\Client\Domain\AchType;
+
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
@@ -442,9 +444,10 @@ $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
 $descriptor = 'Transaction Descriptor'; // optional
 $businessUuid = 'you-business-uuid-code'; // optional
+$processingType = AchType::SAME_DAY(); // Optional. Currently supported values are STANDARD (default if not set) and SAME_DAY
 
 // Call the api
-$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
+$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid, $processingType);
 ```
 
 ### Success 200
