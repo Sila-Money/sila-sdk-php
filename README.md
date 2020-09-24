@@ -925,9 +925,45 @@ echo $response->getData()->status; // SUCCESS
 echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
 echo $response->getData()->identity->added_epoch;
 echo $response->getData()->identity->modified_epoch;
-echo $response->getData()->identity->uuid; // The phone uuid
+echo $response->getData()->identity->uuid; // The identity uuid
 echo $response->getData()->identity->identity_type; // SSN
 echo $response->getData()->identity->identity; // 543212222
+```
+
+## Add Address
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$nickname = 'new_address'; // This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+$streetAddress1 = '123 Main St'; // This is line 1 of a street address. Post office boxes are not accepted in this field.
+$city = 'Anytown'; // Name of the city where the person being verified is a current resident.
+$state = 'NY'; // Name of state where verified person is a current resident.
+$country = Country::US(); // Two-letter country code.
+$postalCode = '12345'; // In the US, this can be the 5-digit ZIP code or ZIP+4 code.
+$streetAddress2 = '' // This is line 2 of a street address (optional). This may include suite or apartment numbers.
+$response = $client->addIdentity($userHandle, $privateKey, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->address->added_epoch;
+echo $response->getData()->address->modified_epoch;
+echo $response->getData()->address->uuid; // The address uuid
+echo $response->getData()->address->nickname; // new_address
+echo $response->getData()->address->street_address_1; // 123 Main St
+echo $response->getData()->address->street_address_2; //
+echo $response->getData()->address->city; // Anytown
+echo $response->getData()->address->state; // NY
+echo $response->getData()->address->country; // US
+echo $response->getData()->address->postal_code; // 12345
 ```
 
 ## Delete Registration Data

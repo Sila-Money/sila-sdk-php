@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\Country;
 use Silamoney\Client\Domain\IdentityAlias;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
@@ -88,6 +89,35 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->identity->identity);
     }
 
+    public function testAddAddress200()
+    {
+        $response = self::$config->api->addAddress(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'new_address',
+            '123 Main St',
+            'Anytown',
+            'NY',
+            Country::US(),
+            '12345'
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Successfully added address', $response->getData()->message);
+        $this->assertIsObject($response->getData()->address);
+        $this->assertIsInt($response->getData()->address->added_epoch);
+        $this->assertIsInt($response->getData()->address->modified_epoch);
+        $this->assertIsString($response->getData()->address->uuid);
+        $this->assertIsString($response->getData()->address->nickname);
+        $this->assertIsString($response->getData()->address->street_address_1);
+        $this->assertIsString($response->getData()->address->street_address_2);
+        $this->assertIsString($response->getData()->address->city);
+        $this->assertIsString($response->getData()->address->state);
+        $this->assertIsString($response->getData()->address->country);
+        $this->assertIsString($response->getData()->address->postal_code);
+    }
+
     /**
      * @test
      * @dataProvider addRegistrationData400Provider
@@ -129,6 +159,7 @@ class AddRegistrationDataTest extends TestCase
             'add email - 400' => ['addEmail', ['']],
             'add phone - 400' => ['addPhone', ['']],
             'add identity - 400' => ['addIdentity', [IdentityAlias::SSN(), '']],
+            'add address - 400' => ['addAddress', ['', '', '', '', Country::US(), '']]
         ];
     }
 
@@ -137,7 +168,8 @@ class AddRegistrationDataTest extends TestCase
         return [
             'add email - 403' => ['addEmail', ['some.signature.email@domain.com']],
             'add phone - 403' => ['addPhone', ['1234567890']],
-            'add identity - 403' => ['addIdentity', [IdentityAlias::SSN(), '543212222']]
+            'add identity - 403' => ['addIdentity', [IdentityAlias::SSN(), '543212222']],
+            'add address - 403' => ['addAddress', ['new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']]
         ];
     }
 }

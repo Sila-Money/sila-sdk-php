@@ -16,6 +16,7 @@ use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
     AchType,
+    AddAddressMessage,
     AddEmailMessage,
     AddIdentityMessage,
     AddPhoneMessage,
@@ -28,6 +29,7 @@ use Silamoney\Client\Domain\{
     BusinessUser,
     CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
+    Country,
     DeleteRegistrationMessage,
     OperationResponse,
     EntityMessage,
@@ -929,9 +931,9 @@ class SilaApi
 
     /**
      * Add a new email to a registered entity.
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param string $email
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $email The new email
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function addEmail(string $userHandle, string $userPrivateKey, string $email): ApiResponse
@@ -941,10 +943,10 @@ class SilaApi
     }
 
     /**
-     * Add a phone number to a registered entity.
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param string $phone
+     * Add a new phone number to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $phone The new phone
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
@@ -955,16 +957,54 @@ class SilaApi
 
     /**
      * Add a new identity to a registered entity.
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias
-     * @param string $identityValue
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @param string $identityValue The identity number
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function addIdentity(string $userHandle, string $userPrivateKey, IdentityAlias $identityAlias, string $identityValue): ApiResponse
     {
         $body = new AddIdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
         return $this->addRegistrationData($userPrivateKey, RegistrationDataType::IDENTITY(), $body);
+    }
+
+    /**
+     * Add a new address to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $addressAlias This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+     * @param string $streetAddress1 This is line 1 of a street address. Post office boxes are not accepted in this field.
+     * @param string $city Name of the city where the person being verified is a current resident
+     * @param string $state Name of state where verified person is a current resident.
+     * @param \Silamoney\Client\Domain\Country $country Two-letter country code.
+     * @param string $postalCode In the US, this can be the 5-digit ZIP code or ZIP+4 code
+     * @param string $streetAddress2 This is line 2 of a street address (optional). This may include suite or apartment numbers
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addAddress(
+        string $userHandle,
+        string $userPrivateKey,
+        string $addressAlias,
+        string $streetAddress1,
+        string $city,
+        string $state,
+        Country $country,
+        string $postalCode,
+        string $streetAddress2 = null
+    ): ApiResponse {
+        $body = new AddAddressMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $addressAlias,
+            $streetAddress1,
+            $city,
+            $state,
+            $country,
+            $postalCode,
+            $streetAddress2
+        );
+        return $this->addRegistrationData($userPrivateKey, RegistrationDataType::ADDRESS(), $body);
     }
 
     /**
@@ -1019,7 +1059,7 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\AddEmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage $body
+     * @param \Silamoney\Client\Domain\AddEmailMessage|\Silamoney\Client\Domain\AddPhoneMessage|\Silamoney\Client\Domain\AddIdentityMessage|\Silamoney\Client\Domain\AddAddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function addRegistrationData(string $userPrivateKey, RegistrationDataType $dataType, $body): ApiResponse
@@ -1028,10 +1068,12 @@ class SilaApi
             case AddEmailMessage::class:
             case AddPhoneMessage::class:
             case AddIdentityMessage::class:
+            case AddAddressMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . AddEmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class . '. Input was: ' . get_class($body));
+                    . AddEmailMessage::class . ', ' . AddPhoneMessage::class . ', ' . AddIdentityMessage::class
+                    . ', ' . AddAddressMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/add/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');
