@@ -373,6 +373,8 @@ echo $response->getData()->accountName; // Account name
 Debits a specified account and issues tokens to the address belonging to the requested handle.
 
 ```php
+use Silamoney\Client\Domain\AchType;
+
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
@@ -380,9 +382,10 @@ $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
 $descriptor = 'Transaction Descriptor'; // Optional
 $businessUuid = 'you-business-uuid-code'; // Optional
+$processingType = AchType::SAME_DAY(); // Optional. Currently supported values are STANDARD (default if not set) and SAME_DAY
 
 // Call the api
-$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
+$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid, $processingType);
 ```
 
 ### Success 200

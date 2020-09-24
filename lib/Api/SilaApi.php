@@ -14,6 +14,7 @@ use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
+    AchType,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -367,7 +368,8 @@ class SilaApi
         string $accountName,
         string $userPrivateKey,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        AchType $processingType = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -376,7 +378,8 @@ class SilaApi
             $this->configuration->getAuthHandle(),
             Message::ISSUE(),
             $descriptor,
-            $businessUuid
+            $businessUuid,
+            $processingType
         );
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');

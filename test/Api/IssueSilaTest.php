@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\AchType;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
@@ -59,6 +60,24 @@ class IssueSilaTest extends TestCase
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
         $this->assertEquals(self::ISSUE_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+    }
+
+    public function testIssueSila200SameDay()
+    {
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            null,
+            AchType::SAME_DAY()
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getDescriptor());
         $this->assertIsString($response->getData()->getTransactionId());
     }
 
