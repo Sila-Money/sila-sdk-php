@@ -498,7 +498,7 @@ $transactions[0]->status; // The current status of the transaction
 $transactions[0]->usdStatus; // The status of the transaction
 $transactions[0]->tokenStatus; // The status of the token
 $transactions[0]->created; // The date of creation of the transaction
-$transactions[0]->lastUpdate; // The date of last modification of the transaction 
+$transactions[0]->lastUpdate; // The date of last modification of the transaction
 $transactions[0]->createdEpoch;
 $transactions[0]->lastUpdateEpoch;
 $transactions[0]->descriptor; // The descriptor of the transaction
@@ -858,6 +858,28 @@ echo $response->getData()->success; // TRUE
 echo $response->getData()->status; // SUCCESS
 echo $response->getData()->message; // Transaction some-transac-id has been canceled.
 echo $response->getData()->reference; // Random number reference
+```
+
+## Add Email
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$email = 'your.new.email@domain.com';
+$response = $client->addEmail($userHandle, $privateKey, $email);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added email to user user.silamoney.eth.
+echo $response->getData()->email->added_epoch;
+echo $response->getData()->email->modified_epoch;
+echo $response->getData()->email->uuid; // The email uuid
+echo $response->getData()->email->email; // your.new.email@domain.com
 ```
 
 ## Document Types

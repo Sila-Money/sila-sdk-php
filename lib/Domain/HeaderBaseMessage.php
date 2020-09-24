@@ -22,7 +22,7 @@ class HeaderBaseMessage
      * @var \Silamoney\Client\Domain\HeaderBase
      * @Type("Silamoney\Client\Domain\HeaderBase")
      */
-    private $header;
+    protected $header;
 
     /**
      * HeaderBaseMessage constructor.

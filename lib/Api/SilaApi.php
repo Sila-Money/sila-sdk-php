@@ -10,11 +10,13 @@ namespace Silamoney\Client\Api;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
     AchType,
+    AddEmailMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -921,6 +923,19 @@ class SilaApi
     }
 
     /**
+     * Add a new email to a registered entity.
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $email
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addEmail(string $userHandle, string $userPrivateKey, string $email): ApiResponse
+    {
+        $body = new AddEmailMessage($this->configuration->getAuthHandle(), $userHandle, $email);
+        return $this->addRegistrationData($userPrivateKey, $body);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -947,6 +962,31 @@ class SilaApi
     public function getBalanceClient(): ApiClient
     {
         return $this->configuration->getBalanceClient();
+    }
+
+    /**
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\AddEmailMessage $body
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    private function addRegistrationData(string $userPrivateKey, $body): ApiResponse
+    {
+        $dataType = '';
+        switch (get_class($body)) {
+            case AddEmailMessage::class:
+                $dataType = 'email';
+                break;
+            default:
+                throw new InvalidArgumentException("addRegistrationData function only accepts {${AddEmailMessage::class}}. Input was: {${get_class($body)}}");
+        }
+        $path = "/add/{$dataType}";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     private function pageParams(int $page = null, int $perPage = null): string
