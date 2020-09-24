@@ -49,12 +49,34 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->email->email);
     }
 
-    public function testAddEmail400()
+    public function testAddPhone200()
     {
-        $response = self::$config->api->addEmail(
+        $response = self::$config->api->addPhone(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            ''
+            '1234567890'
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Successfully added phone', $response->getData()->message);
+        $this->assertIsObject($response->getData()->phone);
+        $this->assertIsInt($response->getData()->phone->added_epoch);
+        $this->assertIsInt($response->getData()->phone->modified_epoch);
+        $this->assertIsString($response->getData()->phone->uuid);
+        $this->assertIsString($response->getData()->phone->phone);
+    }
+
+    /**
+     * @test
+     * @dataProvider addRegistrationData400Provider
+     */
+    public function testAddRegistrationData400($method, $parameter)
+    {
+        $response = self::$config->api->$method(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $parameter
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
@@ -74,5 +96,26 @@ class AddRegistrationDataTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function testAddPhone403()
+    {
+        self::$config->setUpBeforeClassInvalidAuthSignature();
+        $response = self::$config->api->addPhone(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            '1234567890'
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function addRegistrationData400Provider(): array
+    {
+        return [
+            'add email - 400' => ['addEmail', ''],
+            'add phone - 400' => ['addPhone', '']
+        ];
     }
 }

@@ -882,6 +882,28 @@ echo $response->getData()->email->uuid; // The email uuid
 echo $response->getData()->email->email; // your.new.email@domain.com
 ```
 
+## Add Phone
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$phone = '1234567890';
+$response = $client->addPhone($userHandle, $privateKey, $phone);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added phone to user user.silamoney.eth.
+echo $response->getData()->phone->added_epoch;
+echo $response->getData()->phone->modified_epoch;
+echo $response->getData()->phone->uuid; // The phone uuid
+echo $response->getData()->phone->phone; // 1234567890
+```
+
 ## Document Types
 
 List the document types for KYC supporting documentation

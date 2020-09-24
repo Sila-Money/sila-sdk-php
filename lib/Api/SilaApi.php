@@ -17,6 +17,7 @@ use Silamoney\Client\Domain\{
     Account,
     AchType,
     AddEmailMessage,
+    AddPhoneMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
@@ -935,6 +936,12 @@ class SilaApi
         return $this->addRegistrationData($userPrivateKey, $body);
     }
 
+    public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
+    {
+        $body = new AddPhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
+        return $this->addRegistrationData($userPrivateKey, $body);
+    }
+
     /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
@@ -976,8 +983,11 @@ class SilaApi
             case AddEmailMessage::class:
                 $dataType = 'email';
                 break;
+            case AddPhoneMessage::class:
+                $dataType = 'phone';
+                break;
             default:
-                throw new InvalidArgumentException("addRegistrationData function only accepts {${AddEmailMessage::class}}. Input was: {${get_class($body)}}");
+                throw new InvalidArgumentException('addRegistrationData function only accepts ' . AddEmailMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/add/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');
