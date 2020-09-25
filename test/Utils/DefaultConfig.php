@@ -104,6 +104,11 @@ class DefaultConfig
     public static $identityType;
 
     /**
+     * @var string
+     */
+    public static $fileUuid;
+
+    /**
      * @var \Silamoney\Client\Domain\SilaWallet
      */
     public static $firstUserWallet;
@@ -208,7 +213,7 @@ class DefaultConfig
         );
     }
 
-    private static function uuid(): string
+    public static function uuid(): string
     {
         $data = random_bytes(16);
         $data[6] = chr(ord($data[6]) & 0x0f | 0x40);

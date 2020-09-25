@@ -8,7 +8,6 @@
 namespace Silamoney\Client\Api;
 
 use DateInterval;
-use DatePeriod;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\ApiTestConfiguration;
@@ -84,7 +83,7 @@ class ListDocumentsTest extends TestCase
     public function testListDocuments403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
-        $response = self::$config->api->getDocumentTypes();
+        $response = self::$config->api->listDocuments();
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);

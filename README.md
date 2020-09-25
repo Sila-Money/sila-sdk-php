@@ -1206,7 +1206,7 @@ $endDate = new DateTime::createFromFormat('m/d/Y', '1/8/2020'); // Optional. Onl
 $docTypes = ['doc_type', 'doc_type_2']; // Optional. You can get this values from getDocumentTypes()
 $search = 'some_file_name'; // Optional. Only return documents whose name or filename contains the search value. Partial matches allowed, no wildcards.
 $sortBy = 'name'; // Optional. One of: name or date
-$response = $client->uploadDocument($userHandle, $privateKey, $dataType, $uuid);
+$response = $client->listDocuments($userHandle, $privateKey, $page, $perPage, $sort, $startDate, $endDate, $docTypes, $search, $sortBy);
 ```
 
 ### Response 200
@@ -1228,6 +1228,21 @@ echo $response->getData()->pagination->returned_count; // The amount of document
 echo $response->getData()->pagination->total_count; // The total amount of documents that meet the filters
 echo $response->getData()->pagination->current_page; // The current page of documents
 echo $response->getData()->pagination->total_pages; // The total amount of pages that meet the filters
+```
+
+## Get Document
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$uuid = 'some-uuid-code'; // The document id
+$response = $client->getDocument($userHandle, $privateKey, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
 ```
 
 ## Document Types

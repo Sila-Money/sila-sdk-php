@@ -57,7 +57,7 @@ use Silamoney\Client\Domain\{
     DocumentMessage,
     EmailMessage,
     EntityUpdateMessage,
-    FileMessage,
+    GetDocumentMessage,
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
@@ -1189,6 +1189,7 @@ class SilaApi
     }
 
     /**
+     * Upload supporting documentation for KYC
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param string $filePath
@@ -1241,6 +1242,7 @@ class SilaApi
     }
 
     /**
+     * List previously uploaded supporting documentation for KYC
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param int|null $page Page number to retrieve. Default: 1
@@ -1268,6 +1270,26 @@ class SilaApi
         $params = $this->pageParams($page, $perPage, $sort);
         $path = "/list_documents{$params}";
         $body = new ListDocumentsMessage($this->configuration->getAuthHandle(), $userHandle, $startDate, $endDate, $docTypes, $search, $sortBy);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Retrieve a previously uploaded supporting documentation for KYC
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $uuid The document id
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getDocument(string $userHandle, string $userPrivateKey, string $uuid): ApiResponse
+    {
+        $path = '/get_document';
+        $body = new GetDocumentMessage($this->configuration->getAuthHandle(), $userHandle, $uuid);
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),

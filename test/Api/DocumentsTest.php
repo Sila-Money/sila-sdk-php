@@ -51,6 +51,7 @@ class DodcumentsTest extends TestCase
         $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
         $this->assertIsString($response->getData()->reference_id);
         $this->assertIsString($response->getData()->document_id);
+        DefaultConfig::$fileUuid = $response->getData()->document_id;
     }
 
     public function testDocuments400()

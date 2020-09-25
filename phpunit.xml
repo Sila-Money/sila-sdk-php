@@ -30,6 +30,7 @@
       <file>test/Api/GetEntitiesTest.php</file>
       <file>test/Api/DocumentsTest.php</file>
       <file>test/Api/ListDocumentsTest.php</file>
+      <file>test/Api/GetDocumentTest.php</file>
       <file>test/Api/CertifyBeneficialOwnerTest.php</file>
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
