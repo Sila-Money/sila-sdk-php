@@ -54,8 +54,10 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    DocumentMessage,
     EmailMessage,
     EntityUpdateMessage,
+    FileMessage,
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
@@ -1182,6 +1184,51 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $fileContents
+     * @param string $fileName
+     * @param string $mimeType
+     * @param string $documentType
+     * @param string|null $name
+     * @param string|null $identityType
+     * @param string|null $description
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function uploadDocument(
+        string $userHandle,
+        string $userPrivateKey,
+        string $fileContents,
+        string $fileName,
+        string $mimeType,
+        string $documentType,
+        string $name = null,
+        string $identityType = null,
+        string $description = null
+    ) {
+        $path = '/documents';
+        $hash = hash('sha256', $fileContents);
+        $body = new DocumentMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $fileName,
+            $hash,
+            $mimeType,
+            $documentType,
+            $name,
+            $identityType,
+            $description
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callFileApi($path, [['name' => 'file', 'contents' => $fileContents], ['name' => 'data', 'contents' => $json]], $headers);
         return $this->prepareResponse($response);
     }
 

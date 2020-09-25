@@ -1165,6 +1165,34 @@ echo $response->getData()->status; // SUCCESS
 echo $response->getData()->message; // Successfully deleted email with UUID some-uuid-code.
 ```
 
+## Upload Document
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$file = fopen('/path/to/file', 'r');
+$fileContents = fread($file, filesize('/path/to/file'));
+fclose($file);
+$fileName = 'some-image'; // The name of the file (without the extension)
+$mimeType = 'image/png'; // The mime type of the file
+$documentType = 'doc_green_card'; // One of Supported Document Types. You can get this from getDocumentTypes
+$name = ''; // Optional. Descriptive name of the document.
+$identityType = ''; // Optional. Matching Identity Type for Document Type. You can get this from getDocumentTypes
+$description = ''; // Optional. General description of the document.
+$response = $client->uploadDocument($userHandle, $privateKey, $dataType, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // File uploaded successfully.
+echo $response->getData()->reference_id; // The reference uuid
+echo $response->getData()->document_id; // The document uuid
+```
+
 ## Document Types
 
 List the document types for KYC supporting documentation

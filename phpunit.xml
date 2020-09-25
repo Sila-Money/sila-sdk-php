@@ -28,6 +28,7 @@
       <file>test/Api/CheckKYCTest.php</file>
       <file>test/Api/GetEntityTest.php</file>
       <file>test/Api/GetEntitiesTest.php</file>
+      <file>test/Api/DocumentsTest.php</file>
       <file>test/Api/CertifyBeneficialOwnerTest.php</file>
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>

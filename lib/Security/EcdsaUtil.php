@@ -11,7 +11,7 @@ use Exception;
 use Sop\CryptoTypes\Asymmetric\EC\ECPublicKey;
 use Sop\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Sop\CryptoEncoding\PEM;
-use kornrunner\{Keccak,Secp256k1};
+use kornrunner\{Keccak, Secp256k1};
 
 /**
  * Ecdsa Util
@@ -39,7 +39,7 @@ class EcdsaUtil
      * @return string
      * @throws Exception
      */
-    public static function sign($message, $privateKey): string
+    public static function sign(string $message, string $privateKey): string
     {
         $secp256k1 = new Secp256k1();
         $signature = $secp256k1->sign(Keccak::hash($message, 256), $privateKey);

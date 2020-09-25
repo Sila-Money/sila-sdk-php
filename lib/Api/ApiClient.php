@@ -79,6 +79,19 @@ class ApiClient
         }
     }
 
+    public function callFileApi(string $url, array $data, array $headers): Response
+    {
+        try {
+            return $this->client->post($url, ['multipart' => $data, 'headers' => $headers, 'debug' => true]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (RequestException $e) {
+            return $e->getResponse();
+        } catch (ServerException $e) {
+            return $e->getResponse();
+        }
+    }
+
     /**
      * @param \GuzzleHttp\HandlerStack
      */

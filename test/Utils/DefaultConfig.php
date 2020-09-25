@@ -94,6 +94,16 @@ class DefaultConfig
     public static $businessType;
 
     /**
+     * @var string
+     */
+    public static $documentType;
+
+    /**
+     * @var string
+     */
+    public static $identityType;
+
+    /**
      * @var \Silamoney\Client\Domain\SilaWallet
      */
     public static $firstUserWallet;

@@ -60,8 +60,10 @@ class GetDocumentTypesTest extends TestCase
         $this->assertIsArray($response->getData()->document_types);
         $this->assertGreaterThan(20, count($response->getData()->document_types));
         $this->assertIsString($response->getData()->document_types[0]->name);
+        DefaultConfig::$documentType = $response->getData()->document_types[0]->name;
         $this->assertIsString($response->getData()->document_types[0]->label);
         $this->assertIsString($response->getData()->document_types[0]->identity_type);
+        DefaultConfig::$identityType = $response->getData()->document_types[0]->identity_type;
         $this->assertIsObject($response->getData()->pagination);
         $this->assertGreaterThan(20, $response->getData()->pagination->returned_count);
         $this->assertGreaterThan(20, $response->getData()->pagination->total_count);
