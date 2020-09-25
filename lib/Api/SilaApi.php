@@ -64,6 +64,7 @@ use Silamoney\Client\Domain\{
     IdentityAlias,
     IdentityMessage,
     LinkBusinessMemberMessage,
+    ListDocumentsMessage,
     PhoneMessage,
     RegistrationDataOperation,
     RegistrationDataType,
@@ -1191,7 +1192,7 @@ class SilaApi
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param string $fileContents
-     * @param string $fileName
+     * @param string $filename
      * @param string $mimeType
      * @param string $documentType
      * @param string|null $name
@@ -1203,19 +1204,19 @@ class SilaApi
         string $userHandle,
         string $userPrivateKey,
         string $fileContents,
-        string $fileName,
+        string $filename,
         string $mimeType,
         string $documentType,
         string $name = null,
         string $identityType = null,
         string $description = null
-    ) {
+    ): ApiResponse {
         $path = '/documents';
         $hash = hash('sha256', $fileContents);
         $body = new DocumentMessage(
             $this->configuration->getAuthHandle(),
             $userHandle,
-            $fileName,
+            $filename,
             $hash,
             $mimeType,
             $documentType,
@@ -1223,12 +1224,56 @@ class SilaApi
             $identityType,
             $description
         );
+        $jsonFile = "{\"file\":\"{$fileContents}\"}";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
-        $response = $this->configuration->getApiClient()->callFileApi($path, [['name' => 'file', 'contents' => $fileContents], ['name' => 'data', 'contents' => $json]], $headers);
+        var_dump($jsonFile);
+        var_dump($json);
+        $response = $this->configuration->getApiClient()->callFileApi(
+            $path,
+            [['name' => 'files', 'contents' => $jsonFile], ['name' => 'data', 'contents' => $json]],
+            $headers
+        );
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param int|null $page Page number to retrieve. Default: 1
+     * @param int|null $perPage Number of items per page. Default: 20, max: 100
+     * @param string|null $sort Sort returned items (usually by creation date). Allowed values: asc (default), desc
+     * @param DateTime|null $startDate Only return documents created on or after this date.
+     * @param DateTime|null $endDate Only return documents created before or on this date.
+     * @param array<string>|null $docTypes You can get this values from getDocumentTypes.
+     * @param string|null $search Only return documents whose name or filename contains the search value. Partial matches allowed, no wildcards.
+     * @param string|null $sortBy One of: name or date
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function listDocuments(
+        string $userHandle,
+        string $userPrivateKey,
+        int $page = null,
+        int $perPage = null,
+        string $sort = null,
+        DateTime $startDate = null,
+        DateTime $endDate = null,
+        array $docTypes = null,
+        string $search = null,
+        string $sortBy = null
+    ): ApiResponse {
+        $params = $this->pageParams($page, $perPage, $sort);
+        $path = "/list_documents{$params}";
+        $body = new ListDocumentsMessage($this->configuration->getAuthHandle(), $userHandle, $startDate, $endDate, $docTypes, $search, $sortBy);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
 
@@ -1290,7 +1335,13 @@ class SilaApi
         return $this->prepareResponse($response);
     }
 
-    private function pageParams(int $page = null, int $perPage = null): string
+    /**
+     * @param int|null $page
+     * @param int|null $perPage
+     * @param string|null $sort
+     * @return string
+     */
+    private function pageParams(int $page = null, int $perPage = null, string $sort = null): string
     {
         $params = '';
         if ($page != null) {
@@ -1301,6 +1352,13 @@ class SilaApi
                 $params = "{$params}&per_page={$perPage}";
             } else {
                 $params = "?per_page={$perPage}";
+            }
+        }
+        if ($sort != null) {
+            if ($params != '') {
+                $params = "{$params}&sort={$sort}";
+            } else {
+                $params = "?sort={$sort}";
             }
         }
         return $params;

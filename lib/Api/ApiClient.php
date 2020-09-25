@@ -82,7 +82,7 @@ class ApiClient
     public function callFileApi(string $url, array $data, array $headers): Response
     {
         try {
-            return $this->client->post($url, ['multipart' => $data, 'headers' => $headers, 'debug' => true]);
+            return $this->client->post("/0.2{$url}", ['multipart' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
         } catch (RequestException $e) {

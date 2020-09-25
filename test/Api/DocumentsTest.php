@@ -35,8 +35,9 @@ class DodcumentsTest extends TestCase
     public function testDocuments200()
     {
         $fileName = __DIR__ . '/Images/logo-geko.png';
-        $file = fopen($fileName, 'r');
+        $file = fopen($fileName, 'rb');
         $contents = fread($file, filesize($fileName));
+        $contents = mb_convert_encoding($contents, 'UTF-8');
         fclose($file);
         $response = self::$config->api->uploadDocument(
             DefaultConfig::$firstUserHandle,
@@ -48,10 +49,7 @@ class DodcumentsTest extends TestCase
             null,
             DefaultConfig::$identityType
         );
-        var_dump(DefaultConfig::$documentType);
-        var_dump(DefaultConfig::$identityType);
         var_dump($response);
-        var_dump($response->getData());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);

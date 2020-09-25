@@ -28,7 +28,7 @@ class DocumentMessage
      * @var string
      * @Type("string")
      */
-    private $fileName;
+    private $filename;
     /**
      * @var string
      * @Type("string")
@@ -64,7 +64,7 @@ class DocumentMessage
      ** Constructor for DocumentMessage object.
      * @param string $appHandle
      * @param string $userHandle
-     * @param string $fileName
+     * @param string $filename
      * @param string $hash
      * @param string $mimeType
      * @param string $documentType
@@ -75,7 +75,7 @@ class DocumentMessage
     public function __construct(
         string $appHandle,
         string $userHandle,
-        string $fileName,
+        string $filename,
         string $hash,
         string $mimeType,
         string $documentType,
@@ -84,7 +84,7 @@ class DocumentMessage
         string $description = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
-        $this->fileName = $fileName;
+        $this->filename = $filename;
         $this->hash = $hash;
         $this->mimeType = $mimeType;
         $this->documentType = $documentType;

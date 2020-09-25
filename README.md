@@ -1193,6 +1193,43 @@ echo $response->getData()->reference_id; // The reference uuid
 echo $response->getData()->document_id; // The document uuid
 ```
 
+## List Documents
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$page = '1'; // Optional. Page number to retrieve. Default: 1
+$perPage = '10'; // Optional. Number of items per page. Default: 20, Max: 100
+$sort = 'desc'; // Optional. Sort returned items. Allowed values: asc (default), desc
+$startDate = new DateTime::createFromFormat('m/d/Y', '1/8/2020'); // Optional. Only return documents created on or after this date.
+$endDate = new DateTime::createFromFormat('m/d/Y', '1/8/2020'); // Optional. Only return documents created before or on this date.
+$docTypes = ['doc_type', 'doc_type_2']; // Optional. You can get this values from getDocumentTypes()
+$search = 'some_file_name'; // Optional. Only return documents whose name or filename contains the search value. Partial matches allowed, no wildcards.
+$sortBy = 'name'; // Optional. One of: name or date
+$response = $client->uploadDocument($userHandle, $privateKey, $dataType, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->documents; // An array of documents
+echo $response->getData()->documents[0]->user_handle; // The user handle that owns the document
+echo $response->getData()->documents[0]->document_id; // The document id
+echo $response->getData()->documents[0]->name; // The name of the document
+echo $response->getData()->documents[0]->filename; // The file name of the document
+echo $response->getData()->documents[0]->hash; // The hash of the file contents
+echo $response->getData()->documents[0]->type; // The document type
+echo $response->getData()->documents[0]->size; // The file size
+echo $response->getData()->documents[0]->created; // The datetime of creation
+echo $response->getData()->pagination->returned_count; // The amount of documents returned in this request
+echo $response->getData()->pagination->total_count; // The total amount of documents that meet the filters
+echo $response->getData()->pagination->current_page; // The current page of documents
+echo $response->getData()->pagination->total_pages; // The total amount of pages that meet the filters
+```
+
 ## Document Types
 
 List the document types for KYC supporting documentation
