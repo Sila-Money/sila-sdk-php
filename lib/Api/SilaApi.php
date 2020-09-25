@@ -1191,7 +1191,7 @@ class SilaApi
     /**
      * @param string $userHandle
      * @param string $userPrivateKey
-     * @param string $fileContents
+     * @param string $filePath
      * @param string $filename
      * @param string $mimeType
      * @param string $documentType
@@ -1203,7 +1203,7 @@ class SilaApi
     public function uploadDocument(
         string $userHandle,
         string $userPrivateKey,
-        string $fileContents,
+        string $filePath,
         string $filename,
         string $mimeType,
         string $documentType,
@@ -1212,7 +1212,10 @@ class SilaApi
         string $description = null
     ): ApiResponse {
         $path = '/documents';
-        $hash = hash('sha256', $fileContents);
+        $file = fopen($filePath, 'rb');
+        $contents = fread($file, filesize($filePath));
+        fclose($file);
+        $hash = hash('sha256', $contents);
         $body = new DocumentMessage(
             $this->configuration->getAuthHandle(),
             $userHandle,
@@ -1224,17 +1227,14 @@ class SilaApi
             $identityType,
             $description
         );
-        $jsonFile = "{\"file\":\"{$fileContents}\"}";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
-        var_dump($jsonFile);
-        var_dump($json);
         $response = $this->configuration->getApiClient()->callFileApi(
             $path,
-            [['name' => 'files', 'contents' => $jsonFile], ['name' => 'data', 'contents' => $json]],
+            [['name' => 'file', 'contents' => fopen($filePath, 'rb')], ['name' => 'data', 'contents' => $json]],
             $headers
         );
         return $this->prepareResponse($response);

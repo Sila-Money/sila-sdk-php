@@ -34,27 +34,38 @@ class DodcumentsTest extends TestCase
 
     public function testDocuments200()
     {
-        $fileName = __DIR__ . '/Images/logo-geko.png';
-        $file = fopen($fileName, 'rb');
-        $contents = fread($file, filesize($fileName));
-        $contents = mb_convert_encoding($contents, 'UTF-8');
-        fclose($file);
+        $filePath = __DIR__ . '/Images/logo-geko.png';
         $response = self::$config->api->uploadDocument(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            $contents,
+            $filePath,
             'logo-geko',
             'image/png',
             DefaultConfig::$documentType,
             null,
             DefaultConfig::$identityType
         );
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
         $this->assertIsString($response->getData()->reference_id);
         $this->assertIsString($response->getData()->document_id);
+    }
+
+    public function testDocuments400()
+    {
+        $filePath = __DIR__ . '/Images/logo-geko.png';
+        $response = self::$config->api->uploadDocument(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $filePath,
+            'logo-geko',
+            'application/pdf',
+            DefaultConfig::$documentType
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
     }
 }
