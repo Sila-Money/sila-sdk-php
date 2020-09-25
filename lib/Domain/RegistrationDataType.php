@@ -19,7 +19,8 @@ use MyCLabs\Enum\Enum;
 class RegistrationDataType extends Enum
 {
     public const ADDRESS = 'address';
-    public const EMAIL = "email";
-    public const IDENTITY = "identity";
-    public const PHONE = "phone";
+    public const EMAIL = 'email';
+    public const ENTITY = 'entity';
+    public const IDENTITY = 'identity';
+    public const PHONE = 'phone';
 }

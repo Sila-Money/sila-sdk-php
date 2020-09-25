@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use DateTime;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
@@ -54,6 +55,7 @@ use Silamoney\Client\Domain\{
     UpdateWalletMessage,
     DeleteWalletMessage,
     EmailMessage,
+    EntityUpdateMessage,
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
@@ -1093,6 +1095,76 @@ class SilaApi
     }
 
     /**
+     * Update a registered individual entity
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param string|null $entityName
+     * @param string|null $birthdate
+     * @param string|null $businessType
+     * @param string|null $naicsCode
+     * @param string|null $doingBusinessAs
+     * @param string|null $businessWebsite
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateEntity(
+        string $userHandle,
+        string $userPrivateKey,
+        string $firstName = null,
+        string $lastName = null,
+        string $entityName = null,
+        DateTime $birthdate = null
+    ): ApiResponse {
+        $body = new EntityUpdateMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $firstName,
+            $lastName,
+            $entityName,
+            $birthdate
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ENTITY(), $body);
+    }
+
+    /**
+     * Update a registered business entity
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string|null $entityName
+     * @param string|null $birthdate
+     * @param string|null $businessType
+     * @param string|null $naicsCode
+     * @param string|null $doingBusinessAs
+     * @param string|null $businessWebsite
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateBusinessEntity(
+        string $userHandle,
+        string $userPrivateKey,
+        string $entityName = null,
+        DateTime $birthdate = null,
+        string $businessType = null,
+        string $naicsCode = null,
+        string $doingBusinessAs = null,
+        string $businessWebsite = null
+    ): ApiResponse {
+        $body = new EntityUpdateMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            null,
+            null,
+            $entityName,
+            $birthdate,
+            $businessType,
+            $naicsCode,
+            $doingBusinessAs,
+            $businessWebsite
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ENTITY(), $body);
+    }
+
+    /**
      * Delete an existing email, phone number, street address, or identity.
      * @param string $userHandle
      * @param string $userPrivateKey
@@ -1154,11 +1226,12 @@ class SilaApi
             case PhoneMessage::class:
             case IdentityMessage::class:
             case AddressMessage::class:
+            case EntityUpdateMessage::class:
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
                     . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
-                    . ', ' . AddressMessage::class . '. Input was: ' . get_class($body));
+                    . ', ' . AddressMessage::class . ', ' . EntityUpdateMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');

@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Country;
 use Silamoney\Client\Domain\IdentityAlias;
@@ -140,6 +141,42 @@ class UpdateRegistrationDataTest extends TestCase
 
     /**
      * @test
+     * @dataProvider updateEntity200Provider
+     */
+    public function testUpdateEntity200($method, $userHandle, $privateKey, $parameters)
+    {
+        $response = self::$config->api->$method(
+            $userHandle,
+            $privateKey,
+            ...$parameters
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertIsString($response->getData()->entity_type);
+        $this->assertIsObject($response->getData()->entity);
+        if ($response->getData()->entity_type == 'individual') {
+            $this->assertIsInt($response->getData()->entity->created_epoch);
+            $this->assertIsString($response->getData()->entity->entity_name);
+            $this->assertIsString($response->getData()->entity->birthdate);
+            $this->assertIsString($response->getData()->entity->first_name);
+            $this->assertIsString($response->getData()->entity->last_name);
+        } else if ($response->getData()->entity_type == 'business') {
+            $this->assertIsInt($response->getData()->entity->created_epoch);
+            $this->assertIsString($response->getData()->entity->entity_name);
+            $this->assertIsString($response->getData()->entity->birthdate);
+            $this->assertIsString($response->getData()->entity->business_type);
+            $this->assertIsInt($response->getData()->entity->naics_code);
+            $this->assertIsString($response->getData()->entity->business_uuid);
+            $this->assertIsString($response->getData()->entity->naics_category);
+            $this->assertIsString($response->getData()->entity->naics_subcategory);
+            $this->assertIsString($response->getData()->entity->doing_business_as);
+            $this->assertIsString($response->getData()->entity->business_website);
+        }
+    }
+
+    /**
+     * @test
      * @dataProvider updateRegistrationData400Provider
      */
     public function testUpdateRegistrationData400($method, $parameters)
@@ -173,13 +210,32 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
+    public function updateEntity200Provider(): array
+    {
+        return [
+            'update individual entity - 200' => [
+                'updateEntity',
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(),
+                ['Firstt', 'Lastt', 'Firstt Lastt', DateTime::createFromFormat('m/d/Y', '1/8/1960')]
+            ],
+            'update business entity - 200' => [
+                'updateBusinessEntity',
+                DefaultConfig::$businessUserHandle,
+                DefaultConfig::$businessUserWallet->getPrivateKey(),
+                ['Digital Geko', DateTime::createFromFormat('m/d/Y', '1/8/2009'), 'corporation', 721, 'Geko', 'https://digitalgeko.com']
+            ]
+        ];
+    }
+
     public function updateRegistrationData400Provider(): array
     {
         return [
             'update email - 400' => ['updateEmail', ['', '']],
             'update phone - 400' => ['updatePhone', ['', '']],
             'update identity - 400' => ['updateIdentity', ['', IdentityAlias::SSN(), '']],
-            'update address - 400' => ['updateAddress', ['', '', '', '', '', Country::US(), '']]
+            'update address - 400' => ['updateAddress', ['', '', '', '', '', Country::US(), '']],
+            'update entity - 400' => ['updateEntity', ['']]
         ];
     }
 
@@ -189,7 +245,8 @@ class UpdateRegistrationDataTest extends TestCase
             'update email - 403' => ['updateEmail', ['', 'some.signature.email@domain.com']],
             'update phone - 403' => ['updatePhone', ['', '1234567890']],
             'update identity - 403' => ['updateIdentity', ['', IdentityAlias::SSN(), '543212222']],
-            'update address - 403' => ['updateAddress', ['', 'new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']]
+            'update address - 403' => ['updateAddress', ['', 'new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']],
+            'update entity - 403' => ['updateEntity', []]
         ];
     }
 }

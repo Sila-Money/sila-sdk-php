@@ -944,7 +944,7 @@ $state = 'NY'; // Name of state where verified person is a current resident.
 $country = Country::US(); // Two-letter country code.
 $postalCode = '12345'; // In the US, this can be the 5-digit ZIP code or ZIP+4 code.
 $streetAddress2 = '' // This is line 2 of a street address (optional). This may include suite or apartment numbers.
-$response = $client->addIdentity($userHandle, $privateKey, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+$response = $client->addAddress($userHandle, $privateKey, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
 ```
 
 ### Response 200
@@ -1054,7 +1054,7 @@ $country = Country::US(); // Optional. Two-letter country code.
 $postalCode = '54321'; // Optional. In the US, this can be the 5-digit ZIP code or ZIP+4 code.
 $streetAddress2 = '' // Optional. This is line 2 of a street address. This may include suite or apartment numbers.
 $uuid = 'some-uuid-code';
-$response = $client->addIdentity($userHandle, $privateKey, $uuid, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+$response = $client->updateAddress($userHandle, $privateKey, $uuid, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
 ```
 
 ### Response 200
@@ -1074,6 +1074,74 @@ echo $response->getData()->address->city; // Sometown
 echo $response->getData()->address->state; // CA
 echo $response->getData()->address->country; // US
 echo $response->getData()->address->postal_code; // 54321
+```
+
+## Update Entity
+
+### Request - Individual
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$entityName = 'Full Name'; // Optional. The individual full name
+$birthdate = new DateTime::createFromFormat('m/d/Y', '1/8/1960'); // Optional. Only date part will be taken when sent to api
+$firstName = 'First'; // Optional. The individual first name
+$lastName = 'Last'; // Optional. The individual last name
+$response = $client->updateEntity($userHandle, $privateKey, $firstName, $lastName, $entityName, $birthdate);
+```
+
+### Response 200 - Individual
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->entity_type; // individual
+echo $response->getData()->entity->created_epoch;
+echo $response->getData()->entity->entity_name; // Full Name
+echo $response->getData()->entity->birthdate; // 1960-01-08
+echo $response->getData()->entity->first_name; // First
+echo $response->getData()->entity->last_name; // Last
+```
+
+### Request - Business
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$entityName = 'Company Name'; // Optional. The individual full name
+$birthdate = new DateTime::createFromFormat('m/d/Y', '1/8/2009'); // Optional. Only date part will be taken when sent to api
+$businessType = 'corporation'; // Optional. You can get this values from getBusinessTypes
+$naicsCode = 721; // Optional. You can get this codes from getNaicsCategories
+$doingBusinessAs = 'Public Company Name'; // Optional.
+$businessWebsite = 'https://yourcompony.domain'; // Optional. Must be a valid URL
+
+$response = $client->updateBusinessEntity($userHandle, $privateKey, $entityName, $birthdate, $businessType, $naicsCode, $doingBusinessAs, $businessWebsite);
+```
+
+### Response 200 - Business
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->entity_type; // business
+echo $response->getData()->entity->created_epoch;
+echo $response->getData()->entity->entity_name; // Company Name
+echo $response->getData()->entity->birthdate; // 2009-01-08
+echo $response->getData()->entity->business_type; // corporation
+echo $response->getData()->entity->naics_code; // 721
+echo $response->getData()->entity->business_uuid; // The business uuid
+echo $response->getData()->entity->naics_category; // The NAICS category
+echo $response->getData()->entity->naics_subcategory; // The NAICS subcategory
+echo $response->getData()->entity->doing_business_as; // Publick Company Name
+echo $response->getData()->entity->business_website; // https://yourcompany.domain
 ```
 
 ## Delete Registration Data
