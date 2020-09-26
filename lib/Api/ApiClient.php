@@ -52,7 +52,7 @@ class ApiClient
     public function callAPI(string $url, string $data, array $headers): Response
     {
         try {
-            return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers, 'debug' => true]);
+            return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
         } catch (RequestException $e) {

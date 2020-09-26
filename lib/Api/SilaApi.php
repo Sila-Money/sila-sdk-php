@@ -1424,7 +1424,7 @@ class SilaApi
      * @param string $className Optional. The object class name to deserialize the response to
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    private function prepareResponse(Response $response, string $className = ''): ApiResponse
+    private function prepareResponse(Response $response, string $className = '', ?bool $isBinary = false): ApiResponse
     {
         $statusCode = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
@@ -1435,6 +1435,8 @@ class SilaApi
 
         if ($statusCode == 200 && $className != '') {
             $body = $this->serializer->deserialize($contents, $className, 'json');
+        } else if ($statusCode == 200 && $isBinary) {
+            $body = $contents;
         } else {
             $body = json_decode($contents);
         }

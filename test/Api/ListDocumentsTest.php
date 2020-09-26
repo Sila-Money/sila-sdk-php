@@ -83,7 +83,10 @@ class ListDocumentsTest extends TestCase
     public function testListDocuments403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
-        $response = self::$config->api->listDocuments();
+        $response = self::$config->api->listDocuments(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey()
+        );
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);

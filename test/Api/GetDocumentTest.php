@@ -40,6 +40,7 @@ class GetDocumentTest extends TestCase
         );
         var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertIsString($response->getData());
     }
 
     public function testGetDocument403()
