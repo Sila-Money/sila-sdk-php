@@ -1081,7 +1081,7 @@ echo $response->getData()->address->postal_code; // 54321
 ### Request - Individual
 
 ```php
-use Silamoney\Client\Domain\Country;
+use DateTime;
 
 $userHandle = 'user.silamoney.eth';
 $privateKey = 'some private key';
@@ -1110,7 +1110,8 @@ echo $response->getData()->entity->last_name; // Last
 ### Request - Business
 
 ```php
-use Silamoney\Client\Domain\Country;
+use DateTime;
+
 
 $userHandle = 'user.silamoney.eth';
 $privateKey = 'some private key';
@@ -1243,6 +1244,7 @@ $response = $client->getDocument($userHandle, $privateKey, $uuid);
 
 ```php
 echo $response->getStatusCode(); // 200
+echo $response->getData(); // The file binary data
 ```
 
 ## Document Types
