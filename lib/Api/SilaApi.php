@@ -1296,7 +1296,7 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
-        return $this->prepareResponse($response);
+        return $this->prepareFileResponse($response);
     }
 
     /**
@@ -1424,7 +1424,7 @@ class SilaApi
      * @param string $className Optional. The object class name to deserialize the response to
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    private function prepareResponse(Response $response, string $className = '', ?bool $isBinary = false): ApiResponse
+    private function prepareResponse(Response $response, string $className = ''): ApiResponse
     {
         $statusCode = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
@@ -1435,12 +1435,21 @@ class SilaApi
 
         if ($statusCode == 200 && $className != '') {
             $body = $this->serializer->deserialize($contents, $className, 'json');
-        } else if ($statusCode == 200 && $isBinary) {
-            $body = $contents;
         } else {
             $body = json_decode($contents);
         }
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
+    }
+
+    private function prepareFileResponse(Response $response)
+    {
+        $statusCode = $response->getStatusCode();
+        $contents = $response->getBody()->getContents();
+        if ($statusCode == 200) {
+            return new ApiResponse($statusCode, $response->getHeaders(), $contents);
+        } else {
+            return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
+        }
     }
 
     /**

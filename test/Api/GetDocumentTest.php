@@ -38,8 +38,8 @@ class GetDocumentTest extends TestCase
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             DefaultConfig::$fileUuid
         );
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('image/png', $response->getHeaders()['Content-Type'][0]);
         $this->assertIsString($response->getData());
     }
 
