@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.9-rc`
+`Version 0.2.13-rc`
 
 > **Note**: This SDK is a Release Candidate.
 
