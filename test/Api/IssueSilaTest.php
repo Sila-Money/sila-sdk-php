@@ -8,6 +8,8 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\AchType;
+use Silamoney\Client\Domain\SearchFilters;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
@@ -43,6 +45,7 @@ class IssueSilaTest extends TestCase
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
         $this->assertIsString($response->getData()->getTransactionId());
+        DefaultConfig::$issueTransactionId = $response->getData()->getTransactionId();
     }
 
     public function testIssueSila200Descriptor()
@@ -59,6 +62,24 @@ class IssueSilaTest extends TestCase
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
         $this->assertEquals(self::ISSUE_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+    }
+
+    public function testIssueSila200SameDay()
+    {
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            null,
+            AchType::SAME_DAY()
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getDescriptor());
         $this->assertIsString($response->getData()->getTransactionId());
     }
 
@@ -97,5 +118,22 @@ class IssueSilaTest extends TestCase
             'test descriptor'
         );
         $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    public function testWaitForIssueToComplete()
+    {
+        self::$config->setUpBeforeClassValidAuthSignature();
+        $filters = new SearchFilters();
+        $filters->setTransactionId(DefaultConfig::$issueTransactionId);
+        do {
+            $response = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters, DefaultConfig::$firstUserWallet->getPrivateKey());
+            $statusCode = $response->getStatusCode();
+            $success = $response->getData()->success;
+            $status = $response->getData()->transactions[0]->status;
+            sleep(30);
+        } while ($statusCode == 200 && $success && ($status === 'pending' || $status === 'queued'));
+        $this->assertEquals(200, $statusCode);
+        $this->assertTrue($success);
+        $this->assertEquals('success', $status);
     }
 }

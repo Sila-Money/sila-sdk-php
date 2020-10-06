@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.9-rc`
+`Version 0.2.13-rc`
 
 > **Note**: This SDK is a Release Candidate.
 
@@ -373,6 +373,8 @@ echo $response->getData()->accountName; // Account name
 Debits a specified account and issues tokens to the address belonging to the requested handle.
 
 ```php
+use Silamoney\Client\Domain\AchType;
+
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
@@ -380,9 +382,10 @@ $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
 $descriptor = 'Transaction Descriptor'; // Optional
 $businessUuid = 'you-business-uuid-code'; // Optional
+$processingType = AchType::SAME_DAY(); // Optional. Currently supported values are STANDARD (default if not set) and SAME_DAY
 
 // Call the api
-$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
+$response = $client->issueSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid, $processingType);
 ```
 
 ### Success 200
@@ -432,6 +435,8 @@ echo $response->getData()->getDestinationAddress(); // The destination wallet ad
 Burns given the amount of SILA at the handle's blockchain address and credits their named bank account in the equivalent monetary amount.
 
 ```php
+use Silamoney\Client\Domain\AchType;
+
 // Load your information
 $userHandle = 'user.silamoney.eth';
 $amount = 1000;
@@ -439,9 +444,10 @@ $accountName = 'Custom Account Name';
 $userPrivateKey = 'some private key'; // Hex format
 $descriptor = 'Transaction Descriptor'; // optional
 $businessUuid = 'you-business-uuid-code'; // optional
+$processingType = AchType::SAME_DAY(); // Optional. Currently supported values are STANDARD (default if not set) and SAME_DAY
 
 // Call the api
-$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid);
+$response = $client->redeemSila($userHandle, $amount, $accountName, $userPrivateKey, $descriptor, $businessUuid, $processingType);
 ```
 
 ### Success 200
@@ -475,7 +481,33 @@ $response = $client->getTransactions($userHandle, $filters, $userPrivateKey);
 
 ```php
 echo $response->getStatusCode(); // 200
-$results = $response->getData(); // Silamoney\Client\Domain\GetTransactionsResponse
+$data = $response->getData();
+echo $data->success; // TRUE
+$data->status; // SUCCESS
+$data->page; // The current page
+$data->returnedCount; // The amount of results returned in this request
+$data->totalCount; // The total amount of results that satisfies the filters
+$transactions = $data->transactions; // Array of transactions
+$transactions[0]->userHandle; // The user handle
+$transactions[0]->referenceId; // The transaction reference
+$transactions[0]->transactionId; // The transaction id
+$transactions[0]->transactionHash; // The transaction hash
+$transactions[0]->transactionType; // The transaction type
+$transactions[0]->silaAmount; // The amount of sila tokens in the transaction
+$transactions[0]->status; // The current status of the transaction
+$transactions[0]->usdStatus; // The status of the transaction
+$transactions[0]->tokenStatus; // The status of the token
+$transactions[0]->created; // The date of creation of the transaction
+$transactions[0]->lastUpdate; // The date of last modification of the transaction
+$transactions[0]->createdEpoch;
+$transactions[0]->lastUpdateEpoch;
+$transactions[0]->descriptor; // The descriptor of the transaction
+$transactions[0]->descriptorAch;
+$transactions[0]->achName;
+$transactions[0]->destinationAddress; // Just for 'transfer' transactions.
+$transactions[0]->destinationHandle; // Just for 'transfer' transactions.
+$transactions[0]->handleAddress;
+$transactions[0]->processingType; // Just for 'issue' and 'redeem' transactions.
 ```
 
 ## Get Wallets endpoint
@@ -807,6 +839,433 @@ echo $response->getData()->entities; // An object that contains the results (ind
 echo $response->getData()->entities->individuals; // An array of individual entities (handle, full name, status...)
 echo $response->getData()->entities->businesses; // An array of business entities (handle, full name, status...)
 echo $response->getData()->pagination; // Pagination details (returned count, total count, current page, total pages)
+```
+
+## Cancel Transaction
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$transactionId = 'some-transac-id'; // This field is obtained from the issueSila response (getTransactionId)
+$response = $client->cancelTransaction($userHandle, $privateKey, $transactionId);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Transaction some-transac-id has been canceled.
+echo $response->getData()->reference; // Random number reference
+```
+
+## Add Email
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$email = 'your.new.email@domain.com';
+$response = $client->addEmail($userHandle, $privateKey, $email);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added email to user user.silamoney.eth.
+echo $response->getData()->email->added_epoch;
+echo $response->getData()->email->modified_epoch;
+echo $response->getData()->email->uuid; // The email uuid
+echo $response->getData()->email->email; // your.new.email@domain.com
+```
+
+## Add Phone
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$phone = '1234567890';
+$response = $client->addPhone($userHandle, $privateKey, $phone);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added phone to user user.silamoney.eth.
+echo $response->getData()->phone->added_epoch;
+echo $response->getData()->phone->modified_epoch;
+echo $response->getData()->phone->uuid; // The phone uuid
+echo $response->getData()->phone->phone; // 1234567890
+```
+
+## Add Indentity
+
+```php
+use Silamoney\Client\Domain\IdentityAlias;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$identityAlias = IdentityAlias::SSN();
+$identityValue = '543212222';
+$response = $client->addIdentity($userHandle, $privateKey, $identityAlias, $identityValue);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->identity->added_epoch;
+echo $response->getData()->identity->modified_epoch;
+echo $response->getData()->identity->uuid; // The identity uuid
+echo $response->getData()->identity->identity_type; // SSN
+echo $response->getData()->identity->identity; // 543212222
+```
+
+## Add Address
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$nickname = 'new_address'; // This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+$streetAddress1 = '123 Main St'; // This is line 1 of a street address. Post office boxes are not accepted in this field.
+$city = 'Anytown'; // Name of the city where the person being verified is a current resident.
+$state = 'NY'; // Name of state where verified person is a current resident.
+$country = Country::US(); // Two-letter country code.
+$postalCode = '12345'; // In the US, this can be the 5-digit ZIP code or ZIP+4 code.
+$streetAddress2 = '' // This is line 2 of a street address (optional). This may include suite or apartment numbers.
+$response = $client->addAddress($userHandle, $privateKey, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->address->added_epoch;
+echo $response->getData()->address->modified_epoch;
+echo $response->getData()->address->uuid; // The address uuid
+echo $response->getData()->address->nickname; // new_address
+echo $response->getData()->address->street_address_1; // 123 Main St
+echo $response->getData()->address->street_address_2; //
+echo $response->getData()->address->city; // Anytown
+echo $response->getData()->address->state; // NY
+echo $response->getData()->address->country; // US
+echo $response->getData()->address->postal_code; // 12345
+```
+
+## Update Email
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$email = 'your.updated.email@domain.com';
+$uuid = 'some-uuid-code';
+$response = $client->updateEmail($userHandle, $privateKey, $uuid, $email);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated email with UUID some-uuid-code.
+echo $response->getData()->email->added_epoch;
+echo $response->getData()->email->modified_epoch;
+echo $response->getData()->email->uuid; // some-uuid-code
+echo $response->getData()->email->email; // your.updated.email@domain.com
+```
+
+## Update Phone
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$phone = '1234567890';
+$uuid = 'some-uuid-code';
+$response = $client->updatePhone($userHandle, $privateKey, $uuid, $phone);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated phone with UUID some-uuid-code.
+echo $response->getData()->phone->added_epoch;
+echo $response->getData()->phone->modified_epoch;
+echo $response->getData()->phone->uuid; // some-uuid-code
+echo $response->getData()->phone->phone; // 1234567890
+```
+
+## Update Indentity
+
+```php
+use Silamoney\Client\Domain\IdentityAlias;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$identityAlias = IdentityAlias::SSN();
+$identityValue = '654322222';
+$uuid = 'some-uuid-code';
+$response = $client->updateIdentity($userHandle, $privateKey, $uuid,  $identityAlias, $identityValue);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully updated identity with UUID some-uuid-code.
+echo $response->getData()->identity->added_epoch;
+echo $response->getData()->identity->modified_epoch;
+echo $response->getData()->identity->uuid; // some-uuid-code
+echo $response->getData()->identity->identity_type; // SSN
+echo $response->getData()->identity->identity; // 654322222
+```
+
+## Update Address
+
+```php
+use Silamoney\Client\Domain\Country;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$nickname = 'update_address'; // Optional. This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+$streetAddress1 = '124 Main St'; // Optional. This is line 1 of a street address. Post office boxes are not accepted in this field.
+$city = 'Sometown'; // Optional. Name of the city where the person being verified is a current resident.
+$state = 'CA'; // Optional. Name of state where verified person is a current resident.
+$country = Country::US(); // Optional. Two-letter country code.
+$postalCode = '54321'; // Optional. In the US, this can be the 5-digit ZIP code or ZIP+4 code.
+$streetAddress2 = '' // Optional. This is line 2 of a street address. This may include suite or apartment numbers.
+$uuid = 'some-uuid-code';
+$response = $client->updateAddress($userHandle, $privateKey, $uuid, $nickname, $streetAddress1, $city, $state, $country, $postalCode, $streetAddress2);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->address->added_epoch;
+echo $response->getData()->address->modified_epoch;
+echo $response->getData()->address->uuid; // some-uuid-code
+echo $response->getData()->address->nickname; // update_address
+echo $response->getData()->address->street_address_1; // 124 Main St
+echo $response->getData()->address->street_address_2; //
+echo $response->getData()->address->city; // Sometown
+echo $response->getData()->address->state; // CA
+echo $response->getData()->address->country; // US
+echo $response->getData()->address->postal_code; // 54321
+```
+
+## Update Entity
+
+### Request - Individual
+
+```php
+use DateTime;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$entityName = 'Full Name'; // Optional. The individual full name
+$birthdate = new DateTime::createFromFormat('m/d/Y', '1/8/1960'); // Optional. Only date part will be taken when sent to api
+$firstName = 'First'; // Optional. The individual first name
+$lastName = 'Last'; // Optional. The individual last name
+$response = $client->updateEntity($userHandle, $privateKey, $firstName, $lastName, $entityName, $birthdate);
+```
+
+### Response 200 - Individual
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->entity_type; // individual
+echo $response->getData()->entity->created_epoch;
+echo $response->getData()->entity->entity_name; // Full Name
+echo $response->getData()->entity->birthdate; // 1960-01-08
+echo $response->getData()->entity->first_name; // First
+echo $response->getData()->entity->last_name; // Last
+```
+
+### Request - Business
+
+```php
+use DateTime;
+
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$entityName = 'Company Name'; // Optional. The individual full name
+$birthdate = new DateTime::createFromFormat('m/d/Y', '1/8/2009'); // Optional. Only date part will be taken when sent to api
+$businessType = 'corporation'; // Optional. You can get this values from getBusinessTypes
+$naicsCode = 721; // Optional. You can get this codes from getNaicsCategories
+$doingBusinessAs = 'Public Company Name'; // Optional.
+$businessWebsite = 'https://yourcompony.domain'; // Optional. Must be a valid URL
+
+$response = $client->updateBusinessEntity($userHandle, $privateKey, $entityName, $birthdate, $businessType, $naicsCode, $doingBusinessAs, $businessWebsite);
+```
+
+### Response 200 - Business
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully added identity to user user.silamoney.eth.
+echo $response->getData()->entity_type; // business
+echo $response->getData()->entity->created_epoch;
+echo $response->getData()->entity->entity_name; // Company Name
+echo $response->getData()->entity->birthdate; // 2009-01-08
+echo $response->getData()->entity->business_type; // corporation
+echo $response->getData()->entity->naics_code; // 721
+echo $response->getData()->entity->business_uuid; // The business uuid
+echo $response->getData()->entity->naics_category; // The NAICS category
+echo $response->getData()->entity->naics_subcategory; // The NAICS subcategory
+echo $response->getData()->entity->doing_business_as; // Publick Company Name
+echo $response->getData()->entity->business_website; // https://yourcompany.domain
+```
+
+## Delete Registration Data
+
+```php
+use Silamoney\Client\Domain\RegistrationDataType;
+
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$dataType = RegistrationDataType::EMAIL(); // Enum with the valid data types for the endpoint (address, email, identity and phone)
+$uuid = 'some-uuid-code'; // You can obtain the id's through the getEntity method.
+$response = $client->deleteRegistrationData($userHandle, $privateKey, $dataType, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Successfully deleted email with UUID some-uuid-code.
+```
+
+## Upload Document
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$file = fopen('/path/to/file', 'r');
+$fileContents = fread($file, filesize('/path/to/file'));
+fclose($file);
+$fileName = 'some-image'; // The name of the file (without the extension)
+$mimeType = 'image/png'; // The mime type of the file
+$documentType = 'doc_green_card'; // One of Supported Document Types. You can get this from getDocumentTypes
+$name = ''; // Optional. Descriptive name of the document.
+$identityType = ''; // Optional. Matching Identity Type for Document Type. You can get this from getDocumentTypes
+$description = ''; // Optional. General description of the document.
+$response = $client->uploadDocument($userHandle, $privateKey, $dataType, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // File uploaded successfully.
+echo $response->getData()->reference_id; // The reference uuid
+echo $response->getData()->document_id; // The document uuid
+```
+
+## List Documents
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$page = '1'; // Optional. Page number to retrieve. Default: 1
+$perPage = '10'; // Optional. Number of items per page. Default: 20, Max: 100
+$sort = 'desc'; // Optional. Sort returned items. Allowed values: asc (default), desc
+$startDate = new DateTime::createFromFormat('m/d/Y', '1/8/2020'); // Optional. Only return documents created on or after this date.
+$endDate = new DateTime::createFromFormat('m/d/Y', '1/8/2020'); // Optional. Only return documents created before or on this date.
+$docTypes = ['doc_type', 'doc_type_2']; // Optional. You can get this values from getDocumentTypes()
+$search = 'some_file_name'; // Optional. Only return documents whose name or filename contains the search value. Partial matches allowed, no wildcards.
+$sortBy = 'name'; // Optional. One of: name or date
+$response = $client->listDocuments($userHandle, $privateKey, $page, $perPage, $sort, $startDate, $endDate, $docTypes, $search, $sortBy);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->documents; // An array of documents
+echo $response->getData()->documents[0]->user_handle; // The user handle that owns the document
+echo $response->getData()->documents[0]->document_id; // The document id
+echo $response->getData()->documents[0]->name; // The name of the document
+echo $response->getData()->documents[0]->filename; // The file name of the document
+echo $response->getData()->documents[0]->hash; // The hash of the file contents
+echo $response->getData()->documents[0]->type; // The document type
+echo $response->getData()->documents[0]->size; // The file size
+echo $response->getData()->documents[0]->created; // The datetime of creation
+echo $response->getData()->pagination->returned_count; // The amount of documents returned in this request
+echo $response->getData()->pagination->total_count; // The total amount of documents that meet the filters
+echo $response->getData()->pagination->current_page; // The current page of documents
+echo $response->getData()->pagination->total_pages; // The total amount of pages that meet the filters
+```
+
+## Get Document
+
+```php
+$userHandle = 'user.silamoney.eth';
+$privateKey = 'some private key';
+$uuid = 'some-uuid-code'; // The document id
+$response = $client->getDocument($userHandle, $privateKey, $uuid);
+```
+
+### Response 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData(); // The file binary data
+```
+
+## Document Types
+
+List the document types for KYC supporting documentation
+
+```php
+$page = 1; // Optional. The page number to get
+$perPage = 5 // Optional. The n umber of document types per page. The default value is 20 and the maxium is 100.
+$response = $client->getDocumentTypes($page, $perPage);
+```
+
+### Respone 200
+
+```php
+echo $response->getStatusCode(); // 200
+echo $response->getData()->success; // TRUE
+echo $response->getData()->status; // SUCCESS
+echo $response->getData()->message; // Document type details returned.
+echo $response->getData()->document_types; // An array of document types (name, label, identity_type)
+echo $response->getData()->pagination; // Pagination details (returned_count, total_count, current_page, total_pages)
 ```
 
 ## Get Business Roles

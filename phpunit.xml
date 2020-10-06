@@ -1,7 +1,6 @@
 <phpunit bootstrap="vendor/autoload.php">
   <testsuites>
     <testsuite name="silamoney">
-
       <file>test/Configuration/ConfigurationTest.php</file>
       <file>test/Domain/AccountTest.php</file>
       <file>test/Domain/SearchFiltersTest.php</file>
@@ -9,29 +8,36 @@
       <file>test/Domain/UserTest.php</file>
       <file>test/Domain/ValidModelTest.php</file>
       <file>test/Security/EcdsaUtilTest.php</file>
-
       <file>test/Api/ApiClientTest.php</file>
       <file>test/Api/BaseResponseTest.php</file>
       <file>test/Api/ClientExceptionTest.php</file>
       <file>test/Api/SilaApiTest.php</file>
       <file>test/Api/GetBusinessRolesTest.php</file>
       <file>test/Api/GetBusinessTypesTest.php</file>
+      <file>test/Api/GetDocumentTypesTest.php</file>
       <file>test/Api/GetNaicsCategoriesTest.php</file>
       <file>test/Api/CheckHandleTest.php</file>
       <file>test/Api/RegisterTest.php</file>
       <file>test/Api/RegisterBusinessTest.php</file>
+      <file>test/Api/DeleteRegistrationDataTest.php</file>
+      <file>test/Api/AddRegistrationDataTest.php</file>
+      <file>test/Api/UpdateRegistrationDataTest.php</file>
       <file>test/Api/LinkBusinessMemberTest.php</file>
       <file>test/Api/UnlinkBusinessMemberTest.php</file>
       <file>test/Api/RequestKYCTest.php</file>
       <file>test/Api/CheckKYCTest.php</file>
       <file>test/Api/GetEntityTest.php</file>
       <file>test/Api/GetEntitiesTest.php</file>
+      <file>test/Api/DocumentsTest.php</file>
+      <file>test/Api/ListDocumentsTest.php</file>
+      <file>test/Api/GetDocumentTest.php</file>
       <file>test/Api/CertifyBeneficialOwnerTest.php</file>
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>
       <file>test/Api/IssueSilaTest.php</file>
+      <file>test/Api/CancelTransactionTest.php</file>
       <file>test/Api/TransferSilaTest.php</file>
       <file>test/Api/RedeemSilaTest.php</file>
       <file>test/Api/GetTransactionsTest.php</file>
@@ -42,7 +48,6 @@
       <file>test/Api/UpdateWalletTest.php</file>
       <file>test/Api/DeleteWalletTest.php</file>
       <file>test/Api/SilaBalanceTest.php</file>
-
     </testsuite>
   </testsuites>
   <filter>

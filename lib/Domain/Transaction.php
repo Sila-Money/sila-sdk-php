@@ -98,14 +98,14 @@ class Transaction
     public $lastUpdate;
     /**
      * Integer field used for the created epoch.
-     * @var string
-     * @Type("string")
+     * @var int
+     * @Type("int")
      */
     public $createdEpoch;
     /**
      * Integer field used for the last update epoch.
-     * @var string
-     * @Type("string")
+     * @var int
+     * @Type("int")
      */
     public $lastUpdateEpoch;
     /**
@@ -114,4 +114,35 @@ class Transaction
      * @Type("array<Silamoney\Client\Domain\TransactionStatus>")
      */
     public $timeline;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $descriptor;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $descriptorAch;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $achName;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $destinationAddress;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $destinationHandle;
+    /**
+     * This field is only set for issue and redeem transactions.
+     * @var string
+     * @Type("string")
+     */
+    public $processingType;
 }

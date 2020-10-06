@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\AchType;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
 
@@ -21,7 +22,7 @@ use Silamoney\Client\Utils\DefaultConfig;
 class RedeemSilaTest extends TestCase
 {
     public const REDEEM_TRANS = 'Redeem Trans';
-    
+
     /**
      * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
@@ -36,7 +37,7 @@ class RedeemSilaTest extends TestCase
     {
         $response = self::$config->api->redeemSila(
             DefaultConfig::$firstUserHandle,
-            10000,
+            100,
             DefaultConfig::DEFAULT_ACCOUNT,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
@@ -60,6 +61,24 @@ class RedeemSilaTest extends TestCase
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
         $this->assertEquals(self::REDEEM_TRANS, $response->getData()->getDescriptor());
+        $this->assertIsString($response->getData()->getTransactionId());
+    }
+
+    public function testRedeemSila200SameDay()
+    {
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            null,
+            AchType::SAME_DAY()
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+        $this->assertIsString($response->getData()->getDescriptor());
         $this->assertIsString($response->getData()->getTransactionId());
     }
 

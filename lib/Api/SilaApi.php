@@ -7,20 +7,28 @@
 
 namespace Silamoney\Client\Api;
 
+use DateTime;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
+    AchType,
+    AddressMessage,
     BalanceEnvironments,
     BankAccountMessage,
     BaseBusinessMessage,
+    BaseMessage,
     BaseResponse,
     BusinessEntityMessage,
     BusinessUser,
+    CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
+    Country,
+    DeleteRegistrationMessage,
     OperationResponse,
     EntityMessage,
     Environments,
@@ -46,10 +54,20 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    DocumentMessage,
+    EmailMessage,
+    EntityUpdateMessage,
+    GetDocumentMessage,
     GetEntitiesMessage,
     GetWalletsMessage,
     HeaderBaseMessage,
+    IdentityAlias,
+    IdentityMessage,
     LinkBusinessMemberMessage,
+    ListDocumentsMessage,
+    PhoneMessage,
+    RegistrationDataOperation,
+    RegistrationDataType,
     TransferResponse,
     UnlinkBusinessMemberMessage
 };
@@ -353,10 +371,12 @@ class SilaApi
      * the requested handle.
      *
      * @param string $userHandle
-     * @param float $amount
-     * @param string $accountName
-     * @param string $descriptor
+     * @param float $amount Min Length 1, Max digits 35
+     * @param string $accountName Max Length 40
      * @param string $userPrivateKey
+     * @param string|null $descriptor Optional. Max Length 100
+     * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
+     * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
      * @return ApiResponse
      */
     public function issueSila(
@@ -365,7 +385,8 @@ class SilaApi
         string $accountName,
         string $userPrivateKey,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        AchType $processingType = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -374,7 +395,8 @@ class SilaApi
             $this->configuration->getAuthHandle(),
             Message::ISSUE(),
             $descriptor,
-            $businessUuid
+            $businessUuid,
+            $processingType
         );
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -432,10 +454,12 @@ class SilaApi
      * their named bank account in the equivalent monetary amount.
      *
      * @param string $userHandle
-     * @param float $amount
-     * @param string $accountName
-     * @param string $descriptor
+     * @param float $amount Min Length 1, Max digits 35
+     * @param string $accountName Max Length 40
      * @param string $userPrivateKey
+     * @param string|null $descriptor Optional. Max Length 100
+     * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
+     * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
      * @return ApiResponse
      */
     public function redeemSila(
@@ -444,7 +468,8 @@ class SilaApi
         string $accountName,
         string $userPrivateKey,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        AchType $processingType = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -453,7 +478,8 @@ class SilaApi
             $this->configuration->getAuthHandle(),
             Message::REDEEM(),
             $descriptor,
-            $businessUuid
+            $businessUuid,
+            $processingType
         );
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -711,17 +737,7 @@ class SilaApi
         int $page = null,
         int $perPage = null
     ) {
-        $params = '';
-        if ($page != null) {
-            $params = "?page={$page}";
-        }
-        if ($perPage != null) {
-            if ($params != '') {
-                $params = "{$params}&per_page={$perPage}";
-            } else {
-                $params = "?per_page={$perPage}";
-            }
-        }
+        $params = $this->pageParams($page, $perPage);
         $path = "/get_entities{$params}";
         $body = new GetEntitiesMessage($this->configuration->getAuthHandle(), $entityType);
         $json = $this->serializer->serialize($body, 'json');
@@ -883,6 +899,407 @@ class SilaApi
     }
 
     /**
+     * List the document types for KYC supporting documentation
+     * @param int|null $page Indicates the page to retrieve
+     * @param int|null $perPage Indicates the number of document types per page to retrieve
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getDocumentTypes(int $page = null, int $perPage = null): ApiResponse
+    {
+        $params = $this->pageParams($page, $perPage);
+        $path = "/document_types{$params}";
+        $body = new BaseMessage($this->configuration->getAuthHandle());
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Cancel a pending transaction under certain circumstances
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $transactionId The transaction id to cancel
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function cancelTransaction(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
+    {
+        $path = '/cancel_transaction';
+        $body = new CancelTransactionMessage($this->configuration->getAuthHandle(), $userHandle, $transactionId);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Add a new email to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $email The new email
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addEmail(string $userHandle, string $userPrivateKey, string $email): ApiResponse
+    {
+        $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::EMAIL(), $body);
+    }
+
+    /**
+     * Update an existing email of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param string $email The new email
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, string $email)
+    {
+        $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::EMAIL(), $body);
+    }
+
+    /**
+     * Add a new phone number to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $phone The new phone
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
+    {
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
+    }
+
+    /**
+     * Update an existing phone number of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param string $phone The new phone
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  string $phone): ApiResponse
+    {
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
+    }
+
+    /**
+     * Add a new identity to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @param string $identityValue The identity number
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addIdentity(string $userHandle, string $userPrivateKey, IdentityAlias $identityAlias, string $identityValue): ApiResponse
+    {
+        $body = new IdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::IDENTITY(), $body);
+    }
+
+    /**
+     * Update an existing identity of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias The identity type
+     * @param string $identityValue The identity number
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateIdentity(string $userHandle, string $userPrivateKey, string $uuid, IdentityAlias $identityAlias, string $identityValue): ApiResponse
+    {
+        $body = new IdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue, $uuid);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::IDENTITY(), $body);
+    }
+
+    /**
+     * Add a new address to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $addressAlias This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+     * @param string $streetAddress1 This is line 1 of a street address. Post office boxes are not accepted in this field.
+     * @param string $city Name of the city where the person being verified is a current resident
+     * @param string $state Name of state where verified person is a current resident.
+     * @param \Silamoney\Client\Domain\Country $country Two-letter country code.
+     * @param string $postalCode In the US, this can be the 5-digit ZIP code or ZIP+4 code
+     * @param string $streetAddress2 This is line 2 of a street address (optional). This may include suite or apartment numbers
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function addAddress(
+        string $userHandle,
+        string $userPrivateKey,
+        string $addressAlias,
+        string $streetAddress1,
+        string $city,
+        string $state,
+        Country $country,
+        string $postalCode,
+        string $streetAddress2 = null
+    ): ApiResponse {
+        $body = new AddressMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $addressAlias,
+            $streetAddress1,
+            $city,
+            $state,
+            $country,
+            $postalCode,
+            $streetAddress2
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::ADDRESS(), $body);
+    }
+
+    /**
+     * Update an existing address of a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $uuid
+     * @param string $addressAlias Optional. This is a nickname that can be attached to the address object. While a required field, it can be left blank if desired.
+     * @param string $streetAddress1 Optional. This is line 1 of a street address. Post office boxes are not accepted in this field.
+     * @param string $city Optional. Name of the city where the person being verified is a current resident
+     * @param string $state Optional. Name of state where verified person is a current resident.
+     * @param \Silamoney\Client\Domain\Country $country Opational. Two-letter country code.
+     * @param string $postalCode Optional. In the US, this can be the 5-digit ZIP code or ZIP+4 code
+     * @param string $streetAddress2 Optional. This is line 2 of a street address. This may include suite or apartment numbers
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateAddress(
+        string $userHandle,
+        string $userPrivateKey,
+        string $uuid,
+        string $addressAlias = null,
+        string $streetAddress1 = null,
+        string $city = null,
+        string $state = null,
+        Country $country = null,
+        string $postalCode = null,
+        string $streetAddress2 = null
+    ): ApiResponse {
+        $body = new AddressMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $addressAlias,
+            $streetAddress1,
+            $city,
+            $state,
+            $country,
+            $postalCode,
+            $streetAddress2,
+            $uuid
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ADDRESS(), $body);
+    }
+
+    /**
+     * Update a registered individual entity
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param string|null $entityName
+     * @param string|null $birthdate
+     * @param string|null $businessType
+     * @param string|null $naicsCode
+     * @param string|null $doingBusinessAs
+     * @param string|null $businessWebsite
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateEntity(
+        string $userHandle,
+        string $userPrivateKey,
+        string $firstName = null,
+        string $lastName = null,
+        string $entityName = null,
+        DateTime $birthdate = null
+    ): ApiResponse {
+        $body = new EntityUpdateMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $firstName,
+            $lastName,
+            $entityName,
+            $birthdate
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ENTITY(), $body);
+    }
+
+    /**
+     * Update a registered business entity
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string|null $entityName
+     * @param string|null $birthdate
+     * @param string|null $businessType
+     * @param string|null $naicsCode
+     * @param string|null $doingBusinessAs
+     * @param string|null $businessWebsite
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function updateBusinessEntity(
+        string $userHandle,
+        string $userPrivateKey,
+        string $entityName = null,
+        DateTime $birthdate = null,
+        string $businessType = null,
+        string $naicsCode = null,
+        string $doingBusinessAs = null,
+        string $businessWebsite = null
+    ): ApiResponse {
+        $body = new EntityUpdateMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            null,
+            null,
+            $entityName,
+            $birthdate,
+            $businessType,
+            $naicsCode,
+            $doingBusinessAs,
+            $businessWebsite
+        );
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ENTITY(), $body);
+    }
+
+    /**
+     * Delete an existing email, phone number, street address, or identity.
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\RegistrationDataType $dataType Indicates which type of registration data to delete
+     * @param string $uuid The registration data uuid
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function deleteRegistrationData(string $userHandle, string $userPrivateKey, RegistrationDataType $dataType, string $uuid): ApiResponse
+    {
+        $path = "/delete/{$dataType}";
+        $body = new DeleteRegistrationMessage($this->configuration->getAuthHandle(), $userHandle, $uuid);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Upload supporting documentation for KYC
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $filePath
+     * @param string $filename
+     * @param string $mimeType
+     * @param string $documentType
+     * @param string|null $name
+     * @param string|null $identityType
+     * @param string|null $description
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function uploadDocument(
+        string $userHandle,
+        string $userPrivateKey,
+        string $filePath,
+        string $filename,
+        string $mimeType,
+        string $documentType,
+        string $name = null,
+        string $identityType = null,
+        string $description = null
+    ): ApiResponse {
+        $path = '/documents';
+        $file = fopen($filePath, 'rb');
+        $contents = fread($file, filesize($filePath));
+        fclose($file);
+        $hash = hash('sha256', $contents);
+        $body = new DocumentMessage(
+            $this->configuration->getAuthHandle(),
+            $userHandle,
+            $filename,
+            $hash,
+            $mimeType,
+            $documentType,
+            $name,
+            $identityType,
+            $description
+        );
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callFileApi(
+            $path,
+            [['name' => 'file', 'contents' => fopen($filePath, 'rb')], ['name' => 'data', 'contents' => $json]],
+            $headers
+        );
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * List previously uploaded supporting documentation for KYC
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param int|null $page Page number to retrieve. Default: 1
+     * @param int|null $perPage Number of items per page. Default: 20, max: 100
+     * @param string|null $sort Sort returned items (usually by creation date). Allowed values: asc (default), desc
+     * @param DateTime|null $startDate Only return documents created on or after this date.
+     * @param DateTime|null $endDate Only return documents created before or on this date.
+     * @param array<string>|null $docTypes You can get this values from getDocumentTypes.
+     * @param string|null $search Only return documents whose name or filename contains the search value. Partial matches allowed, no wildcards.
+     * @param string|null $sortBy One of: name or date
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function listDocuments(
+        string $userHandle,
+        string $userPrivateKey,
+        int $page = null,
+        int $perPage = null,
+        string $sort = null,
+        DateTime $startDate = null,
+        DateTime $endDate = null,
+        array $docTypes = null,
+        string $search = null,
+        string $sortBy = null
+    ): ApiResponse {
+        $params = $this->pageParams($page, $perPage, $sort);
+        $path = "/list_documents{$params}";
+        $body = new ListDocumentsMessage($this->configuration->getAuthHandle(), $userHandle, $startDate, $endDate, $docTypes, $search, $sortBy);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Retrieve a previously uploaded supporting documentation for KYC
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $uuid The document id
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function getDocument(string $userHandle, string $userPrivateKey, string $uuid): ApiResponse
+    {
+        $path = '/get_document';
+        $body = new GetDocumentMessage($this->configuration->getAuthHandle(), $userHandle, $uuid);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareFileResponse($response);
+    }
+
+    /**
      * Gets the configuration api client
      * @return \Silamoney\Client\Api\ApiClient
      */
@@ -909,6 +1326,64 @@ class SilaApi
     public function getBalanceClient(): ApiClient
     {
         return $this->configuration->getBalanceClient();
+    }
+
+    /**
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
+    {
+        switch (get_class($body)) {
+            case EmailMessage::class:
+            case PhoneMessage::class:
+            case IdentityMessage::class:
+            case AddressMessage::class:
+            case EntityUpdateMessage::class:
+                break;
+            default:
+                throw new InvalidArgumentException('addRegistrationData function only accepts: '
+                    . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
+                    . ', ' . AddressMessage::class . ', ' . EntityUpdateMessage::class . '. Input was: ' . get_class($body));
+        }
+        $path = "/{$operation}/{$dataType}";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * @param int|null $page
+     * @param int|null $perPage
+     * @param string|null $sort
+     * @return string
+     */
+    private function pageParams(int $page = null, int $perPage = null, string $sort = null): string
+    {
+        $params = '';
+        if ($page != null) {
+            $params = "?page={$page}";
+        }
+        if ($perPage != null) {
+            if ($params != '') {
+                $params = "{$params}&per_page={$perPage}";
+            } else {
+                $params = "?per_page={$perPage}";
+            }
+        }
+        if ($sort != null) {
+            if ($params != '') {
+                $params = "{$params}&sort={$sort}";
+            } else {
+                $params = "?sort={$sort}";
+            }
+        }
+        return $params;
     }
 
     /**
@@ -964,6 +1439,17 @@ class SilaApi
             $body = json_decode($contents);
         }
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
+    }
+
+    private function prepareFileResponse(Response $response)
+    {
+        $statusCode = $response->getStatusCode();
+        $contents = $response->getBody()->getContents();
+        if ($statusCode == 200) {
+            return new ApiResponse($statusCode, $response->getHeaders(), $contents);
+        } else {
+            return new ApiResponse($statusCode, $response->getHeaders(), json_decode($contents));
+        }
     }
 
     /**

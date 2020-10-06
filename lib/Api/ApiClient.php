@@ -55,6 +55,8 @@ class ApiClient
             return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
+        } catch (RequestException $e) {
+            return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();
         }
@@ -73,6 +75,19 @@ class ApiClient
         try {
             return $this->client->post($url, ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (ServerException $e) {
+            return $e->getResponse();
+        }
+    }
+
+    public function callFileApi(string $url, array $data, array $headers): Response
+    {
+        try {
+            return $this->client->post("/0.2{$url}", ['multipart' => $data, 'headers' => $headers]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (RequestException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();

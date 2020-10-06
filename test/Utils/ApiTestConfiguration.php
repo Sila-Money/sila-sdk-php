@@ -51,4 +51,9 @@ class ApiTestConfiguration
     {
         $this->api = SilaApi::fromDefault($this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
+
+    public function setUpBeforeClassValidAuthSignature(): void
+    {
+        $this->api = SilaApi::fromDefault($this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+    }
 }

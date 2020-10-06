@@ -25,6 +25,11 @@ class GetTransactionsResponse
      */
     public $success;
     /**
+     * @var string
+     * @Type("string")
+     */
+    public $status;
+    /**
      * Integer field used for the page.
      * @var int
      * @Type("int")

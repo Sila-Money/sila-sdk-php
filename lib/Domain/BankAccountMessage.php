@@ -56,6 +56,12 @@ class BankAccountMessage implements ValidInterface
     private $businessUuid;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $processingType;
+
+    /**
      * Constructor for BankAccountMessage object.
      *
      * @param string $userHandle
@@ -73,7 +79,8 @@ class BankAccountMessage implements ValidInterface
         string $appHandle,
         Message $message,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        AchType $processingType = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->amount = $amount;
@@ -81,6 +88,7 @@ class BankAccountMessage implements ValidInterface
         $this->message = $message;
         $this->descriptor = $descriptor;
         $this->businessUuid = $businessUuid;
+        $this->processingType = $processingType;
     }
 
     public function isValid(): bool
