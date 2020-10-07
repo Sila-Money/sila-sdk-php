@@ -68,8 +68,8 @@ class DocumentMessage
      * @param string $hash
      * @param string $mimeType
      * @param string $documentType
+     * @param string $identityType
      * @param string|null $name
-     * @param string|null $identityType
      * @param string|null $description
      */
     public function __construct(
@@ -79,8 +79,8 @@ class DocumentMessage
         string $hash,
         string $mimeType,
         string $documentType,
+        string $identityType,
         string $name = null,
-        string $identityType = null,
         string $description = null
     ) {
         $this->header = new Header($appHandle, $userHandle);

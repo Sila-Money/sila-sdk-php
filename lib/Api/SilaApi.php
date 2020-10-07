@@ -1196,8 +1196,8 @@ class SilaApi
      * @param string $filename
      * @param string $mimeType
      * @param string $documentType
+     * @param string $identityType
      * @param string|null $name
-     * @param string|null $identityType
      * @param string|null $description
      * @return \Silamoney\Client\Api\ApiResponse
      */
@@ -1208,8 +1208,8 @@ class SilaApi
         string $filename,
         string $mimeType,
         string $documentType,
+        string $identityType,
         string $name = null,
-        string $identityType = null,
         string $description = null
     ): ApiResponse {
         $path = '/documents';
@@ -1224,8 +1224,8 @@ class SilaApi
             $hash,
             $mimeType,
             $documentType,
-            $name,
             $identityType,
+            $name,
             $description
         );
         $json = $this->serializer->serialize($body, 'json');

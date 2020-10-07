@@ -1171,16 +1171,14 @@ echo $response->getData()->message; // Successfully deleted email with UUID some
 ```php
 $userHandle = 'user.silamoney.eth';
 $privateKey = 'some private key';
-$file = fopen('/path/to/file', 'r');
-$fileContents = fread($file, filesize('/path/to/file'));
-fclose($file);
+$filePath = '/path/to/file';
 $fileName = 'some-image'; // The name of the file (without the extension)
 $mimeType = 'image/png'; // The mime type of the file
 $documentType = 'doc_green_card'; // One of Supported Document Types. You can get this from getDocumentTypes
+$identityType = ''; // Matching Identity Type for Document Type. You can get this from getDocumentTypes
 $name = ''; // Optional. Descriptive name of the document.
-$identityType = ''; // Optional. Matching Identity Type for Document Type. You can get this from getDocumentTypes
 $description = ''; // Optional. General description of the document.
-$response = $client->uploadDocument($userHandle, $privateKey, $dataType, $uuid);
+$response = $client->uploadDocument($userHandle, $privateKey, $filePath, $fileName, $mimeType, $documentType, $identityType, $name, $description);
 ```
 
 ### Response 200
