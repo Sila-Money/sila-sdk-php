@@ -1,6 +1,6 @@
 # Silamoney\Client
 
-`Version 0.2.13-rc`
+`Version 0.2.13-rc-2`
 
 > **Note**: This SDK is a Release Candidate.
 
@@ -22,7 +22,7 @@
 Via Composer
 
 ```shell
-composer require silamoney/php-sdk:0.2.9-rc
+composer require silamoney/php-sdk:0.2.13-rc-2
 ```
 
 ## Initialization
