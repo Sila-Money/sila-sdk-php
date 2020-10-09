@@ -42,7 +42,6 @@ class DodcumentsTest extends TestCase
             'logo-geko',
             'image/png',
             DefaultConfig::$documentType,
-            null,
             DefaultConfig::$identityType
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -63,7 +62,8 @@ class DodcumentsTest extends TestCase
             $filePath,
             'logo-geko',
             'application/pdf',
-            DefaultConfig::$documentType
+            DefaultConfig::$documentType,
+            ''
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);

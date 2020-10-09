@@ -1,7 +1,7 @@
 {
     "name": "silamoney/php-sdk",
     "description": "Sila PHP SDK for API Version 0.2",
-    "version": "0.2.13-rc",
+    "version": "0.2.13-rc-2",
     "keywords": ["sila","payments","ach","credit","fintech","finance"],
     "type": "library",
     "license": "Apache-2.0",
@@ -29,7 +29,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-gmp": "*",
-        "guzzlehttp/guzzle": "^6.5.4",
+        "guzzlehttp/guzzle": "^7.1",
         "jms/serializer": "^3.3",
         "respect/validation": "^1.1",
         "kornrunner/secp256k1": "^0.1.2",
@@ -38,7 +38,6 @@
         "sop/asn1": "^3.3",
         "sop/crypto-encoding": "^0.2.0",
         "sop/crypto-types": "^0.2.1",
-        "sc0vu/web3.php": "dev-master",
         "ext-openssl": "*"
     },
     "require-dev": {
