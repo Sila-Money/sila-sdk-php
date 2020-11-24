@@ -73,14 +73,14 @@ class AddressMessage extends RegistrationDataBaseMessage
     public function __construct(
         string $appHandle,
         string $userHandle,
-        string $addressAlias = null,
-        string $streetAddress1 = null,
-        string $city = null,
-        string $state = null,
-        Country $country = null,
-        string $postalCode = null,
-        string $streetAddress2 = null,
-        string $uuid = null
+        ?string $addressAlias = null,
+        ?string $streetAddress1 = null,
+        ?string $city = null,
+        ?string $state = null,
+        ?Country $country = null,
+        ?string $postalCode = null,
+        ?string $streetAddress2 = null,
+        ?string $uuid = null
     ) {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->addressAlias = $addressAlias;

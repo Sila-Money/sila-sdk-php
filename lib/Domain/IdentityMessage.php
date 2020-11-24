@@ -33,12 +33,12 @@ class IdentityMessage extends RegistrationDataBaseMessage
      * Constructor for Add Phone Message object.
      * @param string $appHandle
      * @param string $userHandle
-     * @param \Silamoney\Client\Domain\IdentityAlias $identityAlias
-     * @param string $identityValue
+     * @param \Silamoney\Client\Domain\IdentityAlias|null $identityAlias
+     * @param string|null $identityValue
      * @param string|null $uuid
      * @return \Silamoney\Client\Domain\AddIdentityMessage
      */
-    public function __construct(string $appHandle, string $userHandle, IdentityAlias $identityAlias, string $identityValue, string $uuid = null)
+    public function __construct(string $appHandle, string $userHandle, ?IdentityAlias $identityAlias = null, ?string $identityValue = null, ?string $uuid = null)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->identityAlias = $identityAlias;
