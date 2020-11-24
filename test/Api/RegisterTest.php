@@ -56,7 +56,6 @@ class RegisterTest extends TestCase
             ->phone('123-456-7890')->email('builder@domain.go')->cryptoAddress($wallet->getAddress())
             ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
         $response = self::$config->api->register($user);
-        var_dump($response->getData());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
