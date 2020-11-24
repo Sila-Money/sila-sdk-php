@@ -42,14 +42,14 @@ class User extends BaseUser
      * @param string $handle
      * @param string $firstName
      * @param string $lastName
-     * @param string $address
+     * @param string|null $address
      * @param string|null $address2
-     * @param string $city
-     * @param string $state
-     * @param string $zipCode
-     * @param string $phone
-     * @param string $email
-     * @param string $identityNumber
+     * @param string|null $city
+     * @param string|null $state
+     * @param string|null $zipCode
+     * @param string|null $phone
+     * @param string|null $email
+     * @param string|null $identityNumber
      * @param string $cryptoAddress
      * @param DateTime $birthdate
      */
@@ -57,14 +57,14 @@ class User extends BaseUser
         string $handle,
         string $firstName,
         string $lastName,
-        string $address,
-        ?string $address2,
-        string $city,
-        string $state,
-        string $zipCode,
-        string $phone,
-        string $email,
-        string $identityNumber,
+        ?string $address = null,
+        ?string $address2 = null,
+        ?string $city = null,
+        ?string $state = null,
+        ?string $zipCode = null,
+        ?string $phone = null,
+        ?string $email = null,
+        ?string $identityNumber = null,
         string $cryptoAddress,
         DateTime $birthdate
     ) {

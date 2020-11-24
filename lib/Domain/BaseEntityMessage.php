@@ -64,9 +64,15 @@ class BaseEntityMessage
     {
         $this->header = new Header($appHandle, $user->getHandle());
         $this->message = Message::ENTITY;
-        $this->address = new Address($user);
-        $this->identity = new Identity($user, $identityAlias);
-        $this->contact = new Contact($user);
+        if ($user->getAddress() || $user->getAddress2() || $user->getCity() || $user->getState() || $user->getZipCode()) {
+            $this->address = new Address($user);
+        }
+        if ($user->getIdentityNumber()) {
+            $this->identity = new Identity($user, $identityAlias);
+        }
+        if ($user->getPhone() || $user->getEmail()) {
+            $this->contact = new Contact($user);
+        }
         $this->cryptoEntry = new CryptoEntry($user);
     }
 }

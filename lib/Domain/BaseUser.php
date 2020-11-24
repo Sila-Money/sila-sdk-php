@@ -80,27 +80,27 @@ class BaseUser
 
     /**
      * @param string $handle
-     * @param string $address
+     * @param string|null $address
      * @param string|null $address2
-     * @param string $city
-     * @param string $state
-     * @param string $zipCode
+     * @param string|null $city
+     * @param string|null $state
+     * @param string|null $zipCode
      * @param string $phone
      * @param string $email
-     * @param string $identityNumber
+     * @param string|null $identityNumber
      * @param string $cryptoAddress
      * @return \Silamoney\Client\Domain\BaseUser
      */
     public function __construct(
         string $handle,
-        string $address,
-        ?string $address2,
-        string $city,
-        string $state,
-        string $zipCode,
-        string $phone,
-        string $email,
-        string $identityNumber,
+        ?string $address = null,
+        ?string $address2 = null,
+        ?string $city = null,
+        ?string $state = null,
+        ?string $zipCode = null,
+        ?string $phone = null,
+        ?string $email = null,
+        ?string $identityNumber = null,
         string $cryptoAddress
     ) {
         $this->handle = $handle;
@@ -128,7 +128,7 @@ class BaseUser
      * Gets the user street address 1.
      * @return string
      */
-    public function getAddress(): string
+    public function getAddress(): ?string
     {
         return $this->address;
     }
@@ -146,7 +146,7 @@ class BaseUser
      * Gets the user city.
      * @return string
      */
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
@@ -155,7 +155,7 @@ class BaseUser
      * Gets the user state.
      * @return string
      */
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -164,7 +164,7 @@ class BaseUser
      * Gets the user zip code.
      * @return string
      */
-    public function getZipCode(): string
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
@@ -173,7 +173,7 @@ class BaseUser
      * Gets the user phone.
      * @return string
      */
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
@@ -182,7 +182,7 @@ class BaseUser
      * Gets the user email.
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -191,7 +191,7 @@ class BaseUser
      * Gets the user identity number.
      * @return string
      */
-    public function getIdentityNumber(): string
+    public function getIdentityNumber(): ?string
     {
         return $this->identityNumber;
     }
