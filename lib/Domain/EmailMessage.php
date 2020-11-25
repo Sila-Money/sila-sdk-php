@@ -28,11 +28,11 @@ class EmailMessage extends RegistrationDataBaseMessage
      * Constructor for Add Email Message object.
      * @param string $appHandle
      * @param string $userHandle
-     * @param string $email
+     * @param string|null $email
      * @param string|null $uuid
      * @return \Silamoney\Client\Domain\AddEmailMessage
      */
-    public function __construct(string $appHandle, string $userHandle, string $email, string $uuid = null)
+    public function __construct(string $appHandle, string $userHandle, ?string $email = null, ?string $uuid = null)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->email = $email;

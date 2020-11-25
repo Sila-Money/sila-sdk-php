@@ -956,7 +956,7 @@ class SilaApi
      * @param string $email The new email
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, string $email)
+    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, ?string $email = null)
     {
         $body = new EmailMessage($this->configuration->getAuthHandle(), $userHandle, $email, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::EMAIL(), $body);
@@ -983,7 +983,7 @@ class SilaApi
      * @param string $phone The new phone
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  string $phone): ApiResponse
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null): ApiResponse
     {
         $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
@@ -1012,8 +1012,13 @@ class SilaApi
      * @param string $identityValue The identity number
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updateIdentity(string $userHandle, string $userPrivateKey, string $uuid, IdentityAlias $identityAlias, string $identityValue): ApiResponse
-    {
+    public function updateIdentity(
+        string $userHandle,
+        string $userPrivateKey,
+        string $uuid,
+        ?IdentityAlias $identityAlias = null,
+        ?string $identityValue = null
+    ): ApiResponse {
         $body = new IdentityMessage($this->configuration->getAuthHandle(), $userHandle, $identityAlias, $identityValue, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::IDENTITY(), $body);
     }
@@ -1074,13 +1079,13 @@ class SilaApi
         string $userHandle,
         string $userPrivateKey,
         string $uuid,
-        string $addressAlias = null,
-        string $streetAddress1 = null,
-        string $city = null,
-        string $state = null,
-        Country $country = null,
-        string $postalCode = null,
-        string $streetAddress2 = null
+        ?string $addressAlias = null,
+        ?string $streetAddress1 = null,
+        ?string $city = null,
+        ?string $state = null,
+        ?Country $country = null,
+        ?string $postalCode = null,
+        ?string $streetAddress2 = null
     ): ApiResponse {
         $body = new AddressMessage(
             $this->configuration->getAuthHandle(),

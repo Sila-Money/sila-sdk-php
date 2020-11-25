@@ -50,7 +50,7 @@ class GetEntityTest extends TestCase
         $this->assertEquals($entityType, $response->getData()->entity_type);
         $this->assertIsObject($response->getData()->entity);
         $this->assertIsArray($response->getData()->addresses);
-        $this->assertEquals(1, sizeof($response->getData()->addresses));
+        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->addresses));
         $this->assertIsArray($response->getData()->identities);
         $this->assertEquals(1, sizeof($response->getData()->identities));
         $this->assertIsArray($response->getData()->emails);

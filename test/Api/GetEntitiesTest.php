@@ -40,7 +40,7 @@ class GetEntitiesTest extends TestCase
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
-        $this->assertGreaterThanOrEqual(3, sizeof($response->getData()->entities->individuals));
+        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->individuals));
         $this->assertIsString($response->getData()->entities->individuals[0]->handle);
         $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
         $this->assertIsInt($response->getData()->entities->individuals[0]->created);

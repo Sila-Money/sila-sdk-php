@@ -9,6 +9,7 @@ namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\BusinessUser;
+use Silamoney\Client\Domain\BusinessUserBuilder;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
     DefaultConfig
@@ -51,6 +52,19 @@ class RegisterBusinessTest extends TestCase
             DefaultConfig::$naicsCode,
             DefaultConfig::$businessType
         );
+        $response = self::$config->api->registerBusiness($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('successfully registered', $response->getData()->message);
+    }
+
+    public function testRegisterBusinessBuilder200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new BusinessUserBuilder();
+        $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
+            ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->build();
         $response = self::$config->api->registerBusiness($user);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);

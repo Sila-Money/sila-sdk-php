@@ -7,7 +7,9 @@
 
 namespace Silamoney\Client\Api;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
+use Silamoney\Client\Domain\UserBuilder;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
     DefaultConfig
@@ -39,6 +41,20 @@ class RegisterTest extends TestCase
      */
     public function testRegister200($user)
     {
+        $response = self::$config->api->register($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    }
+
+    public function testRegisterBuilder200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new UserBuilder();
+        $user = $builder->handle($handle)->firstName('Builder')->lastName('Last')
+            ->phone('123-456-7890')->email('builder@domain.go')->cryptoAddress($wallet->getAddress())
+            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
         $response = self::$config->api->register($user);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());

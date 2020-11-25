@@ -158,8 +158,7 @@ class AddRegistrationDataTest extends TestCase
         return [
             'add email - 400' => ['addEmail', ['']],
             'add phone - 400' => ['addPhone', ['']],
-            'add identity - 400' => ['addIdentity', [IdentityAlias::SSN(), '']],
-            'add address - 400' => ['addAddress', ['', '', '', '', Country::US(), '']]
+            'add identity - 400' => ['addIdentity', [IdentityAlias::SSN(), '']]
         ];
     }
 
