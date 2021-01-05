@@ -45,6 +45,7 @@ steps:
   env:
     SILA_PRIVATE_KEY: $(silaPrivateKey)
     SILA_PRIVATE_KEY_INVALID: $(silaPrivateKeyInvalid)
+    XDEBUG_MODE: coverage
   displayName: 'composer test'
 
 - task: PublishTestResults@2
