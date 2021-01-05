@@ -8,10 +8,9 @@
 namespace Silamoney\Client\Domain;
 
 use Respect\Validation\Validator as v;
-use Sop\CryptoTypes\Asymmetric\EC\ECPublicKey;
 use Sop\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Sop\CryptoEncoding\PEM;
-use kornrunner\{Keccak,Secp256k1};
+use kornrunner\Keccak;
 
 /**
  * Entity
@@ -49,14 +48,15 @@ class SilaWallet implements ValidInterface
                 echo 'ERROR: Failed to generate private key. -> ' . openssl_error_string();
                 exit;
             }
-            openssl_pkey_export($res, $priv_key);
+            $priv_key_success = openssl_pkey_export($res, $priv_key);
+            if (!$priv_key_success) {
+                echo 'ERROR: Failed to obtain private key. -> ' . openssl_error_string();
+                exit;
+            }
             $priv_pem = PEM::fromString($priv_key);
             $ec_priv_key = ECPrivateKey::fromPEM($priv_pem);
             $ec_priv_seq = $ec_priv_key->toASN1();
             $priv_key_hex = bin2hex($ec_priv_seq->at(1)->asOctetString()->string());
-            // print("PRIVATE KEY HEX: ");
-            // print_r($priv_key_hex);
-            // print("\n");
             $pub_key_hex = bin2hex($ec_priv_seq->at(3)->asTagged()->asExplicit()->asBitString()->string());
             $pub_key_hex_2 = substr($pub_key_hex, 2);
             $hash = Keccak::hash(hex2bin($pub_key_hex_2), 256);
