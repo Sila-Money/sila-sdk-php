@@ -573,6 +573,29 @@ class SilaApi
 
     /**
      * Adds another "wallet"/blockchain address to a user handle.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey An already registered wallet private key of the user
+     * @param string $walletPrivateKey The new wallet's private key
+     * @param Wallet $wallet The information of the new wallet (address, nickname, blockchain network)
+     * @return ApiResponse 
+     */
+    public function addWallet(
+        string $userHandle,
+        string $userPrivateKey,
+        string $walletPrivateKey,
+        Wallet $wallet
+    ): ApiResponse {
+        $body = RegisterWalletMessage::fromPrivateKey(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $wallet,
+            $walletPrivateKey
+        );
+        return $this->sendNewWallet($body, $userPrivateKey);
+    }
+
+    /**
+     * Adds another "wallet"/blockchain address to a user handle.
      *
      * @param string $userHandle
      * @param Wallet $wallet
@@ -580,6 +603,7 @@ class SilaApi
      * @param string $userPrivateKey
      * @return ApiResponse
      * @throws Exception
+     * @deprecated Since version 0.2.13-rc-4. Use addWallet instead for an easier implementation.
      */
     public function registerWallet(
         string $userHandle,
@@ -593,14 +617,7 @@ class SilaApi
             $wallet,
             $wallet_verification_signature
         );
-        $path = '/register_wallet';
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
-        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
-        return $this->prepareResponse($response);
+        return $this->sendNewWallet($body, $userPrivateKey);
     }
 
     /**
@@ -1331,6 +1348,18 @@ class SilaApi
     public function getBalanceClient(): ApiClient
     {
         return $this->configuration->getBalanceClient();
+    }
+
+    private function sendNewWallet(RegisterWalletMessage $body, string $userPrivateKey): ApiResponse
+    {
+        $path = '/register_wallet';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     /**

@@ -46,6 +46,28 @@ class RegisterWalletTest extends TestCase
         $this->assertEquals("new_wallet", $response->getData()->wallet_nickname);
     }
 
+    public function testRegisterWallet200WithPrivateKey()
+    {
+        $newWallet = self::$config->api->generateWallet();
+        $wallet = new Wallet(
+            $newWallet->getAddress(),
+            "ETH",
+            "new_pk_wallet"
+        );
+
+        $response = self::$config->api->addWallet(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $newWallet->getPrivateKey(),
+            $wallet
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertIsString($response->getData()->reference);
+        $this->assertIsString($response->getData()->message);
+        $this->assertEquals("new_pk_wallet", $response->getData()->wallet_nickname);
+    }
+
     public function testRegisterWallet400()
     {
         $wallet = new Wallet(
@@ -68,7 +90,23 @@ class RegisterWalletTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString('Bad request', $response->getData()->message);
-        $this->assertTrue($response->getData()->validation_details != null);
+        $this->assertNotNull($response->getData()->validation_details);
+    }
+
+    public function testRegisterWallet400EmptyPrivateKey()
+    {
+        $wallet = new Wallet("", "", "");
+
+        $response = self::$config->api->addWallet(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            "",
+            $wallet
+        );
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertNotNull($response->getData()->validation_details);
     }
 
     public function testRegisterWallet403()
