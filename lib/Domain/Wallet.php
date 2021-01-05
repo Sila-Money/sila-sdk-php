@@ -51,4 +51,9 @@ class Wallet
         $this->blockchain_network = $blockchain_network;
         $this->nickname = $nickname;
     }
+
+    public function getBlockchainAddress(): string
+    {
+        return $this->blockchain_address;
+    }
 }

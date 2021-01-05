@@ -9,6 +9,7 @@ namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
 use Respect\Validation\Validator as v;
+use Silamoney\Client\Security\EcdsaUtil;
 
 /**
  * Register Wallet Message
@@ -54,6 +55,19 @@ class RegisterWalletMessage implements ValidInterface
         $this->wallet = $wallet;
         $this->wallet_verification_signature = $wallet_verification_signature;
         $this->header = new Header($appHandle, $userHandle);
+    }
+
+    public static function fromPrivateKey(
+        string $userHandle,
+        string $appHandle,
+        Wallet $wallet,
+        string $walletPrivateKey
+    ): RegisterWalletMessage {
+        $walletVerificationSignature = '';
+        if ($wallet->getBlockchainAddress() && $walletPrivateKey) {
+            $walletVerificationSignature = EcdsaUtil::sign($wallet->getBlockchainAddress(), $walletPrivateKey);
+        }
+        return new RegisterWalletMessage($userHandle, $appHandle, $wallet, $walletVerificationSignature);
     }
 
     public function isValid(): bool
