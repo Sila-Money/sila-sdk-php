@@ -151,7 +151,7 @@ class DefaultConfig
     /**
      * @var string
      */
-    public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
+    public const VALID_BUSINESS_UUID = 'ec5d1366-b56c-4442-b6c3-c919d548fcb5';
 
     /**
      * @var string
@@ -209,7 +209,9 @@ class DefaultConfig
             'you@awesomedomain.com',
             '123452222',
             $wallet->getAddress(),
-            $birthDate
+            $birthDate,
+            'fingerprint',
+            true
         );
     }
 

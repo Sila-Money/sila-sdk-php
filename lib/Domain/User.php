@@ -38,6 +38,12 @@ class User extends BaseUser
     private $birthdate;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+     private $deviceFingerprint;
+
+    /**
      * Constructor for user object
      * @param string $handle
      * @param string $firstName
@@ -52,6 +58,9 @@ class User extends BaseUser
      * @param string|null $identityNumber
      * @param string $cryptoAddress
      * @param DateTime $birthdate
+     * @param string|null deviceFingerprint
+     * @param bool smsOptIn
+     * @return \Silamoney\Client\Domain\User
      */
     public function __construct(
         string $handle,
@@ -66,7 +75,9 @@ class User extends BaseUser
         ?string $email = null,
         ?string $identityNumber = null,
         string $cryptoAddress,
-        DateTime $birthdate
+        DateTime $birthdate,
+        ?string $deviceFingerprint = null,
+        bool $smsOptIn = false
     ) {
         parent::__construct(
             $handle,
@@ -78,11 +89,13 @@ class User extends BaseUser
             $phone,
             $email,
             $identityNumber,
-            $cryptoAddress
+            $cryptoAddress,
+            $smsOptIn
         );
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->birthdate = $birthdate;
+        $this->deviceFingerprint = $deviceFingerprint;
     }
 
     /**
@@ -111,4 +124,13 @@ class User extends BaseUser
     {
         return $this->birthdate;
     }
+
+    /**
+     * Gets the user device fingerprint.
+     * @return string
+     */
+     public function getDeviceFingerprint(): string
+     {
+         return $this->deviceFingerprint;
+     }
 }

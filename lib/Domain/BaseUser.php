@@ -79,6 +79,12 @@ class BaseUser
     protected $cryptoAddress;
 
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     protected $smsOptIn;
+
+    /**
      * @param string $handle
      * @param string|null $address
      * @param string|null $address2
@@ -101,7 +107,8 @@ class BaseUser
         ?string $phone = null,
         ?string $email = null,
         ?string $identityNumber = null,
-        string $cryptoAddress
+        string $cryptoAddress,
+        bool $smsOptIn = false
     ) {
         $this->handle = $handle;
         $this->address = $address;
@@ -113,6 +120,7 @@ class BaseUser
         $this->email = $email;
         $this->identityNumber = $identityNumber;
         $this->cryptoAddress = $cryptoAddress;
+        $this->smsOptIn = $smsOptIn;
     }
 
     /**
