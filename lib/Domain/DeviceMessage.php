@@ -22,7 +22,7 @@ class DeviceMessage extends RegistrationDataBaseMessage
      * @var string
      * @Type("string")
      */
-    private $device;
+    private $deviceAlias;
 
     /**
      * @var string
@@ -41,7 +41,7 @@ class DeviceMessage extends RegistrationDataBaseMessage
     public function __construct(string $appHandle, string $userHandle, ?string $device = null, ?string $deviceFingerprint = null, ?string $uuid = null)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
-        $this->device = $device;
+        $this->deviceAlias = $deviceAlias;
         $this->deviceFingerprint = $deviceFingerprint;
     }
 }
