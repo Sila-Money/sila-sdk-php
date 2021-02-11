@@ -37,7 +37,7 @@ class PhoneMessage extends RegistrationDataBaseMessage
      * @param string|null $phone
      * @param string|null $uuid
      * @param bool $smsOptIn
-     * @return \Silamoney\Client\Domain\AddPhoneMessage
+     * @return \Silamoney\Client\Domain\PhoneMessage
      */
     public function __construct(string $appHandle, string $userHandle, ?string $phone = null, ?string $uuid = null, $smsOptIn = false)
     {
