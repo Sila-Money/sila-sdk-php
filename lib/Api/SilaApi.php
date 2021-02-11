@@ -984,11 +984,12 @@ class SilaApi
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
      * @param string $phone The new phone
+     * @param bool $smsOptIn If is enabled SMS Opt-In
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
+    public function addPhone(string $userHandle, string $userPrivateKey, string $phone, bool $smsOptIn = false): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone);
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, null, $smsOptIn);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
     }
 
