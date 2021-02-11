@@ -117,7 +117,7 @@ class BaseUser
         ?string $identityNumber = null,
         string $cryptoAddress,
         ?string $deviceFingerprint = null,
-        bool $smsOptIn = false
+        ?bool $smsOptIn = false
     ) {
         $this->handle = $handle;
         $this->address = $address;
