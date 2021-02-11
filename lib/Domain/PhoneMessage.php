@@ -35,11 +35,11 @@ class PhoneMessage extends RegistrationDataBaseMessage
      * @param string $appHandle
      * @param string $userHandle
      * @param string|null $phone
-     * @param string|null $uuid
      * @param bool $smsOptIn
+     * @param string|null $uuid
      * @return \Silamoney\Client\Domain\PhoneMessage
      */
-    public function __construct(string $appHandle, string $userHandle, ?string $phone = null, ?string $uuid = null, $smsOptIn = false)
+    public function __construct(string $appHandle, string $userHandle, ?string $phone = null, $smsOptIn = false, ?string $uuid = null,)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->phone = $phone;

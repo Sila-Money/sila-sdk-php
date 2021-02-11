@@ -990,7 +990,7 @@ class SilaApi
      */
     public function addPhone(string $userHandle, string $userPrivateKey, string $phone, bool $smsOptIn = false): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, null, $smsOptIn);
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $smsOptIn);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
     }
 
@@ -1004,7 +1004,7 @@ class SilaApi
      */
     public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null, bool $smsOptIn = false): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid, $smsOptIn);
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $smsOptIn, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
     }
 
@@ -1130,7 +1130,7 @@ class SilaApi
      */
      public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint): ApiResponse
      {
-         $body = new DeviceMessage($this->configuration->getAuthHandle(), $userHandle, $deviceAlias, $deviceFingerprint);
+         $body = new DeviceMessage($this->configuration->getAuthHandle(), $userHandle, $device, $deviceFingerprint);
          return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
      }
 
