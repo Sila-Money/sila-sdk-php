@@ -37,6 +37,8 @@ class RegisterBusinessTest extends TestCase
 
     public function testRegisterBusiness200()
     {
+        DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
         $user = new BusinessUser(
             DefaultConfig::$businessUserHandle,
             'Digital Geko',
@@ -49,8 +51,11 @@ class RegisterBusinessTest extends TestCase
             'you@awesomedomain.com',
             '12-3456789',
             DefaultConfig::$businessUserWallet->getAddress(),
-            DefaultConfig::$naicsCode,
-            DefaultConfig::$businessType
+            // DefaultConfig::$naicsCode,
+            5415,
+            // DefaultConfig::$businessType
+            'Corporation',
+            true
         );
         $response = self::$config->api->registerBusiness($user);
         $this->assertEquals(200, $response->getStatusCode());
