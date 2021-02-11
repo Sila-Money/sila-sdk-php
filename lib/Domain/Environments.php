@@ -21,7 +21,9 @@ class Environments extends Enum
     /**
      * Sila sandbox environment.
      */
-    public const SANDBOX = 'https://sandbox.silamoney.com';
+    public const SANDBOX = 'https://stageapi.silamoney.com/0.2.1';
+    
+    // public const SANDBOX = 'https://sandbox.silamoney.com';
     /**
      * Sila production environment.
      */
