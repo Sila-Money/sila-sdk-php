@@ -54,6 +54,7 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
+    DeviceMessage,
     DocumentMessage,
     EmailMessage,
     EntityUpdateMessage,
@@ -1121,6 +1122,19 @@ class SilaApi
     }
 
     /**
+     * Add a new device to a registered entity.
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $device The new device
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+     public function addDevice(string $userHandle, string $userPrivateKey, string $device, string $deviceFingerprint): ApiResponse
+     {
+         $body = new DeviceMessage($this->configuration->getAuthHandle(), $userHandle, $device, $deviceFingerprint);
+         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
+     }
+
+    /**
      * Update a registered individual entity
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
@@ -1365,13 +1379,14 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\DeviceMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
     {
         switch (get_class($body)) {
             case EmailMessage::class:
+            case DeviceMessage::class:
             case PhoneMessage::class:
             case IdentityMessage::class:
             case AddressMessage::class:
@@ -1379,7 +1394,7 @@ class SilaApi
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . EmailMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
+                    . EmailMessage::class . ', ' . DeviceMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
                     . ', ' . AddressMessage::class . ', ' . EntityUpdateMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";
