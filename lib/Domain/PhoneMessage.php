@@ -25,16 +25,24 @@ class PhoneMessage extends RegistrationDataBaseMessage
     private $phone;
 
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     private $smsOptIn;
+
+    /**
      * Constructor for Add Phone Message object.
      * @param string $appHandle
      * @param string $userHandle
      * @param string|null $phone
      * @param string|null $uuid
+     * @param bool $smsOptIn
      * @return \Silamoney\Client\Domain\AddPhoneMessage
      */
-    public function __construct(string $appHandle, string $userHandle, ?string $phone = null, ?string $uuid = null)
+    public function __construct(string $appHandle, string $userHandle, ?string $phone = null, ?string $uuid = null, $smsOptIn = false)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->phone = $phone;
+        $this->smsOptIn = $smsOptIn;
     }
 }

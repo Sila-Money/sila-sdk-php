@@ -73,10 +73,13 @@ class UpdateRegistrationDataTest extends TestCase
 
     public function testUpdatePhone200()
     {
+        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
+        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
+        $uuid = '1707d141-7027-432a-acb9-8e2a1df48e35';
         $response = self::$config->api->updatePhone(
             DefaultConfig::$firstUserHandle,
-            DefaultConfig::$firstUserWallet->getPrivateKey(),
-            DefaultConfig::$registrationDataUuids[5],
+            $firstUserWalletPrivateKey,
+            $uuid,
             '9876543210'
         );
         $this->assertEquals(200, $response->getStatusCode());

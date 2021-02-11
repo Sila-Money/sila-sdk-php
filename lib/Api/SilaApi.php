@@ -1000,9 +1000,9 @@ class SilaApi
      * @param string $phone The new phone
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null): ApiResponse
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null, bool $smsOptIn = false): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid);
+        $body = new PhoneMessage($this->configuration->getAuthHandle(), $userHandle, $phone, $uuid, $smsOptIn);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
     }
 
