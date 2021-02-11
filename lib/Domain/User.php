@@ -71,7 +71,7 @@ class User extends BaseUser
         string $cryptoAddress,
         DateTime $birthdate,
         ?string $deviceFingerprint = null,
-        bool $smsOptIn = false
+        ?bool $smsOptIn = false
     ) {
         parent::__construct(
             $handle,

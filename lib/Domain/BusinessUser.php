@@ -73,6 +73,7 @@ class BusinessUser extends BaseUser
      * @param string|null $businessTypeUuid
      * @param string|null $doingBusinessAs
      * @param string|null $businessWebsite
+     * @param string|null $deviceFingerprint
      * @param bool $smsOptIn
      * @return \Silamoney\Client\Domain\BusinessUser
      */
@@ -93,7 +94,8 @@ class BusinessUser extends BaseUser
         ?string $businessTypeUuid = null,
         ?string $doingBusinessAs = null,
         ?string $businessWebsite = null,
-        bool $smsOptIn = false
+        ?string $deviceFingerprint = null,
+        ?bool $smsOptIn = false
     ) {
         parent::__construct(
             $handle,
@@ -106,6 +108,7 @@ class BusinessUser extends BaseUser
             $email,
             $identityNumber,
             $cryptoAddress,
+            $deviceFingerprint,
             $smsOptIn
         );
         $this->name = $name;
