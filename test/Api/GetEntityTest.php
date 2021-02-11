@@ -57,6 +57,8 @@ class GetEntityTest extends TestCase
         $this->assertEquals(1, sizeof($response->getData()->emails));
         $this->assertIsArray($response->getData()->phones);
         $this->assertEquals(1, sizeof($response->getData()->phones));
+        $this->assertIsBool($response->getData()->phones[0]->sms_confirmation_requested);
+        $this->assertIsBool($response->getData()->phones[0]->sms_confirmed);
         if ($entityType == DefaultConfig::INDIVIDUAL) {
             $this->assertIsArray($response->getData()->memberships);
             $this->assertEquals($numberOfMemberships, sizeof($response->getData()->memberships));
