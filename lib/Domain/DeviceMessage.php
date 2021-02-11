@@ -38,7 +38,7 @@ class DeviceMessage extends RegistrationDataBaseMessage
      * @param string|null $uuid
      * @return \Silamoney\Client\Domain\AddDeviceMessage
      */
-    public function __construct(string $appHandle, string $userHandle, ?string $device = null, ?string $deviceFingerprint = null, ?string $uuid = null)
+    public function __construct(string $appHandle, string $userHandle, ?string $deviceAlias = null, ?string $deviceFingerprint = null, ?string $uuid = null)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->deviceAlias = $deviceAlias;
