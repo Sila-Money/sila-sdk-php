@@ -45,6 +45,8 @@ use Silamoney\Client\Domain\{
     Message,
     PlaidSamedayAuthMessage,
     PlaidSamedayAuthResponse,
+    PlaidLinkTokenMessage,
+    PlaidLinkTokenResponse,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
@@ -321,6 +323,31 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, DeleteAccountResponse::class);
+    }
+
+    /**
+     * Generate Plaid link token.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     */
+     public function plaidLinkToken(
+        string $userHandle,
+        string $userPrivateKey
+    ): ApiResponse {
+        $body = new PlaidLinkTokenMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle()
+        );
+        $path = "/plaid_link_token";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, PlaidLinkTokenResponse::class);
     }
 
     /**
