@@ -39,7 +39,9 @@ use Silamoney\Client\Domain\{
     GetTransactionsResponse,
     HeaderMessage,
     LinkAccountMessage,
+    DeleteAccountMessage,
     LinkAccountResponse,
+    DeleteAccountResponse,
     Message,
     PlaidSamedayAuthMessage,
     PlaidSamedayAuthResponse,
@@ -291,6 +293,34 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, LinkAccountResponse::class);
+    }
+
+    /**
+     * Uses an account name to delete a bank account from an entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string|null $accountName
+     * @return ApiResponse
+     */
+    public function deleteAccount(
+        string $userHandle,
+        string $userPrivateKey,
+        string $accountName = null
+    ): ApiResponse {
+        $body = new DeleteAccountMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $accountName,
+        );
+        $path = "/delete_account";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, DeleteAccountResponse::class);
     }
 
     /**
