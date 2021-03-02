@@ -502,14 +502,13 @@ class SilaApi
      * @throws ClientException
      * @throws Exception
      */
-    public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey): ApiResponse
+    public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey = null): ApiResponse
     {
         $body = new GetTransactionsMessage($userHandle, $this->configuration->getAuthHandle(), $filters);
         $path = '/get_transactions';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetTransactionsResponse::class);
