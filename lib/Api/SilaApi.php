@@ -302,13 +302,13 @@ class SilaApi
      *
      * @param string $userHandle
      * @param string $userPrivateKey
-     * @param string|null $accountName
+     * @param string $accountName
      * @return ApiResponse
      */
     public function deleteAccount(
         string $userHandle,
         string $userPrivateKey,
-        string $accountName = null
+        string $accountName
     ): ApiResponse {
         $body = new DeleteAccountMessage(
             $userHandle,
