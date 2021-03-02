@@ -307,7 +307,6 @@ class SilaApi
      */
     public function deleteAccount(
         string $userHandle,
-        string $userPrivateKey,
         string $accountName
     ): ApiResponse {
         $body = new DeleteAccountMessage(
@@ -318,8 +317,7 @@ class SilaApi
         $path = "/delete_account";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, DeleteAccountResponse::class);

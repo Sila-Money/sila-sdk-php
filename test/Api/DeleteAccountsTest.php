@@ -33,11 +33,9 @@ class DeleteAccountsTest extends TestCase
     public function testDeleteAccounts200Success(): void
     {
         DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey,
-            'default'
+            'account name'
         );
         var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -47,7 +45,6 @@ class DeleteAccountsTest extends TestCase
     public function testDeleteAccounts400(): void
     {
         DefaultConfig::$firstUserHandle = '';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
             $firstUserWalletPrivateKey,
@@ -60,7 +57,6 @@ class DeleteAccountsTest extends TestCase
     public function testDeleteAccounts403(): void
     {
         DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
             $firstUserWalletPrivateKey,
