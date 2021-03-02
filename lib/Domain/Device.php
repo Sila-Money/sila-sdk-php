@@ -39,7 +39,7 @@ class Device implements ValidInterface
      * @param \Silamoney\Client\Domain\BaseUser $user
      * @return \Silamoney\Client\Domain\Device
      */
-    public function __construct(BaseUser $user, string $deviceAlias)
+    public function __construct(BaseUser $user, string $deviceAlias = 'Default')
     {
         $this->deviceAlias = $deviceAlias;
         $this->deviceFingerprint = $user->getDeviceFingerprint();

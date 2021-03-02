@@ -554,7 +554,7 @@ class SilaApi
      *
      * @param string $userHandle
      * @param \Silamoney\Client\Domain\SearchFilters $filters
-     * @param string $userPrivateKey
+     * @param string|null $userPrivateKey
      * @return ApiResponse
      * @throws ClientException
      * @throws Exception
@@ -568,7 +568,7 @@ class SilaApi
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, GetTransactionsResponse::class);
+        return $this->prepareResponse($response);
     }
 
     /**
