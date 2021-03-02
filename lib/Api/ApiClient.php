@@ -30,6 +30,8 @@ class ApiClient
 
     private const BASE_URI = 'base_uri';
 
+    private const USER_AGENT = 'SilaSDK-php / 0.2.19';
+
     /**
      * Api Client constructor
      * @param string $basePath
@@ -51,6 +53,7 @@ class ApiClient
      */
     public function callAPI(string $url, string $data, array $headers): Response
     {
+        $headers['User-Agent'] = ApiClient::USER_AGENT;
         try {
             return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
