@@ -35,7 +35,7 @@ class HeaderBase implements ValidInterface
      * @var string
      * @Type("string")
      */
-    protected $authHandle;
+    protected $appHandle;
 
     /**
      * Constructor for header object.
@@ -45,7 +45,7 @@ class HeaderBase implements ValidInterface
      */
     public function __construct(string $appHandle, string $userHandle = null)
     {
-        $this->authHandle = $appHandle;
+        $this->appHandle = $appHandle;
         $this->userHandle = $userHandle;
         $this->created = time() - 100;
     }
@@ -53,7 +53,7 @@ class HeaderBase implements ValidInterface
     public function isValid(): bool
     {
         $notEmptyString = v::stringType()->notEmpty();
-        return $notEmptyString->validate($this->authHandle)
+        return $notEmptyString->validate($this->appHandle)
             && $notEmptyString->validate($this->userHandle)
             && v::intType()->positive()->validate($this->created);
     }
