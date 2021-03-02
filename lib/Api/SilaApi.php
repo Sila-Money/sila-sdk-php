@@ -333,8 +333,7 @@ class SilaApi
      * @return ApiResponse
      */
      public function plaidLinkToken(
-        string $userHandle,
-        string $userPrivateKey
+        string $userHandle
     ): ApiResponse {
         $body = new PlaidLinkTokenMessage(
             $userHandle,
@@ -343,8 +342,7 @@ class SilaApi
         $path = "/plaid_link_token";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, PlaidLinkTokenResponse::class);
@@ -568,7 +566,7 @@ class SilaApi
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response);
+        return $this->prepareResponse($response, GetTransactionsResponse::class);
     }
 
     /**
