@@ -108,7 +108,13 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $account_type;     
+    private $account_type;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+     private $bankAccountName;
 
     public function isValid(): bool
     {
@@ -126,7 +132,8 @@ class SearchFilters implements ValidInterface
             && ($this->showTimelines === null || v::boolType()->validate($this->showTimelines))
             && ($this->account_number === null || v::stringType()->notEmpty()->validate($this->account_number))
             && ($this->routing_number === null || v::stringType()->notEmpty()->validate($this->routing_number))
-            && ($this->account_type === null || v::stringType()->notEmpty()->validate($this->account_type));
+            && ($this->account_type === null || v::stringType()->notEmpty()->validate($this->account_type))
+            && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName));
     }
 
     /**
@@ -315,5 +322,17 @@ class SearchFilters implements ValidInterface
     {
         $this->account_type = $account_type;
         return $this;
-    }    
+    }
+    
+    /**
+     * Sets the bankAccountName to the filters.
+     *
+     * @param int $bankAccountName
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+     public function setBankAccountName(string $bankAccountName): SearchFilters
+     {
+         $this->bankAccountName = $bankAccountName;
+         return $this;
+     }
 }
