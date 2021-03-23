@@ -39,8 +39,10 @@ use Silamoney\Client\Domain\{
     GetTransactionsResponse,
     HeaderMessage,
     LinkAccountMessage,
+    UpdateAccountMessage,
     DeleteAccountMessage,
     LinkAccountResponse,
+    UpdateAccountResponse,
     DeleteAccountResponse,
     Message,
     PlaidSamedayAuthMessage,
@@ -295,6 +297,37 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, LinkAccountResponse::class);
+    }
+
+    /**
+     * Uses an account name to update said name from an entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $accountName
+     * @param string $newAccountName
+     * @return ApiResponse
+     */
+    public function updateAccount(
+        string $userHandle,
+        string $userPrivateKey,
+        string $accountName,
+        string $newAccountName
+    ): ApiResponse {
+        $body = new UpdateAccountMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $accountName,
+            $newAccountName
+        );
+        $path = "/update_account";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, UpdateAccountResponse::class);
     }
 
     /**
