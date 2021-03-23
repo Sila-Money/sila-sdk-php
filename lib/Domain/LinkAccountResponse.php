@@ -44,6 +44,12 @@ class LinkAccountResponse
     private $accountName;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+     private $accountOwnerName;
+
+    /**
      * @var float
      * @Type("float")
      */
@@ -71,6 +77,11 @@ class LinkAccountResponse
     public function getAccountName(): string
     {
         return $this->accountName;
+    }
+
+    public function getAccountOwnerName(): string
+    {
+        return $this->accountOwnerName;
     }
 
     public function getMatchCode(): float
