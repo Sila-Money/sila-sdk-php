@@ -27,6 +27,8 @@ use Silamoney\Client\Domain\{
     BusinessUser,
     CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
+    CheckPartnerKYCMessage,
+    CheckPartnerKYCResponse,
     Country,
     DeleteRegistrationMessage,
     OperationResponse,
@@ -123,12 +125,12 @@ class SilaApi
      *
      * @var string
      */
-    private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
+    private const DEFAULT_ENVIRONMENT = Environments::PRODUCTION;
 
     /**
      * @var string
      */
-    private const DEFAULT_BALANCE_ENVIRONMENT = BalanceEnvironments::SANDBOX;
+    private const DEFAULT_BALANCE_ENVIRONMENT = BalanceEnvironments::PRODUCTION;
 
     /**
      * Constructor for Sila Api using custom environment.
@@ -328,6 +330,34 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, UpdateAccountResponse::class);
+    }
+
+    /**
+     * Verify KYC status of an entity in other application.
+     *
+     * @param string $userHandle
+     * @param string $queryAppHandle
+     * @param string $queryUserHandle
+     * @return ApiResponse
+     */
+     public function checkPartnerKYC(
+        string $userHandle,
+        string $queryAppHandle,
+        string $queryUserHandle
+    ): ApiResponse {
+        $body = new CheckPartnerKYCMessage(
+            $userHandle,
+            $this->configuration->getAuthHandle(),
+            $queryAppHandle,
+            $queryUserHandle
+        );
+        $path = "/check_partner_kyc";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, CheckPartnerKYCResponse::class);
     }
 
     /**
