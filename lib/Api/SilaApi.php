@@ -357,7 +357,7 @@ class SilaApi
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, CheckPartnerKYCResponse::class);
+        return $this->prepareResponse($response);
     }
 
     /**
