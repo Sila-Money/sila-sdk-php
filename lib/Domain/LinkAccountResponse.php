@@ -20,6 +20,12 @@ use JMS\Serializer\Annotation\Type;
 class LinkAccountResponse
 {
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
      * @var string
      * @Type("string")
      */
@@ -49,11 +55,23 @@ class LinkAccountResponse
      */
      private $accountOwnerName;
 
+     /**
+     * @var string
+     * @Type("string")
+     */
+     private $entityName;
+
     /**
      * @var float
      * @Type("float")
      */
     private $matchCode;
+
+    /**
+     * @var float
+     * @Type("float")
+     */
+     private $matchScore;
 
     /**
      * Gets the response status.
@@ -84,9 +102,19 @@ class LinkAccountResponse
         return $this->accountOwnerName;
     }
 
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
     public function getMatchCode(): float
     {
         return $this->matchCode;
+    }
+
+    public function getMatchScore(): float
+    {
+        return $this->matchScore;
     }
 
     /**
@@ -95,6 +123,6 @@ class LinkAccountResponse
      */
     public function getSuccess(): bool
     {
-        return $this->status == 'SUCCESS';
+        return $this->success;
     }
 }
