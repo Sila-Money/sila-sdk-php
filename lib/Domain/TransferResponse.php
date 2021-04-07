@@ -19,6 +19,12 @@ use JMS\Serializer\Annotation\Type;
 class TransferResponse extends OperationResponse
 {
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
      * @var string
      * @Type("string")
      */
@@ -27,5 +33,10 @@ class TransferResponse extends OperationResponse
     public function getDestinationAddress(): string
     {
         return $this->destinationAddress;
+    }
+
+    public function getSuccess(): bool
+    {
+        return $this->success;
     }
 }
