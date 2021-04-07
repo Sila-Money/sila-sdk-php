@@ -27,6 +27,7 @@ use Silamoney\Client\Domain\{
     BusinessUser,
     CancelTransactionMessage,
     CertifyBeneficialOwnerMessage,
+    CheckHandleResponse,
     CheckPartnerKYCMessage,
     CheckPartnerKYCResponse,
     Country,
@@ -195,7 +196,7 @@ class SilaApi
             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareBaseResponse($response, CheckHandleResponse::class);
     }
 
     /**
