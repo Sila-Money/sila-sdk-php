@@ -76,6 +76,7 @@ use Silamoney\Client\Domain\{
     LinkBusinessMemberMessage,
     ListDocumentsMessage,
     PhoneMessage,
+    RegisterResponse,
     RegistrationDataOperation,
     RegistrationDataType,
     TransferResponse,
@@ -215,7 +216,7 @@ class SilaApi
             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
+        return $this->prepareBaseResponse($response, RegisterResponse::class);
     }
 
     /**
