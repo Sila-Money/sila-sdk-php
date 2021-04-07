@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\Annotation\Type;
+use Pagination;
 
 /**
  * Get Transactions Reponse
@@ -53,14 +54,36 @@ class GetTransactionsResponse
      * @Type("array<Silamoney\Client\Domain\Transaction>")
      */
     public $transactions;
+    /**
+     * Pagination.
+     * @var Silamoney\Client\Domain\Pagination
+     * @Type("Silamoney\Client\Domain\Pagination")
+     */
+    public $pagination;
 
     /**
      * Checks to see if the request was successful
      * @return bool
      */
-    public function getSuccess()
+    public function getSuccess(): bool
     {
         return $this->success;
+    }
+
+    /**
+     * @return string
+     */
+     public function getStatus(): string
+     {
+         return $this->status;
+     }
+
+     /**
+     * @return Silamoney\Client\Domain\Pagination
+     */
+    public function getPagination(): Simanoney\Client\Domain\Pagination
+    {
+        return $this->pagination;
     }
 
     public function getTransactionById($id)
