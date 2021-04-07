@@ -20,6 +20,12 @@ use JMS\Serializer\Annotation\Type;
 class DeleteAccountResponse
 {
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     public $success;
+     
+    /**
      * @var string
      * @Type("string")
      */
@@ -84,6 +90,6 @@ class DeleteAccountResponse
      */
     public function getSuccess(): bool
     {
-        return $this->status == 'SUCCESS';
+        return $this->success;
     }
 }
