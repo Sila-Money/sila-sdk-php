@@ -20,6 +20,13 @@ use Respect\Validation\Validator as v;
 class PlaidSamedayAuthResponse
 {
     /**
+     * Success
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
      * Public Token
      * @var string
      * @Type("string")
@@ -66,4 +73,13 @@ class PlaidSamedayAuthResponse
     {
         return $this->status;
     }
+
+    /**
+     * Gets the response success.
+     * @return bool
+     */
+     public function getSuccess(): bool
+     {
+         return $this->success;
+     }
 }
