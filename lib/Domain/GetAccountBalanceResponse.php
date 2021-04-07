@@ -25,6 +25,12 @@ class GetAccountBalanceResponse
     public $success;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+     private $status;
+
+    /**
      * @var float
      * @Type("float")
      */
