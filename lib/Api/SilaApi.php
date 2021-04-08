@@ -52,6 +52,8 @@ use Silamoney\Client\Domain\{
     PlaidSamedayAuthResponse,
     PlaidLinkTokenMessage,
     PlaidLinkTokenResponse,
+    PlaidUpdateLinkTokenMessage,
+    PlaidUpdateLinkTokenResponse,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
@@ -218,6 +220,27 @@ class SilaApi
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareBaseResponse($response, RegisterResponse::class);
     }
+
+    /**
+     * Updates the Plaid link token when re-authentication is needed.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+     public function plaidUpdateLinkToken(string $userHandle, string $userPrivateKey, string $accountName): ApiResponse
+     {
+        $body = new PlaidUpdateLinkTokenMessage($userHandle, $this->configuration->getAuthHandle(), $accountName);
+        $path = "/plaid_update_link_token";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareBaseResponse($response, PlaidUpdateLinkTokenResponse::class);
+     }
 
     /**
      * Starts KYC verification process on a registered user handle.
