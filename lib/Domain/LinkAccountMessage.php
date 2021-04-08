@@ -23,7 +23,7 @@ class LinkAccountMessage implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $publicToken;
+    private $plaidToken;
 
     /**
      * @var string
@@ -49,55 +49,64 @@ class LinkAccountMessage implements ValidInterface
      */
     private $message;
 
-    // Support for account_number, routing_number and account_type
+    // Support for accountNumber, routingNumber and accountType
     /**
      * @var string
      * @Type("string")
      */
-    private $account_number;
+    private $accountNumber;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $routing_number;
+    private $routingNumber;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $account_type;
+    private $accountType;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+     private $plaidTokenType;
 
     /**
      * Constructor for LinkAccountMessage object.
      *
      * @param string $userHandle
      * @param string $accountName
-     * @param string $publicToken
+     * @param string $plaidToken
      * @param string $appHandle
      * @param string $selectedAccountId
-     * @param string $account_number
-     * @param string $routing_number
-     * @param string $account_type
+     * @param string $accountNumber
+     * @param string $routingNumber
+     * @param string $accountType
+     * @param string $plaidTokenType
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
         string $accountName = null,
-        string $publicToken = null,
+        string $plaidToken = null,
         ?string $selectedAccountId = null,
-        ?string $account_number = null,
-        ?string $routing_number = null,
-        ?string $account_type = null
+        ?string $accountNumber = null,
+        ?string $routingNumber = null,
+        ?string $accountType = null,
+        ?PlaidTokenType $plaidTokenType = null
     ) {
-        $this->publicToken = $publicToken;
+        $this->plaidToken = $plaidToken;
         $this->accountName = $accountName;
         $this->selectedAccountId = $selectedAccountId;
-        $this->account_number = $account_number;
-        $this->routing_number = $routing_number;
-        $this->account_type = $account_type;
+        $this->accountNumber = $accountNumber;
+        $this->routingNumber = $routingNumber;
+        $this->accountType = $accountType;
         $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::LINK_ACCOUNT;
+        $this->plaidTokenType = $plaidTokenType;
     }
 
     public function isValid(): bool
@@ -105,7 +114,7 @@ class LinkAccountMessage implements ValidInterface
         return v::notOptional()->validate($this->header)
             && $this->header->isValid()
             && v::stringType()->notEmpty()->validate($this->message)
-            && v::stringType()->notEmpty()->validate($this->publicToken)
+            && v::stringType()->notEmpty()->validate($this->plaidToken)
             && ($this->accountName === null || v::stringType()->validate($this->accountName))
             && ($this->selectedAccountId === null || v::stringType()->validate($this->selectedAccountId));
     }

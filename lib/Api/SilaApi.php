@@ -54,6 +54,7 @@ use Silamoney\Client\Domain\{
     PlaidLinkTokenResponse,
     PlaidUpdateLinkTokenMessage,
     PlaidUpdateLinkTokenResponse,
+    PlaidTokenType,
     SearchFilters,
     SilaBalanceMessage,
     SilaBalanceResponse,
@@ -302,16 +303,18 @@ class SilaApi
     public function linkAccount(
         string $userHandle,
         string $userPrivateKey,
-        string $publicToken,
+        string $plaidToken,
         string $accountName = null,
-        string $accountId = null
+        string $accountId = null,
+        PlaidTokenType $plaidTokenType = null
     ): ApiResponse {
         $body = new LinkAccountMessage(
             $userHandle,
             $this->configuration->getAuthHandle(),
             $accountName,
-            $publicToken,
+            $plaidToken,
             $accountId,
+            null,
             null,
             null,
             null
