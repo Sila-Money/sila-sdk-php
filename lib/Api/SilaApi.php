@@ -317,7 +317,7 @@ class SilaApi
             null,
             null,
             null,
-            null
+            $plaidTokenType
         );
         $path = "/link_account";
         $json = $this->serializer->serialize($body, 'json');
