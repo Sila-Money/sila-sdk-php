@@ -742,7 +742,7 @@ class SilaApi
      * Adds another "wallet"/blockchain address to a user handle.
      *
      * @param string $userHandle
-     * @param Wallet $wallet
+     * @param SilaWallet $wallet
      * @param string $wallet_verification_signature
      * @param string $userPrivateKey
      * @return ApiResponse
@@ -751,7 +751,7 @@ class SilaApi
      */
     public function registerWallet(
         string $userHandle,
-        Wallet $wallet,
+        SilaWallet $wallet,
         string $wallet_verification_signature,
         string $userPrivateKey
     ): ApiResponse {
@@ -1492,11 +1492,13 @@ class SilaApi
      * Create a new SilaWallet
      * @param string|null $privateKey
      * @param string|null $address
+     * @param string|null $blockchainNetwork
+     * @param string|null $nickname
      * @return SilaWallet
      */
-    public function generateWallet($privateKey = null, $address = null): SilaWallet
+    public function generateWallet($privateKey = null, $address = null, $blockchainNetwork = null, $nickname = null): SilaWallet
     {
-        return new SilaWallet($privateKey, $address);
+        return new SilaWallet($privateKey, $address, $blockchainNetwork, $nickname);
     }
 
     /**

@@ -11,6 +11,7 @@ use Respect\Validation\Validator as v;
 use Sop\CryptoTypes\Asymmetric\EC\ECPrivateKey;
 use Sop\CryptoEncoding\PEM;
 use kornrunner\Keccak;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * Entity
@@ -34,9 +35,27 @@ class SilaWallet implements ValidInterface
     private $private_key;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+     private $blockchain_address;
+
+     /**
+      * @var string
+      * @Type("string")
+      */
+     private $blockchain_network;
+ 
+     /**
+      * @var string
+      * @Type("string")
+      */
+     private $nickname;
+
+    /**
      * Constructor for SilaWallet object.
      */
-    public function __construct($private_key, $address)
+    public function __construct($private_key, $address, ?string $blockchain_network = null, ?string $nickname = null)
     {
         if (!$private_key || !$address) {
             $config = [
@@ -64,9 +83,15 @@ class SilaWallet implements ValidInterface
             $wallet_private_key = '0x' . $priv_key_hex;
             $this->address = $wallet_address;
             $this->private_key = $wallet_private_key;
+            $this->blockchain_address = $wallet_address;
+            $this->blockchain_network = $blockchain_network;
+            $this->nickname = $nickname;
         } else {
             $this->address = $address;
             $this->private_key = $private_key;
+            $this->blockchain_address = $address;
+            $this->blockchain_network = $blockchain_network;
+            $this->nickname = $nickname;
         }
     }
 
