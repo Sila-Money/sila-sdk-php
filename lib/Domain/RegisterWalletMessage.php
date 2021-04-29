@@ -27,8 +27,8 @@ class RegisterWalletMessage implements ValidInterface
     private $header;
 
     /**
-     * @var Silamoney\Client\Domain\Wallet
-     * @Type("Silamoney\Client\Domain\Wallet")
+     * @var Silamoney\Client\Domain\SilaWallet
+     * @Type("Silamoney\Client\Domain\SilaWallet")
      */
     private $wallet;
 
@@ -43,13 +43,13 @@ class RegisterWalletMessage implements ValidInterface
      *
      * @param string $userHandle
      * @param string $appHandle
-     * @param Silamoney\Client\Domain\Wallet $wallet
+     * @param Silamoney\Client\Domain\SilaWallet $wallet
      * @param string $wallet_verification_signature
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
-        Wallet $wallet,
+        SilaWallet $wallet,
         string $wallet_verification_signature
     ) {
         $this->wallet = $wallet;
@@ -60,7 +60,7 @@ class RegisterWalletMessage implements ValidInterface
     public static function fromPrivateKey(
         string $userHandle,
         string $appHandle,
-        Wallet $wallet,
+        SilaWallet $wallet,
         string $walletPrivateKey
     ): RegisterWalletMessage {
         $walletVerificationSignature = '';

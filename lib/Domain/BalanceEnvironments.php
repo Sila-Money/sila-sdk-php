@@ -21,9 +21,13 @@ class BalanceEnvironments extends Enum
     /**
      * SilaBalance sandbox environment.
      */
-    public const SANDBOX = 'https://sandbox.silatokenapi.silamoney.com';
+    // public const SANDBOX = 'https://sandbox.silatokenapi.silamoney.com';
+    
+    public const SANDBOX = 'https://sandbox.silamoney.com';
     /**
      * SilaBalance production environment.
      */
-    public const PRODUCTION = 'https://silatokenapi.silamoney.com';
+    // public const PRODUCTION = 'https://silatokenapi.silamoney.com';
+
+    public const PRODUCTION = 'https://stageapi.silamoney.com';
 }

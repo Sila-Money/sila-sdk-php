@@ -37,8 +37,9 @@ class TransferSilaTest extends TestCase
         $response = self::$config->api->transferSila(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$secondUserHandle,
-            1000,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            1,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
@@ -52,7 +53,7 @@ class TransferSilaTest extends TestCase
         $response = self::$config->api->transferSila(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$secondUserHandle,
-            1000,
+            1,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             null,
             null,
@@ -73,7 +74,7 @@ class TransferSilaTest extends TestCase
         $response = self::$config->api->transferSila(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$secondUserHandle,
-            1000,
+            1,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             null,
             null,
@@ -82,7 +83,8 @@ class TransferSilaTest extends TestCase
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
-        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+        // $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+        $this->assertStringContainsString('could not be found', $response->getData()->message);
     }
 
     public function testTransferSila400()
@@ -100,7 +102,7 @@ class TransferSilaTest extends TestCase
         $response = self::$config->api->transferSila(
             DefaultConfig::$firstUserHandle,
             $destination,
-            100,
+            1,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
         $this->assertEquals($response->getStatusCode(), $response->getStatusCode());

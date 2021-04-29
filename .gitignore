@@ -10,3 +10,4 @@ composer.lock
 .rnd
 composer.phar
 response.txt
+.vscode

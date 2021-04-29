@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Link Account Response
+ * Plaid Link Token Response
  * PHP version 7.2
  */
 
@@ -11,13 +11,13 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Link Account Response
- * Object used to map Link Account response.
+ * Plaid Link Token Response
+ * Object used to map Plaid Link Token response.
  * @category Class
  * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class LinkAccountResponse
+class PlaidLinkTokenResponse
 {
     /**
      * @var string
@@ -36,18 +36,6 @@ class LinkAccountResponse
      * @Type("string")
      */
     private $message;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-    private $accountName;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-     private $accountOwnerName;
 
     /**
      * @var float
@@ -72,16 +60,6 @@ class LinkAccountResponse
     public function getMessage(): string
     {
         return $this->message;
-    }
-
-    public function getAccountName(): string
-    {
-        return $this->accountName;
-    }
-
-    public function getAccountOwnerName(): string
-    {
-        return $this->accountOwnerName;
     }
 
     public function getMatchCode(): float

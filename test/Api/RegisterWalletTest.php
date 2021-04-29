@@ -3,7 +3,7 @@
 namespace Silamoney\Client\Api;
 
 use PHPUnit\Framework\TestCase;
-use Silamoney\Client\Domain\Wallet;
+use Silamoney\Client\Domain\SilaWallet;
 use Silamoney\Client\Security\EcdsaUtil;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
@@ -23,18 +23,13 @@ class RegisterWalletTest extends TestCase
 
     public function testRegisterWallet200()
     {
-        DefaultConfig::$wallet = self::$config->api->generateWallet();
-        $wallet = new Wallet(
-            DefaultConfig::$wallet->getAddress(),
-            "ETH",
-            "new_wallet"
-        );
+        DefaultConfig::$wallet = self::$config->api->generateWallet(null, null, 'ETH', "new_wallet");
 
         $wallet_verification_signature = EcdsaUtil::sign(DefaultConfig::$wallet->getAddress(), DefaultConfig::$wallet->getPrivateKey());
 
         $response = self::$config->api->registerWallet(
             DefaultConfig::$firstUserHandle,
-            $wallet,
+            DefaultConfig::$wallet,
             $wallet_verification_signature,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
@@ -48,17 +43,12 @@ class RegisterWalletTest extends TestCase
 
     public function testRegisterWallet200WithPrivateKey()
     {
-        $newWallet = self::$config->api->generateWallet();
-        $wallet = new Wallet(
-            $newWallet->getAddress(),
-            "ETH",
-            "new_pk_wallet"
-        );
+        $wallet = self::$config->api->generateWallet(null, null, 'ETH', 'new_pk_wallet');
 
         $response = self::$config->api->addWallet(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            $newWallet->getPrivateKey(),
+            $wallet->getPrivateKey(),
             $wallet
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -70,32 +60,35 @@ class RegisterWalletTest extends TestCase
 
     public function testRegisterWallet400()
     {
-        $wallet = new Wallet(
-            "0xe60a5c57130f4e82782cbdb498943f31fe8f92ab96daac2cc13cbbbf9c0b4d9e",
+        $wallet = new SilaWallet(
+            'bad_private_key',
+            null,
             "ETH",
             "wallet_test_php"
         );
 
         $wallet_verification_signature = EcdsaUtil::sign(
-            DefaultConfig::$firstUserHandle,
-            DefaultConfig::$secondUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getAddress(),
+            DefaultConfig::$firstUserWallet->getPrivateKey()
         );
 
         $response = self::$config->api->registerWallet(
             DefaultConfig::$firstUserHandle,
-            $wallet,
+            DefaultConfig::$firstUserWallet,
             $wallet_verification_signature,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
-        $this->assertStringContainsString('Bad request', $response->getData()->message);
-        $this->assertNotNull($response->getData()->validation_details);
+        // $this->assertStringContainsString('Bad request', $response->getData()->message);
+        // $this->assertNotNull($response->getData()->validation_details);
+        $this->assertStringContainsString('Please choose a different blockchain address to register.', $response->getData()->message);
+        $this->assertStringContainsString('FAILURE', $response->getData()->status);
     }
 
     public function testRegisterWallet400EmptyPrivateKey()
     {
-        $wallet = new Wallet("", "", "");
+        $wallet = new SilaWallet(null, null);
 
         $response = self::$config->api->addWallet(
             DefaultConfig::$firstUserHandle,
@@ -113,18 +106,13 @@ class RegisterWalletTest extends TestCase
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
 
-        $silaWallet = self::$config->api->generateWallet();
-        $wallet = new Wallet(
-            $silaWallet->getAddress(),
-            "ETH",
-            "wallet_test_php"
-        );
+        $silaWallet = self::$config->api->generateWallet(null, null, 'ETH', 'wallet_test_php');
 
         $wallet_verification_signature = EcdsaUtil::sign($silaWallet->getAddress(), $silaWallet->getPrivateKey());
 
         $response = self::$config->api->registerWallet(
             DefaultConfig::$firstUserHandle,
-            $wallet,
+            $silaWallet,
             $wallet_verification_signature,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );

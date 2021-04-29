@@ -83,12 +83,17 @@ class RegisterTest extends TestCase
 
     public function registerUsersProvider()
     {
+        DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$firstUserWallet = DefaultConfig::generateWallet();
         DefaultConfig::$walletAddressForBalance = DefaultConfig::$firstUserWallet->getAddress();
+        DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
-        DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
+        DefaultConfig::$businessTempAdminHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
+        DefaultConfig::$beneficialUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$beneficialUserWallet = DefaultConfig::generateWallet();
+
+        DefaultConfig::$invalidHandle = 'invalid.silamoney.eth';
         $firstUser = DefaultConfig::generateUser(
             DefaultConfig::$firstUserHandle,
             'First',

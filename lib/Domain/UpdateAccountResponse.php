@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Link Account Response
+ * Delete Account Response
  * PHP version 7.2
  */
 
@@ -11,49 +11,45 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Link Account Response
- * Object used to map Link Account response.
+ * Update Account Response
+ * Object used to map Update Account response.
  * @category Class
  * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class LinkAccountResponse
+class UpdateAccountResponse
 {
     /**
      * @var string
      * @Type("string")
      */
-    private $status;
+    public $status;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $reference;
+    public $reference;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $message;
+    public $message;
 
     /**
-     * @var string
-     * @Type("string")
+     * Transactions list used for the transactions.
+     * @var Silamoney\Client\Domain\Account
+     * @Type("Silamoney\Client\Domain\Account")
      */
-    private $accountName;
-
-    /**
-     * @var string
-     * @Type("string")
+     public $account;
+     
+     /**
+     * Changes list.
+     * @var array<Silamoney\Client\Domain\Change>
+     * @Type("array<Silamoney\Client\Domain\Change>")
      */
-     private $accountOwnerName;
-
-    /**
-     * @var float
-     * @Type("float")
-     */
-    private $matchCode;
+    public $changes;
 
     /**
      * Gets the response status.
@@ -74,19 +70,14 @@ class LinkAccountResponse
         return $this->message;
     }
 
-    public function getAccountName(): string
+    public function getAccount(): Silamoney\Client\Domain\Account
     {
-        return $this->accountName;
+        return $this->account;
     }
 
-    public function getAccountOwnerName(): string
+    public function getChanges()//: array<Silamoney\Client\Domain\Change>
     {
-        return $this->accountOwnerName;
-    }
-
-    public function getMatchCode(): float
-    {
-        return $this->matchCode;
+        return $this->changes;
     }
 
     /**

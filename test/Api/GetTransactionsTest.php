@@ -36,6 +36,7 @@ class GetTransactionsTest extends TestCase
     public function testGetTransactions200()
     {
         $filters = new SearchFilters();
+        $filters->setBankAccountName('default');
         $response = self::$config->api->getTransactions(
             DefaultConfig::$firstUserHandle,
             $filters,

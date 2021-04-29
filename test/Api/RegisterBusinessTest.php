@@ -35,23 +35,12 @@ class RegisterBusinessTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    public function testRegisterBusiness200()
+    /**
+     * @param \Silamoney\Client\Domain\BusinessUser $user
+     * @dataProvider registerBusinessProvider
+     */
+    public function testRegisterBusiness200($user)
     {
-        $user = new BusinessUser(
-            DefaultConfig::$businessUserHandle,
-            'Digital Geko',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            DefaultConfig::$businessUserWallet->getAddress(),
-            DefaultConfig::$naicsCode,
-            DefaultConfig::$businessType
-        );
         $response = self::$config->api->registerBusiness($user);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
@@ -62,6 +51,8 @@ class RegisterBusinessTest extends TestCase
     {
         $handle = DefaultConfig::generateHandle();
         $wallet = DefaultConfig::generateWallet();
+        DefaultConfig::$businessType = 'Corporation';
+        DefaultConfig::$naicsCode = 5415;
         $builder = new BusinessUserBuilder();
         $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
             ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->build();
@@ -119,5 +110,33 @@ class RegisterBusinessTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
+    }
+
+    public function registerBusinessProvider(){
+        DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
+        
+        $businessUser = new BusinessUser(
+            DefaultConfig::$businessUserHandle,
+            'Digital Geko',
+            '350 5th Avenue',
+            null,
+            'New York',
+            'NY',
+            '10118',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '12-3456789',
+            DefaultConfig::$businessUserWallet->getAddress(),
+            // DefaultConfig::$naicsCode,
+            5415,
+            // DefaultConfig::$businessType
+            'Corporation',
+            true
+        );
+
+        return [
+            'register - business user' => [$businessUser]
+        ];
     }
 }

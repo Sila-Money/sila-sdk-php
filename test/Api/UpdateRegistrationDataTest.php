@@ -76,7 +76,7 @@ class UpdateRegistrationDataTest extends TestCase
         $response = self::$config->api->updatePhone(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            DefaultConfig::$registrationDataUuids[5],
+            DefaultConfig::$phoneUuid,
             '9876543210'
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -223,7 +223,7 @@ class UpdateRegistrationDataTest extends TestCase
                 'updateBusinessEntity',
                 DefaultConfig::$businessUserHandle,
                 DefaultConfig::$businessUserWallet->getPrivateKey(),
-                ['Digital Geko', DateTime::createFromFormat('m/d/Y', '1/8/2009'), 'corporation', 721, 'Geko', 'https://digitalgeko.com']
+                ['Digital Geko', DateTime::createFromFormat('m/d/Y', '1/8/2001'), 'corporation', 721, 'Geko', 'https://digitalgeko.com']
             ]
         ];
     }
@@ -232,7 +232,7 @@ class UpdateRegistrationDataTest extends TestCase
     {
         return [
             'update email - 400' => ['updateEmail', ['', '']],
-            'update phone - 400' => ['updatePhone', ['', '']],
+            'update phone - 400' => ['updatePhone', ['', '', '']],
             'update identity - 400' => ['updateIdentity', ['', IdentityAlias::SSN(), '']],
             'update address - 400' => ['updateAddress', ['', '', '', '', '', Country::US(), '']],
             'update entity - 400' => ['updateEntity', ['']]
@@ -243,7 +243,7 @@ class UpdateRegistrationDataTest extends TestCase
     {
         return [
             'update email - 403' => ['updateEmail', ['', 'some.signature.email@domain.com']],
-            'update phone - 403' => ['updatePhone', ['', '1234567890']],
+            'update phone - 403' => ['updatePhone', ['', '1234567890', '']],
             'update identity - 403' => ['updateIdentity', ['', IdentityAlias::SSN(), '543212222']],
             'update address - 403' => ['updateAddress', ['', 'new_address', '123 Main St', 'Anytown', 'NY', Country::US(), '12345']],
             'update entity - 403' => ['updateEntity', []]

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Link Account Response
+ * Check Partner KYC Response
  * PHP version 7.2
  */
 
@@ -11,49 +11,49 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Link Account Response
- * Object used to map Link Account response.
+ * Check Partner KYC Response
+ * Object used to map Check Partner KYC response.
  * @category Class
  * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class LinkAccountResponse
+class CheckPartnerKYCResponse
 {
     /**
      * @var string
      * @Type("string")
      */
-    private $status;
+    public $status;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $reference;
+    public $reference;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $message;
+    public $message;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $accountName;
+    public $entityType;
 
     /**
      * @var string
      * @Type("string")
      */
-     private $accountOwnerName;
+    public $verificationStatus;
 
     /**
-     * @var float
-     * @Type("float")
+     * @var array
+     * @Type("array<string, string>")
      */
-    private $matchCode;
+    public $validKycLevels;
 
     /**
      * Gets the response status.
@@ -74,19 +74,19 @@ class LinkAccountResponse
         return $this->message;
     }
 
-    public function getAccountName(): string
+    public function getEntityType(): string
     {
-        return $this->accountName;
+        return $this->entityType;
     }
 
-    public function getAccountOwnerName(): string
+    public function getVerificationStatus(): string
     {
-        return $this->accountOwnerName;
+        return $this->verificationStatus;
     }
 
-    public function getMatchCode(): float
+    public function getValidKycLevels(): string
     {
-        return $this->matchCode;
+        return $this->validKycLevels;
     }
 
     /**

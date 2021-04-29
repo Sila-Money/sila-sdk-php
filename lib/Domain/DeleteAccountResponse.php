@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Link Account Response
+ * Delete Account Response
  * PHP version 7.2
  */
 
@@ -11,13 +11,13 @@ use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Link Account Response
- * Object used to map Link Account response.
+ * Delete Account Response
+ * Object used to map Delete Account response.
  * @category Class
  * @package  Silamoney\Client
- * @author   José Morales <jmorales@digitalgeko.com>
+ * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class LinkAccountResponse
+class DeleteAccountResponse
 {
     /**
      * @var string
@@ -42,12 +42,6 @@ class LinkAccountResponse
      * @Type("string")
      */
     private $accountName;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-     private $accountOwnerName;
 
     /**
      * @var float
@@ -77,11 +71,6 @@ class LinkAccountResponse
     public function getAccountName(): string
     {
         return $this->accountName;
-    }
-
-    public function getAccountOwnerName(): string
-    {
-        return $this->accountOwnerName;
     }
 
     public function getMatchCode(): float

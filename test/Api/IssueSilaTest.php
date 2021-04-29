@@ -37,9 +37,12 @@ class IssueSilaTest extends TestCase
     {
         $response = self::$config->api->issueSila(
             DefaultConfig::$firstUserHandle,
-            1000,
+            80000,
             DefaultConfig::DEFAULT_ACCOUNT,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            null,
+            AchType::STANDARD()
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
@@ -83,6 +86,25 @@ class IssueSilaTest extends TestCase
         $this->assertIsString($response->getData()->getTransactionId());
     }
 
+    // public function testIssueSila200Instant()
+    // {
+    //     $response = self::$config->api->issueSila(
+    //         DefaultConfig::$firstUserHandle,
+    //         1000000,
+    //         DefaultConfig::DEFAULT_ACCOUNT,
+    //         DefaultConfig::$firstUserWallet->getPrivateKey(),
+    //         null,
+    //         DefaultConfig::VALID_BUSINESS_UUID,
+    //         AchType::INSTANT()
+    //     );
+    //     var_dump($response);
+    //     $this->assertEquals(200, $response->getStatusCode());
+    //     $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+    //     $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
+    //     $this->assertIsString($response->getData()->getDescriptor());
+    //     $this->assertIsString($response->getData()->getTransactionId());
+    // }
+
     public function testIssueSila400Descriptor()
     {
         $response = self::$config->api->issueSila(
@@ -95,7 +117,8 @@ class IssueSilaTest extends TestCase
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
-        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+        // $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message);
+        $this->assertStringContainsString('could not be found', $response->getData()->message);
     }
 
     public function testIssueSila400()
@@ -108,6 +131,19 @@ class IssueSilaTest extends TestCase
     }
 
     public function testIssueSila401()
+    {
+        self::$config->setUpBeforeClassInvalidAuthSignature();
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            100,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'test descriptor'
+        );
+        $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    public function testIssueSila403()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $response = self::$config->api->issueSila(

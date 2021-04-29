@@ -56,8 +56,9 @@ class AddRegistrationDataTest extends TestCase
         $response = self::$config->api->addPhone(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            '1234567890'
+            '1234567891'
         );
+        DefaultConfig::$phoneUuid = $response->getData()->phone->uuid;
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
@@ -67,6 +68,20 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsInt($response->getData()->phone->modified_epoch);
         $this->assertIsString($response->getData()->phone->uuid);
         $this->assertIsString($response->getData()->phone->phone);
+    }
+
+    public function testAddDevice200()
+    {
+        $response = self::$config->api->addDevice(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'device1',
+            DefaultConfig::uuid()
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Device successfully registered', $response->getData()->message);
     }
 
     public function testAddIdentity200()
