@@ -36,16 +36,14 @@ class GetTransactionsTest extends TestCase
     public function testGetTransactions200()
     {
         $filters = new SearchFilters();
-        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
+        $filters->setBankAccountName('default');
         $response = self::$config->api->getTransactions(
             DefaultConfig::$firstUserHandle,
-            $filters//,
-            // $firstUserWalletPrivateKey
+            $filters,
+            DefaultConfig::$firstUserWallet->getPrivateKey()
         );
         $this->assertEquals(200, $response->getStatusCode());
         $data = $response->getData();
-        var_dump($data);
         $this->assertTrue($data->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $data->status);
         $this->assertEquals(1, $data->page);

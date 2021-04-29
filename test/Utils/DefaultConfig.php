@@ -151,7 +151,17 @@ class DefaultConfig
     /**
      * @var string
      */
-    public const VALID_BUSINESS_UUID = 'ec5d1366-b56c-4442-b6c3-c919d548fcb5';
+     public static $phoneUuid;
+
+    /**
+     * @var string
+     */
+    public const VALID_BUSINESS_UUID = 'dbe721f6-1140-41e3-bdc4-baa632b37405';
+
+    /**
+     * @var string
+     */
+     public const VALID_BUSINESS_UUID_INSTANT_ACH = 'dbe721f6-1140-41e3-bdc4-baa632b37405';
 
     /**
      * @var string
@@ -176,7 +186,8 @@ class DefaultConfig
     /**
      * @var string
      */
-    public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+    // public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+    public const BAD_APP_SIGNATURE = 'There seems to be an issue with your authentication headers.';
 
     /**
      * @var string

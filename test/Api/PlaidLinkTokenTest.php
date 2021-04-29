@@ -32,11 +32,9 @@ class PlaidLinkTokenTest extends TestCase
 
     public function testPlaidLinkToken200(): void
     {
-        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
+        DefaultConfig::$firstUserHandle = 'phpSDK-4f5456e4-335f-473e-9a12-e55c10dd99de';
         $response = self::$config->api->plaidLinkToken(
-            DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey
+            DefaultConfig::$firstUserHandle
         );
         var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());

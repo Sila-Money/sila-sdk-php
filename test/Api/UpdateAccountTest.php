@@ -39,8 +39,8 @@ class UpdateAccount extends TestCase
         $response = self::$config->api->updateAccount(
             'phpSDK-d420bdac-e60c-4aa7-859a-1f9ab7136646',
             '0x8b178ee5132b35aa6ce4d66f379c76bb5afcac33422b10f0d0ab6a0dacd31aa1',
-            'account new name1',
-            'account new'
+            'account new',
+            'account new name1'
         );
         var_dump($response);
         var_dump($response->getData()->changes);

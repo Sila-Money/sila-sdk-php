@@ -32,10 +32,10 @@ class DeleteAccountsTest extends TestCase
 
     public function testDeleteAccounts200Success(): void
     {
-        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
+        DefaultConfig::$firstUserHandle = 'phpSDK-4f5456e4-335f-473e-9a12-e55c10dd99de';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
-            'account name'
+            'account name 1'
         );
         var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -47,7 +47,6 @@ class DeleteAccountsTest extends TestCase
         DefaultConfig::$firstUserHandle = '';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey,
             'no existing account'
         );
         var_dump($response);
@@ -59,7 +58,6 @@ class DeleteAccountsTest extends TestCase
         DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey,
             'no existing account'
         );
         var_dump($response);

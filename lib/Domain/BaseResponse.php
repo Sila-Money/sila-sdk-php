@@ -21,6 +21,13 @@ class BaseResponse
 {
     /**
      * Reference
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
+     * Reference
      * @var string
      * @Type("string")
      */
@@ -79,6 +86,6 @@ class BaseResponse
 
     public function getSuccess()
     {
-        return $this->status === 'SUCCESS';
+        return $this->success;
     }
 }

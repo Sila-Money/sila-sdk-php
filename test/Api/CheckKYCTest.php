@@ -44,7 +44,7 @@ class CheckKYCTest extends TestCase
      * @param string $messageRegex
      * @dataProvider checkKycProvider
      */
-    public function testCheckKYC200Sucess($handle, $privateKey, $expectedStatus, $messageRegex)
+    public function testCheckKYC200Success($handle, $privateKey, $expectedStatus, $messageRegex)
     {
         $response = self::$config->api->checkKYC($handle, $privateKey);
         $statusCode = $response->getStatusCode();

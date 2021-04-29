@@ -53,13 +53,12 @@ class AddRegistrationDataTest extends TestCase
 
     public function testAddPhone200()
     {
-        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
         $response = self::$config->api->addPhone(
             DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey,
-            '1234567890'
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            '1234567891'
         );
+        DefaultConfig::$phoneUuid = $response->getData()->phone->uuid;
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
@@ -73,17 +72,12 @@ class AddRegistrationDataTest extends TestCase
 
     public function testAddDevice200()
     {
-        DefaultConfig::$firstUserHandle = 'phpSDK-3542c2d8-8d83-4dcb-b9b6-68ffaf873ba0';
-        $firstUserWalletPrivateKey = '0x3dd46183610fe0105aa0f585b26d37933d3af66185e6beaaa4d633cc09809442';
-        $deviceAlias = 'device1';
-        $deviceFingerprint = DefaultConfig::uuid();
         $response = self::$config->api->addDevice(
             DefaultConfig::$firstUserHandle,
-            $firstUserWalletPrivateKey,
-            $deviceAlias,
-            $deviceFingerprint
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            'device1',
+            DefaultConfig::uuid()
         );
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
