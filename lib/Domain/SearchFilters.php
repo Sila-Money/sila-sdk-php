@@ -116,6 +116,12 @@ class SearchFilters implements ValidInterface
      */
      private $bankAccountName;
 
+    /**
+     * @var string
+     * @Type("string")
+     */
+     private $blockchainAddress;
+
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
@@ -133,7 +139,8 @@ class SearchFilters implements ValidInterface
             && ($this->account_number === null || v::stringType()->notEmpty()->validate($this->account_number))
             && ($this->routing_number === null || v::stringType()->notEmpty()->validate($this->routing_number))
             && ($this->account_type === null || v::stringType()->notEmpty()->validate($this->account_type))
-            && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName));
+            && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName))
+            && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress));
     }
 
     /**
@@ -333,6 +340,18 @@ class SearchFilters implements ValidInterface
      public function setBankAccountName(string $bankAccountName): SearchFilters
      {
          $this->bankAccountName = $bankAccountName;
+         return $this;
+     }
+
+     /**
+     * Sets the blockchainAddress to the filters.
+     *
+     * @param int $blockchainAddress
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+     public function setBlockchainAddress(string $blockchainAddress): SearchFilters
+     {
+         $this->blockchainAddress = $blockchainAddress;
          return $this;
      }
 }
