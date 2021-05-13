@@ -227,7 +227,7 @@ class BaseUser
      * Gets the device fingerprint address.
      * @return string
      */
-     public function getDeviceFingerprint(): string
+     public function getDeviceFingerprint(): ?string
      {
          return $this->deviceFingerprint;
      }

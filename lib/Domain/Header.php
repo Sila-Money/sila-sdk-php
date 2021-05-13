@@ -68,7 +68,7 @@ class Header extends HeaderBase
     public function isValid(): bool
     {
         $notEmptyString = v::stringType()->notEmpty();
-        return $notEmptyString->validate($this->authHandle)
+        return $notEmptyString->validate($this->appHandle)
             && $notEmptyString->validate($this->userHandle)
             && v::intType()->positive()->validate($this->created)
             && $notEmptyString->validate($this->crypto)

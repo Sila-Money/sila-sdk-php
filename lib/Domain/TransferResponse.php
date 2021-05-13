@@ -34,9 +34,4 @@ class TransferResponse extends OperationResponse
     {
         return $this->destinationAddress;
     }
-
-    public function getSuccess(): bool
-    {
-        return $this->success;
-    }
 }

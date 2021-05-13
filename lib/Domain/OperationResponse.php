@@ -103,6 +103,6 @@ class OperationResponse
 
     public function getSuccess(): bool
     {
-        return $this->success;
+        return ($this->success == null)  ? ($this->getStatus() == 'SUCCESS') : $this->success;
     }
 }

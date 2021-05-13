@@ -60,7 +60,7 @@ class RegisterWalletMessage implements ValidInterface
     public static function fromPrivateKey(
         string $userHandle,
         string $appHandle,
-        Wallet $wallet,
+        SilaWallet $wallet,
         string $walletPrivateKey
     ): RegisterWalletMessage {
         $walletVerificationSignature = '';

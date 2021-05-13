@@ -38,7 +38,7 @@ class UpdateAccountResponse
     public $message;
 
     /**
-     * Transactions list used for the transactions.
+     * Updated account.
      * @var Silamoney\Client\Domain\Account
      * @Type("Silamoney\Client\Domain\Account")
      */

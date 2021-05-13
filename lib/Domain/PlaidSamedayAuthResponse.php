@@ -64,7 +64,7 @@ class PlaidSamedayAuthResponse
     {
         return $this->message;
     }
-
+    
     /**
      * Gets the response status.
      * @return string

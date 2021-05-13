@@ -117,6 +117,15 @@ class SilaWallet implements ValidInterface
     }
 
     /**
+     * Get the Ethereum Address associated with this wallet
+     * @return string
+     */
+     public function getBlockchainAddress(): string
+     {
+         return $this->blockchain_address;
+     }
+
+    /**
      * Get the Ethereum Private Key for this wallet
      * @todo: Replace this with an internal signing mechanism.
      * @return string
