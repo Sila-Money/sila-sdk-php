@@ -47,13 +47,11 @@ class LinkAccountsTest extends TestCase
         $response = $client->post('/link/item/create', $options);
         $content = json_decode($response->getBody()->getContents());
         $publicToken = $content->public_token;
-
         $response = self::$config->api->linkAccount(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             $publicToken,
-            null,
-            null
+            DefaultConfig::DEFAULT_ACCOUNT
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getSuccess());

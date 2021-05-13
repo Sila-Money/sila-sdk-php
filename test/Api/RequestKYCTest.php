@@ -37,7 +37,7 @@ class RequestKYCTest extends TestCase
      * @param string $privateKey
      * @dataProvider requestKYCProvider
      */
-    public function testRegister200($handle, $privateKey)
+    public function testRequestKYC200($handle, $privateKey)
     {
         $response = self::$config->api->requestKYC($handle, $privateKey);
         $this->assertEquals(200, $response->getStatusCode());

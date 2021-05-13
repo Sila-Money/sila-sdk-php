@@ -20,13 +20,13 @@ use Silamoney\Client\Domain\{BalanceEnvironments,Environments};
 class SilaApiTest extends TestCase
 {
     public function testSilaApiConstructors() {
-        $appHandle = 'digital.silamoney.com';
-        $privateKey = 'badba7368134dcd61c60f9b56979c09196d03f5891a20c1557b1afac0202a97c';
-        $silaEndpoint = Environments::SANDBOX;
-        $balanceEndpoint = BalanceEnvironments::SANDBOX;
+        $appHandle = 'digital_geko_handle';
+        $privateKey = '31ebae5d7f6a68d246b97b9c885f6fb648cf3ae2b95b88ce30bdb14451066362';
+        $silaEndpoint = Environments::PRODUCTION;
+        $balanceEndpoint = BalanceEnvironments::PRODUCTION;
 
         $client = new SilaApi($silaEndpoint, $balanceEndpoint, $appHandle, $privateKey);
-        $clientEnv = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
+        $clientEnv = SilaApi::fromEnvironment(Environments::PRODUCTION(), BalanceEnvironments::PRODUCTION(), $appHandle, $privateKey);
         $clientDefault = SilaApi::fromDefault($appHandle, $privateKey);
 
         $this->assertEquals($clientDefault, $client);

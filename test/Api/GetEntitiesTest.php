@@ -35,7 +35,7 @@ class GetEntitiesTest extends TestCase
 
     public function testGetEntities200()
     {
-        $response = self::$config->api->getEntities(null, null, 5);
+        $response = self::$config->api->getEntities(null, null, 10);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
@@ -59,8 +59,8 @@ class GetEntitiesTest extends TestCase
         $this->assertIsString($response->getData()->entities->businesses[0]->business_type);
         $this->assertIsString($response->getData()->entities->businesses[0]->dba);
         $this->assertIsObject($response->getData()->pagination);
-        $this->assertEquals(5, $response->getData()->pagination->returned_count);
-        $this->assertGreaterThanOrEqual(4, $response->getData()->pagination->total_count);
+        $this->assertEquals(10, $response->getData()->pagination->returned_count);
+        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_count);
         $this->assertEquals(1, $response->getData()->pagination->current_page);
         $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
     }
