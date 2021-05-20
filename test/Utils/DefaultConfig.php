@@ -156,12 +156,12 @@ class DefaultConfig
     /**
      * @var string
      */
-    public const VALID_BUSINESS_UUID = 'dbe721f6-1140-41e3-bdc4-baa632b37405';
+    public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
 
     /**
      * @var string
      */
-     public const VALID_BUSINESS_UUID_INSTANT_ACH = 'dbe721f6-1140-41e3-bdc4-baa632b37405';
+     public const VALID_BUSINESS_UUID_INSTANT_ACH = '9f280665-629f-45bf-a694-133c86bffd5e';
 
     /**
      * @var string

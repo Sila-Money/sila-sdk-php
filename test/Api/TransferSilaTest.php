@@ -83,8 +83,8 @@ class TransferSilaTest extends TestCase
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('FAILURE', $response->getData()->status);
-        // $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message); // SANDBOX
-        $this->assertStringContainsString('could not be found', $response->getData()->message); // PRODUCTION
+        $this->assertStringContainsString('does not have an approved ACH display name', $response->getData()->message); // SANDBOX
+        // $this->assertStringContainsString('could not be found', $response->getData()->message); // PRODUCTION
     }
 
     public function testTransferSila400()

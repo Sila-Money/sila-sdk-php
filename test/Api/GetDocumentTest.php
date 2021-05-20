@@ -58,8 +58,8 @@ class GetDocumentTest extends TestCase
 
     public function testGetDocument404()
     {
-        $uuid = DefaultConfig::uuid();
         self::$config->setUpBeforeClassValidAuthSignature();
+        $uuid = DefaultConfig::uuid();
         $response = self::$config->api->getDocument(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),

@@ -56,6 +56,6 @@ class ApiTestConfiguration
 
     public function setUpBeforeClassValidAuthSignature(): void
     {
-        $this->api = SilaApi::fromDefault($this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(),$this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
     }
 }
