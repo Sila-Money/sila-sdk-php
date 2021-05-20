@@ -9,6 +9,8 @@ namespace Silamoney\Client\Utils;
 
 use JMS\Serializer\SerializerBuilder;
 use Silamoney\Client\Api\SilaApi;
+use Silamoney\Client\Domain\BalanceEnvironments;
+use Silamoney\Client\Domain\Environments;
 
 /**
  * BaseApiTest Test
@@ -44,12 +46,12 @@ class ApiTestConfiguration
         $this->serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         $this->config = $this->serializer->deserialize($json, TestConfiguration::class, 'json');
-        $this->api = SilaApi::fromDefault($this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
     }
 
     public function setUpBeforeClassInvalidAuthSignature(): void
     {
-        $this->api = SilaApi::fromDefault($this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
+        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY_INVALID']);
     }
 
     public function setUpBeforeClassValidAuthSignature(): void
