@@ -24,7 +24,7 @@ class Configuration
     /**
      * @var string
      */
-    private $authHandle;
+    private $appHandle;
 
     /**
      * @var \Silamoney\Client\Api\ApiClient
@@ -49,14 +49,14 @@ class Configuration
     /**
      * @param string $basePath
      * @param string $privateKey
-     * @param string $authHandle
+     * @param string $appHandle
      */
-    public function __construct(string $basePath, string $balanceBasePath, string $privateKey, string $authHandle)
+    public function __construct(string $basePath, string $balanceBasePath, string $privateKey, string $appHandle)
     {
         $this->basePath = $basePath;
         $this->balanceBasePath = $balanceBasePath;
         $this->privateKey = $privateKey;
-        $this->authHandle = $authHandle;
+        $this->appHandle = $appHandle;
         $this->timeout = 10000;
         $this->apiClient = new ApiClient($this->basePath);
         $this->balanceClient = new ApiClient($this->balanceBasePath);
@@ -117,17 +117,17 @@ class Configuration
     /**
      * @return string
      */
-    public function getAuthHandle(): string
+    public function getAppHandle(): string
     {
-        return $this->authHandle;
+        return $this->appHandle;
     }
 
     /**
-     * @param string $authHandle
+     * @param string $appHandle
      */
-    public function setAuthHandler(string $authHandle): void
+    public function setAppHandle(string $appHandle): void
     {
-        $this->authHandle = $authHandle;
+        $this->appHandle = $appHandle;
     }
 
     /**

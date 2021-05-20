@@ -26,6 +26,13 @@ class Account
     public $accountNumber;
 
     /**
+     * Routing Number
+     * @var string
+     * @Type("string")
+     */
+     public $routingNumber;
+
+    /**
      * Account Name
      * @var string
      * @Type("string")
@@ -45,4 +52,39 @@ class Account
      * @Type("string")
      */
     public $accountStatus;
+
+    /**
+     * Active
+     * @var bool
+     * @Type("bool")
+     */
+     public $active;
+
+     /**
+     * Account Link Status
+     * @var string
+     * @Type("string")
+     */
+    public $accountLinkStatus;
+
+    /**
+     * Match Score
+     * @var string
+     * @Type("string")
+     */
+     public $matchScore;
+
+     /**
+     * Account Owner Name
+     * @var string
+     * @Type("string")
+     */
+    public $accountOwnerName;
+
+    /**
+     * Entity Name
+     * @var string
+     * @Type("string")
+     */
+     public $entityName;
 }

@@ -145,4 +145,28 @@ class Transaction
      * @Type("string")
      */
     public $processingType;
+    /**
+     * This field is only set for issue and redeem transactions.
+     * @var string
+     * @Type("string")
+     */
+     public $returnCode;
+     /**
+     * This field is only set for issue and redeem transactions.
+     * @var string
+     * @Type("string")
+     */
+    public $returnDesc;
+    /**
+     * This field is only set for issue and redeem transactions.
+     * @var int
+     * @Type("int")
+     */
+     public $traceNumber;
+     /**
+     * This field is only set for issue and redeem transactions.
+     * @var string
+     * @Type("string")
+     */
+    public $addenda;
 }

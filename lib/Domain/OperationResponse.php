@@ -20,6 +20,13 @@ class OperationResponse
 {
     /**
      * Reference
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
+     * Reference
      * @var string
      * @Type("string")
      */
@@ -96,6 +103,6 @@ class OperationResponse
 
     public function getSuccess(): bool
     {
-        return $this->status === 'SUCCESS';
+        return ($this->success == null)  ? ($this->getStatus() == 'SUCCESS') : $this->success;
     }
 }

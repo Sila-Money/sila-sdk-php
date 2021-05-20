@@ -26,4 +26,9 @@ class Environments extends Enum
      * Sila production environment.
      */
     public const PRODUCTION = 'https://api.silamoney.com';
+
+    /**
+     * Sila stage environment
+     */
+    public const STAGE = 'https://stageapi.silamoney.com';
 }

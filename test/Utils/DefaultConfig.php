@@ -151,7 +151,17 @@ class DefaultConfig
     /**
      * @var string
      */
+     public static $phoneUuid;
+
+    /**
+     * @var string
+     */
     public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
+
+    /**
+     * @var string
+     */
+     public const VALID_BUSINESS_UUID_INSTANT_ACH = '9f280665-629f-45bf-a694-133c86bffd5e';
 
     /**
      * @var string
@@ -176,7 +186,13 @@ class DefaultConfig
     /**
      * @var string
      */
-    public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+    // public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
+    public const BAD_APP_SIGNATURE = 'There seems to be an issue with your authentication headers.';
+
+    /**
+     * @var string
+     */
+    public const INVALID_HANDLE = 'Handle invalid not registered by app.';
 
     /**
      * @var string
@@ -209,7 +225,9 @@ class DefaultConfig
             'you@awesomedomain.com',
             '123452222',
             $wallet->getAddress(),
-            $birthDate
+            $birthDate,
+            'fingerprint',
+            true
         );
     }
 

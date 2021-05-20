@@ -39,7 +39,7 @@ class SilaBalanceTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::$walletAddressForBalance, $response->getData()->address);
-        $this->assertIsFloat($response->getData()->sila_balance);
+        $this->assertIsNumeric($response->getData()->sila_balance);
     }
 
     public function testSilaBalance400()

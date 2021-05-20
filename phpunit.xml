@@ -34,6 +34,7 @@
       <file>test/Api/CertifyBeneficialOwnerTest.php</file>
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
+      <file>test/Api/CheckInstantACHTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>
       <file>test/Api/IssueSilaTest.php</file>

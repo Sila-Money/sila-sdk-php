@@ -19,6 +19,12 @@ use JMS\Serializer\Annotation\Type;
 class TransferResponse extends OperationResponse
 {
     /**
+     * @var bool
+     * @Type("bool")
+     */
+     private $success;
+
+    /**
      * @var string
      * @Type("string")
      */
