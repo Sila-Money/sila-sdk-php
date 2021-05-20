@@ -432,7 +432,7 @@ class SilaApi
         $body = new DeleteAccountMessage(
             $userHandle,
             $this->configuration->getAppHandle(),
-            $accountName,
+            $accountName
         );
         $path = "/delete_account";
         $json = $this->serializer->serialize($body, 'json');
