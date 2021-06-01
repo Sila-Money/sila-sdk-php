@@ -19,15 +19,16 @@ use MyCLabs\Enum\Enum;
 class BalanceEnvironments extends Enum
 {
     /**
-     * SilaBalance sandbox environment.
+     * Sila sandbox environment.
      */
-    // public const SANDBOX = 'https://sandbox.silatokenapi.silamoney.com';
-    
     public const SANDBOX = 'https://sandbox.silamoney.com';
     /**
-     * SilaBalance production environment.
+     * Sila production environment.
      */
-    // public const PRODUCTION = 'https://silatokenapi.silamoney.com';
+    public const PRODUCTION = 'https://api.silamoney.com';
 
-    public const PRODUCTION = 'https://stageapi.silamoney.com';
+    /**
+     * Sila stage environment
+     */
+    public const STAGE = 'https://stageapi.silamoney.com';
 }
