@@ -35,6 +35,10 @@ class Message extends Enum
      */
     public const GET_TRANSACTIONS = "get_transactions_msg";
     /**
+     * String value for GetTransactionsMsg.
+     */
+     public const GET_INSTITUTIONS = "get_institutions_msg";
+    /**
      * String value for IssueMsg.
      */
     public const ISSUE = "issue_msg";
