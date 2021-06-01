@@ -91,24 +91,23 @@ class SearchFilters implements ValidInterface
      */
     private $minSilaAmount;
 
-    // Support for account_number, routing_number and account_type
     /**
-     * @var string
-     * @Type("string")
+     * @var int
+     * @Type("int")
      */
-    private $account_number;
+    private $accountNumber;
     
     /**
      * @var string
      * @Type("string")
      */
-    private $routing_number;
+    private $routingNumber;
     
     /**
      * @var string
      * @Type("string")
      */
-    private $account_type;
+    private $accountType;
 
     /**
      * @var string
@@ -121,6 +120,12 @@ class SearchFilters implements ValidInterface
      * @Type("string")
      */
      private $blockchainAddress;
+
+     /**
+     * @var string
+     * @Type("string")
+     */
+     private $institutionName;
 
     public function isValid(): bool
     {
@@ -136,11 +141,12 @@ class SearchFilters implements ValidInterface
             && ($this->perPage === null || v::intType()->positive()->min(1)->max(100)->validate($this->perPage))
             && ($this->sortAscending === null || v::boolType()->validate($this->sortAscending))
             && ($this->showTimelines === null || v::boolType()->validate($this->showTimelines))
-            && ($this->account_number === null || v::stringType()->notEmpty()->validate($this->account_number))
-            && ($this->routing_number === null || v::stringType()->notEmpty()->validate($this->routing_number))
-            && ($this->account_type === null || v::stringType()->notEmpty()->validate($this->account_type))
+            && ($this->accountNumber === null || v::intType()->notEmpty()->validate($this->accountNumber))
+            && ($this->routingNumber === null || v::stringType()->notEmpty()->validate($this->routingNumber))
+            && ($this->accountType === null || v::stringType()->notEmpty()->validate($this->accountType))
             && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName))
-            && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress));
+            && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress))
+            && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName));
     }
 
     /**
@@ -298,60 +304,72 @@ class SearchFilters implements ValidInterface
     /**
      * Sets the account_number to the filters.
      *
-     * @param string $account_number
+     * @param int $accountNumber
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setAccountNumber(string $account_number): SearchFilters
+    public function setAccountNumber(int $accountNumber): SearchFilters
     {
-        $this->account_number = $account_number;
+        $this->accountNumber = $accountNumber;
         return $this;
     }
     
     /**
      * Sets the routing_number to the filters.
      *
-     * @param int $routing_number
+     * @param string $routingNumber
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setRoutingNumber(string $routing_number): SearchFilters
+    public function setRoutingNumber(string $routingNumber): SearchFilters
     {
-        $this->routing_number = $routing_number;
+        $this->routingNumber = $routingNumber;
         return $this;
     }
     
     /**
      * Sets the account_type to the filters.
      *
-     * @param int $account_type
+     * @param string $accountType
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setAccountType(string $account_type): SearchFilters
+    public function setAccountType(string $accountType): SearchFilters
     {
-        $this->account_type = $account_type;
+        $this->accountType = $accountType;
         return $this;
     }
     
     /**
      * Sets the bankAccountName to the filters.
      *
-     * @param int $bankAccountName
+     * @param string $bankAccountName
      * @return Silamoney\Client\Domain\SearchFilters
      */
      public function setBankAccountName(string $bankAccountName): SearchFilters
      {
-         $this->bankAccountName = $bankAccountName;
-         return $this;
+        $this->bankAccountName = $bankAccountName;
+        return $this;
      }
 
      /**
      * Sets the blockchainAddress to the filters.
      *
-     * @param int $blockchainAddress
+     * @param string $blockchainAddress
      * @return Silamoney\Client\Domain\SearchFilters
      */
      public function setBlockchainAddress(string $blockchainAddress): SearchFilters
      {
-         $this->blockchainAddress = $blockchainAddress;
-         return $this;
+        $this->blockchainAddress = $blockchainAddress;
+        return $this;
+     }
+
+     /**
+     * Sets the institutionName to the filters.
+     *
+     * @param string $institutionName
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+     public function setInstitutionName(string $institutionName): SearchFilters
+     {
+        $this->institutionName = $institutionName;
+        return $this;
      }
 }
