@@ -36,6 +36,7 @@
       <file>test/Api/LinkAccountsTest.php</file>
       <file>test/Api/CheckInstantACHTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
+      <file>test/Api/GetInstitutionsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>
       <file>test/Api/IssueSilaTest.php</file>
       <file>test/Api/CancelTransactionTest.php</file>
