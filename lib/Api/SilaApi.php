@@ -39,9 +39,12 @@ use Silamoney\Client\Domain\{
     GetAccountBalanceMessage,
     GetAccountBalanceResponse,
     GetAccountsMessage,
+    GetInstitutionsMessage,
+    GetInstitutionsResponse,
     GetTransactionsMessage,
     GetTransactionsResponse,
     HeaderMessage,
+    Institution,
     LinkAccountMessage,
     UpdateAccountMessage,
     DeleteAccountMessage,
@@ -131,12 +134,12 @@ class SilaApi
      *
      * @var string
      */
-    private const DEFAULT_ENVIRONMENT = Environments::PRODUCTION;
+    private const DEFAULT_ENVIRONMENT = Environments::SANDBOX;
 
     /**
      * @var string
      */
-    private const DEFAULT_BALANCE_ENVIRONMENT = BalanceEnvironments::PRODUCTION;
+    private const DEFAULT_BALANCE_ENVIRONMENT = BalanceEnvironments::SANDBOX;
 
     /**
      * Constructor for Sila Api using custom environment.
@@ -526,6 +529,25 @@ class SilaApi
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, 'array<' . Account::class . '>');
     }
+
+    /**
+     * Gets a list of institutions related to a linked account.
+     *
+     * @param SearchFilters $filters
+     * @return ApiResponse
+     * @throws ClientException
+     */
+     public function getInstitutions(SearchFilters $filters): ApiResponse
+     {
+         $body = new GetInstitutionsMessage($this->configuration->getAppHandle(), $filters);
+         $path = '/get_institutions';
+         $json = $this->serializer->serialize($body, 'json');
+         $headers = [
+             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+         ];
+         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, GetInstitutionsResponse::class);
+     }
 
     public function getAccountBalance(string $userHandle, string $userPrivateKey, string $accontName): ApiResponse
     {
