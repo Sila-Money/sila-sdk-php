@@ -30,7 +30,7 @@ class ApiClient
 
     private const BASE_URI = 'base_uri';
 
-    private const USER_AGENT = 'SilaSDK-php / 0.2.23';
+    private const USER_AGENT = 'SilaSDK-php / 0.2.24';
 
     /**
      * Api Client constructor
@@ -75,6 +75,7 @@ class ApiClient
      */
     public function callUnversionedAPI(string $url, string $data, array $headers): Response
     {
+        $headers['User-Agent'] = ApiClient::USER_AGENT;
         try {
             return $this->client->post($url, ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -86,6 +87,7 @@ class ApiClient
 
     public function callFileApi(string $url, array $data, array $headers): Response
     {
+        $headers['User-Agent'] = ApiClient::USER_AGENT;
         try {
             return $this->client->post("/0.2{$url}", ['multipart' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
