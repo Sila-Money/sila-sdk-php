@@ -55,6 +55,14 @@ class Address implements ValidInterface
     private $state;
 
     /**
+     * Street Address
+     * @var string
+     * @SerializedName("street_address")
+     * @Type("string")
+     */
+     private $streetAddress;
+
+    /**
      * Street Address 1
      * @var string
      * @SerializedName("street_address_1")
@@ -89,7 +97,6 @@ class Address implements ValidInterface
     {
         $notEmptyString = v::stringType()->notEmpty();
         return v::not(v::nullType())->validate($this->addressAlias)
-            && $notEmptyString->validate($this->streetAddress1)
             && $notEmptyString->validate($this->city)
             && $notEmptyString->validate($this->state)
             && $notEmptyString->validate($this->country)
