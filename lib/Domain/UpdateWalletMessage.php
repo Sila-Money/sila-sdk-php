@@ -36,7 +36,7 @@ class UpdateWalletMessage implements ValidInterface
      * @var boolean
      * @Type("boolean")
      */
-    private $status;
+    private $default;
 
 
     /**
@@ -45,16 +45,16 @@ class UpdateWalletMessage implements ValidInterface
      * @param string $userHandle
      * @param string $appHandle
      * @param string $nickname
-     * @param boolean $status
+     * @param boolean $default
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
         ?string $nickname,
-        ?bool $status
+        ?bool $default
     ) {
         $this->nickname = $nickname;
-        $this->status = $status;
+        $this->default = $default;
         $this->header = new Header($appHandle, $userHandle);
     }
 

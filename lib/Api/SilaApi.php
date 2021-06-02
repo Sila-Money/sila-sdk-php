@@ -828,10 +828,10 @@ class SilaApi
     public function updateWallet(
         string $userHandle,
         string $nickname,
-        bool $status,
+        bool $default,
         string $userPrivateKey
     ): ApiResponse {
-        $body = new UpdateWalletMessage($userHandle, $this->configuration->getAppHandle(), $nickname, $status);
+        $body = new UpdateWalletMessage($userHandle, $this->configuration->getAppHandle(), $nickname, $default);
         $path = '/update_wallet';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
