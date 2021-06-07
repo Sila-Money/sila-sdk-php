@@ -1,7 +1,7 @@
 {
     "name": "silamoney/php-sdk",
     "description": "Sila PHP SDK for API Version 0.2",
-    "version": "0.2.23",
+    "version": "0.2.23-rc",
     "keywords": ["sila","payments","ach","credit","fintech","finance"],
     "type": "library",
     "license": "Apache-2.0",
@@ -17,13 +17,11 @@
             "role": "Developer"
         },
         {
-
             "name": "Carlos Sosa",
             "email": "csosa@digitalgeko.com",
             "role": "Developer"
         },
         {
-
             "name": "Alanfer Orozco",
             "email": "aorozco@digitalgeko.com",
             "role": "Developer"
