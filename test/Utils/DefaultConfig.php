@@ -76,6 +76,36 @@ class DefaultConfig
     /**
      * @var string
      */
+    public static $emptyPhoneUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $emptyEmailUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $emptyStreetAddress1UserHandle;
+
+    /**
+     * @var string
+     */
+    public static $invalidSmsOptInUserHandle;
+
+    /**
+     * @var string
+     */
+    public static $businessUserWithEmptyBusinessWebsiteHandle;
+
+    /**
+     * @var string
+     */
+    public static $businessUserWithEmptyDoingBusinessAsHandle;
+
+    /**
+     * @var string
+     */
     public static $beneficialOwnerToken;
 
     /**
@@ -134,6 +164,36 @@ class DefaultConfig
     public static $beneficialUserWallet;
 
     /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $emptyPhoneUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $emptyEmailUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $emptyStreetAddress1UserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $invalidSmsOptInUserWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $businessUserWithEmptyBusinessWebsiteWallet;
+
+    /**
+     * @var \Silamoney\Client\Domain\SilaWallet
+     */
+    public static $businessUserWithEmptyDoingBusinessAsWallet;
+
+    /**
      * @var array
      */
     public static $businessRoles;
@@ -186,6 +246,11 @@ class DefaultConfig
     /**
      * @var string
      */
+     public const FAILURE_SAME_ADDRESS = 'Transferring to the same address as sender is prohibited.';
+
+    /**
+     * @var string
+     */
     // public const BAD_APP_SIGNATURE = 'Failed to authenticate app signature.';
     public const BAD_APP_SIGNATURE = 'There seems to be an issue with your authentication headers.';
 
@@ -228,6 +293,94 @@ class DefaultConfig
             $birthDate,
             'fingerprint',
             true
+        );
+    }
+
+    public static function generateEmptyPhoneUser(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate,
+            'fingerprint',
+            true
+        );
+    }
+
+    public static function generateEmptyEmailUser(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            '',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate,
+            'fingerprint',
+            true
+        );
+    }
+
+    public static function generateEmptyStreetAddress1User(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '',
+            null,
+            null,
+            null,
+            null,
+            '123-456-7890',
+            'you@awesomedomain.com',
+            null,
+            $wallet->getAddress(),
+            $birthDate,
+            null,
+            true
+        );
+    }
+
+    public static function generateInvalidSmsOptInUser(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '',
+            null,
+            null,
+            null,
+            null,
+            '123-456-7890',
+            'you@awesomedomain.com',
+            null,
+            $wallet->getAddress(),
+            $birthDate,
+            null,
+            'test'
         );
     }
 

@@ -99,14 +99,22 @@ class ListDocumentsTest extends TestCase
         $yesterdayPeriod = new DateInterval('P1D');
         $yesterday->sub($yesterdayPeriod);
         return [
-            'list_documents - 200' => [DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), [], 1],
+            'list_documents - 200' => [DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), [], 3],
             'list_documents with query params - 200' => [
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(), [1, 1, 'desc'], 1
             ],
             'list_documents with filters - 200' => [
                 DefaultConfig::$firstUserHandle,
-                DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today], 1
+                DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today], 3
+            ],
+            'list_documents with empty search - 200' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today, null, ''], 3
+            ],
+            'list_documents with empty sort by - 200' => [
+                DefaultConfig::$firstUserHandle,
+                DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today, null, null, ''], 3
             ]
         ];
     }

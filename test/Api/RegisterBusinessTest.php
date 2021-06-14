@@ -62,6 +62,36 @@ class RegisterBusinessTest extends TestCase
         $this->assertStringContainsString('successfully registered', $response->getData()->message);
     }
 
+    public function testRegisterBusinessWithEmptyBusinessWebsiteBuilder200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        DefaultConfig::$businessType = 'Corporation';
+        DefaultConfig::$naicsCode = 5415;
+        $builder = new BusinessUserBuilder();
+        $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
+            ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->businessWebsite('')->build();
+        $response = self::$config->api->registerBusiness($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('successfully registered', $response->getData()->message);
+    }
+
+    public function testRegisterBusinessWithEmptyDoingBusinessAsBuilder200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        DefaultConfig::$businessType = 'Corporation';
+        DefaultConfig::$naicsCode = 5415;
+        $builder = new BusinessUserBuilder();
+        $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
+            ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->doingBusinessAs('')->build();
+        $response = self::$config->api->registerBusiness($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('successfully registered', $response->getData()->message);
+    }
+
     public function testRegisterBusiness400()
     {
         $wallet = DefaultConfig::generateWallet();
@@ -115,6 +145,12 @@ class RegisterBusinessTest extends TestCase
     public function registerBusinessProvider(){
         DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
+
+        DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet = DefaultConfig::generateWallet();
+
+        DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet = DefaultConfig::generateWallet();
         
         $businessUser = new BusinessUser(
             DefaultConfig::$businessUserHandle,
@@ -135,8 +171,51 @@ class RegisterBusinessTest extends TestCase
             true
         );
 
+        $businessUserWithEmptyBusinessWebsite = new BusinessUser(
+            DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle,
+            'Digital Geko',
+            '350 5th Avenue',
+            null,
+            'New York',
+            'NY',
+            '10118',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '12-3456789',
+            DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet->getAddress(),
+            // DefaultConfig::$naicsCode,
+            5415,
+            // DefaultConfig::$businessType
+            'Corporation',
+            true,
+            null,
+            ''
+        );
+
+        $businessUserWithEmptyDoingBusinessAs = new BusinessUser(
+            DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle,
+            'Digital Geko',
+            '350 5th Avenue',
+            null,
+            'New York',
+            'NY',
+            '10118',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '12-3456789',
+            DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet->getAddress(),
+            // DefaultConfig::$naicsCode,
+            5415,
+            // DefaultConfig::$businessType
+            'Corporation',
+            true,
+            ''
+        );
+
         return [
-            'register - business user' => [$businessUser]
+            'register - business user' => [$businessUser],
+            'register - business user with empty business website' => [$businessUserWithEmptyBusinessWebsite],
+            'register - business user with empty doing business as' => [$businessUserWithEmptyDoingBusinessAs]
         ];
     }
 }

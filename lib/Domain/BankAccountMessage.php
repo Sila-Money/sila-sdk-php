@@ -87,7 +87,9 @@ class BankAccountMessage implements ValidInterface
         $this->accountName = $accountName;
         $this->message = $message;
         $this->descriptor = $descriptor;
-        $this->businessUuid = $businessUuid;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($businessUuid)){
+            $this->businessUuid = $businessUuid;
+        }
         $this->processingType = $processingType;
     }
 
@@ -98,5 +100,13 @@ class BankAccountMessage implements ValidInterface
             && v::stringType()->notEmpty()->validate($this->message)
             && v::floatType()->validate($this->amount)
             && v::stringType()->notEmpty()->validate($this->accountName);
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

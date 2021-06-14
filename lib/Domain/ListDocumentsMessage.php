@@ -74,7 +74,19 @@ class ListDocumentsMessage
         $this->startDate = $startDate ? $startDate->format('Y-m-d') : null;
         $this->endDate = $endDate ? $endDate->format('Y-m-d') : null;
         $this->docTypes = $docTypes;
-        $this->search = $search;
-        $this->sortBy = $sortBy;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($search)){
+            $this->search = $search;
+        }
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($sortBy)){
+            $this->sortBy = $sortBy;
+        }
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

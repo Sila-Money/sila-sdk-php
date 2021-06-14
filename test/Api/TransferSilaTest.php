@@ -48,6 +48,20 @@ class TransferSilaTest extends TestCase
         $this->assertIsString($response->getData()->getDestinationAddress());
     }
 
+    public function testTransferSilaToSameAccount403()
+    {
+        $response = self::$config->api->transferSila(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserHandle,
+            1,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null
+        );
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString(DefaultConfig::FAILURE_SAME_ADDRESS, $response->getData()->message);
+    }
+
     public function testTransferSila200Descriptor()
     {
         $response = self::$config->api->transferSila(

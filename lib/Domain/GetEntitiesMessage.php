@@ -46,6 +46,16 @@ class GetEntitiesMessage
     {
         $this->header = new Header($appHandle);
         $this->message = Message::HEADER;
-        $this->entityType = $entityType;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($entityType)){
+            $this->entityType = $entityType;
+        }
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

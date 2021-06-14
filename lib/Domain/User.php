@@ -53,7 +53,7 @@ class User extends BaseUser
      * @param string $cryptoAddress
      * @param DateTime $birthdate
      * @param string|null $deviceFingerprint
-     * @param bool $smsOptIn
+     * @param bool|null $smsOptIn
      * @return \Silamoney\Client\Domain\User
      */
     public function __construct(
@@ -71,8 +71,9 @@ class User extends BaseUser
         string $cryptoAddress,
         DateTime $birthdate,
         ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = false
+        $smsOptIn = null
     ) {
+        $smsOptIn = is_bool($smsOptIn) ? $smsOptIn : null;
         parent::__construct(
             $handle,
             $address,

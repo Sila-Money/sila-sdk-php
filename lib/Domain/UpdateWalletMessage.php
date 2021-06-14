@@ -53,7 +53,9 @@ class UpdateWalletMessage implements ValidInterface
         ?string $nickname,
         ?bool $default
     ) {
-        $this->nickname = $nickname;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($nickname)){
+            $this->nickname = $nickname;
+        }
         $this->default = $default;
         $this->header = new Header($appHandle, $userHandle);
     }
@@ -61,5 +63,13 @@ class UpdateWalletMessage implements ValidInterface
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header);
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

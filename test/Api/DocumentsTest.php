@@ -53,6 +53,51 @@ class DodcumentsTest extends TestCase
         DefaultConfig::$fileUuid = $response->getData()->document_id;
     }
 
+    public function testEmptyNameDocument200()
+    {
+        $filePath = __DIR__ . '/Images/logo-geko.png';
+        $response = self::$config->api->uploadDocument(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $filePath,
+            'logo-geko',
+            'image/png',
+            DefaultConfig::$documentType,
+            DefaultConfig::$identityType,
+            ''
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
+        $this->assertIsString($response->getData()->reference_id);
+        $this->assertIsString($response->getData()->document_id);
+        DefaultConfig::$fileUuid = $response->getData()->document_id;
+    }
+
+    public function testEmptyDescriptionDocument200()
+    {
+        $filePath = __DIR__ . '/Images/logo-geko.png';
+        $response = self::$config->api->uploadDocument(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $filePath,
+            'logo-geko',
+            'image/png',
+            DefaultConfig::$documentType,
+            DefaultConfig::$identityType,
+            null,
+            ''
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
+        $this->assertIsString($response->getData()->reference_id);
+        $this->assertIsString($response->getData()->document_id);
+        DefaultConfig::$fileUuid = $response->getData()->document_id;
+    }
+
     public function testDocuments400()
     {
         $filePath = __DIR__ . '/Images/logo-geko.png';
