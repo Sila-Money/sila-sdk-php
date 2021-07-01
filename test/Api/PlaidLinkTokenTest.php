@@ -32,12 +32,12 @@ class PlaidLinkTokenTest extends TestCase
 
     public function testPlaidLinkToken200(): void
     {
-        DefaultConfig::$firstUserHandle = 'phpSDK-4f5456e4-335f-473e-9a12-e55c10dd99de';
         $response = self::$config->api->plaidLinkToken(
             DefaultConfig::$firstUserHandle
         );
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully created', $response->getData()->getMessage());
         $this->assertTrue($response->getSuccess());
     }
 

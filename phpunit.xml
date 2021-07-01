@@ -43,6 +43,7 @@
       <file>test/Api/TransferSilaTest.php</file>
       <file>test/Api/RedeemSilaTest.php</file>
       <file>test/Api/GetTransactionsTest.php</file>
+      <file>test/Api/PlaidLinkTokenTest.php</file>
       <file>test/Api/PlaidSamedayAuthTest.php</file>
       <file>test/Api/RegisterWalletTest.php</file>
       <file>test/Api/GetWalletsTest.php</file>
