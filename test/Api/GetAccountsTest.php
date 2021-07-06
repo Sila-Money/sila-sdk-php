@@ -13,7 +13,7 @@ use Silamoney\Client\Utils\DefaultConfig;
 
 /**
  * GetAccounts Test
- * Tests for the register endpoint in the Sila Api class.
+ * Tests for the get_accounts endpoint in the Sila Api class.
  *
  * @category Class
  * @package Silamoney\Client

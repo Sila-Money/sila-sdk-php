@@ -115,8 +115,12 @@ class BusinessUser extends BaseUser
         $this->naicsCode = $naicsCode;
         $this->businessType = $businessType;
         $this->businessTypeUuid = $businessTypeUuid;
-        $this->doingBusinessAs = $doingBusinessAs;
-        $this->businessWebsite = $businessWebsite;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($doingBusinessAs)){
+            $this->doingBusinessAs = $doingBusinessAs;
+        }
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($businessWebsite)){
+            $this->businessWebsite = $businessWebsite;
+        }
     }
 
     /**
@@ -171,5 +175,13 @@ class BusinessUser extends BaseUser
     public function getBusinessWebsite(): ?string
     {
         return $this->businessWebsite;
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

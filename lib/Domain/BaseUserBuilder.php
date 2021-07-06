@@ -19,6 +19,8 @@ class BaseUserBuilder
     protected $email;
     protected $identityNumber;
     protected $cryptoAddress;
+    protected $deviceFingerprint;
+    protected $smsOptIn;
 
     public function handle(string $handle)
     {
@@ -28,7 +30,9 @@ class BaseUserBuilder
 
     public function address(string $address)
     {
-        $this->address = $address;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($address)){
+            $this->address = $address;
+        }
         return $this;
     }
 
@@ -58,13 +62,17 @@ class BaseUserBuilder
 
     public function phone(string $phone)
     {
-        $this->phone = $phone;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($phone)){
+            $this->phone = $phone;
+        }
         return $this;
     }
 
     public function email(string $email)
     {
-        $this->email = $email;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($email)){
+            $this->email = $email;
+        }
         return $this;
     }
 
@@ -78,5 +86,27 @@ class BaseUserBuilder
     {
         $this->cryptoAddress = $cryptoAddress;
         return $this;
+    }
+
+    public function deviceFingerprint(string $deviceFingerprint)
+    {
+        $this->deviceFingerprint = $deviceFingerprint;
+        return $this;
+    }
+
+    public function smsOptIn($smsOptIn)
+    {
+        if(is_bool($smsOptIn)){
+            $this->smsOptIn = $smsOptIn;
+        }
+        return $this;
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+    private function isEmptyOrHasOnlyWhiteSpaces(string $attribute){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

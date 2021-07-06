@@ -57,7 +57,7 @@ class SearchFiltersTest extends TestCase
     public function testSetRoutingNumber()
     {
         $filters = new SearchFilters();
-        $filters->setRoutingNumber(0);
+        $filters->setRoutingNumber('0');
         self::assertNotNull($filters);
     }
 
@@ -115,6 +115,27 @@ class SearchFiltersTest extends TestCase
     {
         $filters = new SearchFilters();
         $filters->setEndEpoch(10);
+        self::assertNotNull($filters);
+    }
+
+    public function testSetBankAccountName()
+    {
+        $filters = new SearchFilters();
+        $filters->setBankAccountName('account name');
+        self::assertNotNull($filters);
+    }
+
+    public function testSetBlockchainAddress()
+    {
+        $filters = new SearchFilters();
+        $filters->setBlockchainAddress('blockchain_address');
+        self::assertNotNull($filters);
+    }
+
+    public function testSetInstitutionName()
+    {
+        $filters = new SearchFilters();
+        $filters->setInstitutionName('institution name');
         self::assertNotNull($filters);
     }
 

@@ -44,6 +44,12 @@ class PlaidLinkTokenResponse
     private $matchCode;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+     private $linkToken;
+
+    /**
      * Gets the response status.
      * @return string
      */
@@ -65,6 +71,11 @@ class PlaidLinkTokenResponse
     public function getMatchCode(): float
     {
         return $this->matchCode;
+    }
+
+    public function getLinkToken(): string
+    {
+        return $this->linkToken;
     }
 
     /**

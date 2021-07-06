@@ -102,7 +102,7 @@ class BaseUser
      * @param string|null $identityNumber
      * @param string $cryptoAddress
      * @param string|null $deviceFingerprint
-     * @param bool $smsOptIn
+     * @param bool|null $smsOptIn
      * @return \Silamoney\Client\Domain\BaseUser
      */
     public function __construct(
@@ -117,16 +117,22 @@ class BaseUser
         ?string $identityNumber = null,
         string $cryptoAddress,
         ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = false
+        ?bool $smsOptIn = null
     ) {
         $this->handle = $handle;
-        $this->address = $address;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($address)){
+            $this->address = $address;
+        }
         $this->address2 = $address2;
         $this->city = $city;
         $this->state = $state;
         $this->zipCode = $zipCode;
-        $this->phone = $phone;
-        $this->email = $email;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($phone)){
+            $this->phone = $phone;
+        }
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($email)){
+            $this->email = $email;
+        }
         $this->identityNumber = $identityNumber;
         $this->cryptoAddress = $cryptoAddress;
         $this->deviceFingerprint = $deviceFingerprint;
@@ -236,8 +242,16 @@ class BaseUser
      * Gets the sms opt-in address.
      * @return bool
      */
-    public function getSmsOptIn(): bool
+    public function getSmsOptIn(): ?bool
     {
         return $this->smsOptIn;
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

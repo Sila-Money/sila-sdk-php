@@ -48,7 +48,9 @@ class UserBuilder extends BaseUserBuilder
             $this->email,
             $this->identityNumber,
             $this->cryptoAddress,
-            $this->birthdate
+            $this->birthdate,
+            $this->deviceFingerprint,
+            $this->smsOptIn
         );
     }
 }

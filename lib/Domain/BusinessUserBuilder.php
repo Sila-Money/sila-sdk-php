@@ -42,13 +42,17 @@ class BusinessUserBuilder extends BaseUserBuilder
 
     public function doingBusinessAs(string $doingBusinessAs): BusinessUserBuilder
     {
-        $this->doingBusinessAs = $doingBusinessAs;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($doingBusinessAs)){
+            $this->doingBusinessAs = $doingBusinessAs;
+        }
         return $this;
     }
 
     public function businessWebsite(string $businessWebsite): BusinessUserBuilder
     {
-        $this->businessWebsite = $businessWebsite;
+        if(!$this->isEmptyOrHasOnlyWhiteSpaces($businessWebsite)){
+            $this->businessWebsite = $businessWebsite;
+        }
         return $this;
     }
 
@@ -72,5 +76,13 @@ class BusinessUserBuilder extends BaseUserBuilder
             $this->doingBusinessAs,
             $this->businessWebsite
         );
+    }
+
+    /**
+     * Validate if an attribute can be sent to the API.
+     * @return bool
+     */
+     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
+        return empty($attribute) || ctype_space($attribute);
     }
 }

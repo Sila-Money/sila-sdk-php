@@ -61,6 +61,62 @@ class RegisterTest extends TestCase
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
     }
 
+    public function testRegisterBuilderWithEmptyPhoneField200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new UserBuilder();
+        $user = $builder->handle($handle)->firstName('Empty')->lastName('Phone')
+            ->phone('')->email('emptyphone@domain.go')->cryptoAddress($wallet->getAddress())
+            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+        $response = self::$config->api->register($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    }
+
+    public function testRegisterBuilderWithEmptyEmailField200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new UserBuilder();
+        $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
+            ->phone('123-456-7890')->email('')->cryptoAddress($wallet->getAddress())
+            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+        $response = self::$config->api->register($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    }
+
+    public function testRegisterBuilderWithEmptyStreetAddress1Field200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new UserBuilder();
+        $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
+            ->phone('123-456-7890')->email('emptystreetaddress1@domain.go')->address('')->cryptoAddress($wallet->getAddress())
+            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+        $response = self::$config->api->register($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    }
+
+    public function testRegisterBuilderWithInvalidSmsOptInField200()
+    {
+        $handle = DefaultConfig::generateHandle();
+        $wallet = DefaultConfig::generateWallet();
+        $builder = new UserBuilder();
+        $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
+            ->phone('123-456-7890')->email('invalidsmsoptin@domain.go')->smsOptIn('test')->cryptoAddress($wallet->getAddress())
+            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+        $response = self::$config->api->register($user);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    }
+
     public function testRegister400()
     {
         $userFail = DefaultConfig::generateUser(DefaultConfig::$invalidHandle, '', self::$config->api->generateWallet());
@@ -85,40 +141,89 @@ class RegisterTest extends TestCase
     {
         DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$firstUserWallet = DefaultConfig::generateWallet();
+
         DefaultConfig::$walletAddressForBalance = DefaultConfig::$firstUserWallet->getAddress();
+
         DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
+        
         DefaultConfig::$businessTempAdminHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
+        
         DefaultConfig::$beneficialUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$beneficialUserWallet = DefaultConfig::generateWallet();
+        
+        DefaultConfig::$emptyPhoneUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$emptyPhoneUserWallet = DefaultConfig::generateWallet();
+        
+        DefaultConfig::$emptyEmailUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$emptyEmailUserWallet = DefaultConfig::generateWallet();
+
+        DefaultConfig::$emptyStreetAddress1UserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$emptyStreetAddress1UserWallet = DefaultConfig::generateWallet();
+
+        DefaultConfig::$invalidSmsOptInUserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$invalidSmsOptInUserWallet = DefaultConfig::generateWallet();
 
         DefaultConfig::$invalidHandle = 'invalid.silamoney.eth';
+
         $firstUser = DefaultConfig::generateUser(
             DefaultConfig::$firstUserHandle,
             'First',
             DefaultConfig::$firstUserWallet
         );
+        
         $secondUser = DefaultConfig::generateUser(
             DefaultConfig::$secondUserHandle,
             'Second',
             DefaultConfig::$secondUserWallet
         );
+        
         $tempAdmin = DefaultConfig::generateUser(
             DefaultConfig::$businessTempAdminHandle,
             'TempAdmin',
             DefaultConfig::$businessTempAdminWallet
         );
+        
         $beneficialUser = DefaultConfig::generateUser(
             DefaultConfig::$beneficialUserHandle,
             'Beneficial',
             DefaultConfig::$beneficialUserWallet
         );
+        
+        $emptyPhoneUser = DefaultConfig::generateEmptyPhoneUser(
+            DefaultConfig::$emptyPhoneUserHandle,
+            'EmptyPhone',
+            DefaultConfig::$emptyPhoneUserWallet
+        );
+        
+        $emptyEmailUser = DefaultConfig::generateEmptyEmailUser(
+            DefaultConfig::$emptyEmailUserHandle,
+            'EmptyEmail',
+            DefaultConfig::$emptyEmailUserWallet
+        );
+
+        $emptyStreetAddress1User = DefaultConfig::generateEmptyStreetAddress1User(
+            DefaultConfig::$emptyStreetAddress1UserHandle,
+            'EmptyStreetAddress1',
+            DefaultConfig::$emptyStreetAddress1UserWallet
+        );
+
+        $invalidSmsOptInUser = DefaultConfig::generateInvalidSmsOptInUser(
+            DefaultConfig::$invalidSmsOptInUserHandle,
+            'InvalidSmsOptIn',
+            DefaultConfig::$invalidSmsOptInUserWallet
+        );
+        
         return [
-            'register - first user' => [$firstUser],
-            'register - second user' => [$secondUser],
-            'register - business temp admin user' => [$tempAdmin],
-            'register - beneficial user' => [$beneficialUser]
+            'register - first user'                 => [$firstUser],
+            'register - second user'                => [$secondUser],
+            'register - business temp admin user'   => [$tempAdmin],
+            'register - beneficial user'            => [$beneficialUser],
+            'register - empty phone user'           => [$emptyPhoneUser],
+            'register - empty email user'           => [$emptyEmailUser],
+            'register - empty street address 1'     => [$emptyStreetAddress1User],
+            'register - invalid sms opt in'         => [$invalidSmsOptInUser]
         ];
     }
 }
