@@ -1,7 +1,5 @@
 # Sila SDK for PHP
 
-**NOTE:** This SDK is a Release Candidate
-
 ### Using the SDK
 A guide to the installation and configuration of this SDK can be found here: [https://docs.silamoney.com/docs/php-sdk-028-rc](https://docs.silamoney.com/docs/php-sdk-028-rc)
 
