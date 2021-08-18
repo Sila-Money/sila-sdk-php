@@ -88,20 +88,8 @@ class DocumentMessage
         $this->hash = $hash;
         $this->mimeType = $mimeType;
         $this->documentType = $documentType;
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($name)){
-            $this->name = $name;
-        }
+        $this->name = $name;
         $this->identityType = $identityType;
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($description)){
-            $this->description = $description;
-        }
-    }
-
-    /**
-     * Validate if an attribute can be sent to the API.
-     * @return bool
-     */
-     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
-        return empty($attribute) || ctype_space($attribute);
+        $this->description = $description;
     }
 }

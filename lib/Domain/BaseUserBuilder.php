@@ -30,9 +30,7 @@ class BaseUserBuilder
 
     public function address(string $address)
     {
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($address)){
-            $this->address = $address;
-        }
+        $this->address = $address;
         return $this;
     }
 
@@ -62,17 +60,13 @@ class BaseUserBuilder
 
     public function phone(string $phone)
     {
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($phone)){
-            $this->phone = $phone;
-        }
+        $this->phone = $phone;
         return $this;
     }
 
     public function email(string $email)
     {
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($email)){
-            $this->email = $email;
-        }
+        $this->email = $email;
         return $this;
     }
 
@@ -100,13 +94,5 @@ class BaseUserBuilder
             $this->smsOptIn = $smsOptIn;
         }
         return $this;
-    }
-
-    /**
-     * Validate if an attribute can be sent to the API.
-     * @return bool
-     */
-    private function isEmptyOrHasOnlyWhiteSpaces(string $attribute){
-        return empty($attribute) || ctype_space($attribute);
     }
 }

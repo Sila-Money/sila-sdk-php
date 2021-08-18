@@ -472,7 +472,7 @@ class SilaApi
     }
 
     /**
-     * Uses a provided Plaid public token to link a bank account to a verified
+     * Uses a provided Plaid public token to link a bank account to a verified 
      * entity.
      *
      * @param string $userHandle

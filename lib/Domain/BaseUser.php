@@ -120,19 +120,13 @@ class BaseUser
         ?bool $smsOptIn = null
     ) {
         $this->handle = $handle;
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($address)){
-            $this->address = $address;
-        }
+        $this->address = $address;
         $this->address2 = $address2;
         $this->city = $city;
         $this->state = $state;
         $this->zipCode = $zipCode;
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($phone)){
-            $this->phone = $phone;
-        }
-        if(!$this->isEmptyOrHasOnlyWhiteSpaces($email)){
-            $this->email = $email;
-        }
+        $this->phone = $phone;
+        $this->email = $email;
         $this->identityNumber = $identityNumber;
         $this->cryptoAddress = $cryptoAddress;
         $this->deviceFingerprint = $deviceFingerprint;
@@ -245,13 +239,5 @@ class BaseUser
     public function getSmsOptIn(): ?bool
     {
         return $this->smsOptIn;
-    }
-
-    /**
-     * Validate if an attribute can be sent to the API.
-     * @return bool
-     */
-     private function isEmptyOrHasOnlyWhiteSpaces(string $attribute = null){
-        return empty($attribute) || ctype_space($attribute);
     }
 }
