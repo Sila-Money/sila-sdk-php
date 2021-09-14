@@ -32,17 +32,26 @@ class PlaidLinkTokenMessage implements ValidInterface
     private $message;
 
     /**
+     * @var androidPackageName
+     * @Type("string") OPTIONAL
+     */
+    private $androidPackageName;
+
+    /**
      * Constructor for PlaidLinkTokenMessage object.
      *
      * @param string $userHandle
      * @param string $appHandle
+     * @param string $androidPackageName
      */
     public function __construct(
         string $userHandle,
-        string $appHandle
+        string $appHandle,
+        string $androidPackageName = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::HEADER;
+        $this->androidPackageName = $androidPackageName;
     }
 
     public function isValid(): bool

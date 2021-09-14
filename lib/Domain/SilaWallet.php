@@ -51,11 +51,17 @@ class SilaWallet implements ValidInterface
       * @Type("string")
       */
      private $nickname;
+    
+     /**
+      * @var bool
+      * @Type("bool")
+      */
+      private $default;
 
     /**
      * Constructor for SilaWallet object.
      */
-    public function __construct($private_key, $address, ?string $blockchain_network = null, ?string $nickname = null)
+    public function __construct($private_key, $address, ?string $blockchain_network = null, ?string $nickname = null, ?bool $default = null)
     {
         if (!$private_key || !$address) {
             $config = [
@@ -86,12 +92,14 @@ class SilaWallet implements ValidInterface
             $this->blockchain_address = $wallet_address;
             $this->blockchain_network = $blockchain_network;
             $this->nickname = $nickname;
+            $this->default = $default;
         } else {
             $this->address = $address;
             $this->private_key = $private_key;
             $this->blockchain_address = $address;
             $this->blockchain_network = $blockchain_network;
             $this->nickname = $nickname;
+            $this->default = $default;
         }
     }
 

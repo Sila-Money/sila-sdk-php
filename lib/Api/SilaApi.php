@@ -450,15 +450,17 @@ class SilaApi
      * Generate Plaid link token.
      *
      * @param string $userHandle
-     * @param string $userPrivateKey
+     * @param string $androidPackageName   Optional
      * @return ApiResponse
      */
      public function plaidLinkToken(
-        string $userHandle
+        string $userHandle,
+        string $androidPackageName = null
     ): ApiResponse {
         $body = new PlaidLinkTokenMessage(
             $userHandle,
-            $this->configuration->getAppHandle()
+            $this->configuration->getAppHandle(),
+            $androidPackageName
         );
         $path = "/plaid_link_token";
         $json = $this->serializer->serialize($body, 'json');
@@ -470,7 +472,7 @@ class SilaApi
     }
 
     /**
-     * Uses a provided Plaid public token to link a bank account to a verified
+     * Uses a provided Plaid public token to link a bank account to a verified 
      * entity.
      *
      * @param string $userHandle
@@ -1545,11 +1547,12 @@ class SilaApi
      * @param string|null $address
      * @param string|null $blockchainNetwork
      * @param string|null $nickname
+     * @param bool|null $default
      * @return SilaWallet
      */
-    public function generateWallet($privateKey = null, $address = null, $blockchainNetwork = null, $nickname = null): SilaWallet
+    public function generateWallet($privateKey = null, $address = null, $blockchainNetwork = null, $nickname = null, $default = null): SilaWallet
     {
-        return new SilaWallet($privateKey, $address, $blockchainNetwork, $nickname);
+        return new SilaWallet($privateKey, $address, $blockchainNetwork, $nickname, $default);
     }
 
     /**
