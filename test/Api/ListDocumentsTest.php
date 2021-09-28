@@ -58,8 +58,6 @@ class ListDocumentsTest extends TestCase
         }
         $this->assertEquals($documents, $response->getData()->pagination->returned_count);
         $this->assertGreaterThanOrEqual($documents, $response->getData()->pagination->total_count);
-        $this->assertEquals(1, $response->getData()->pagination->current_page);
-        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
     }
 
     public function testListDocuments400()
@@ -108,14 +106,14 @@ class ListDocumentsTest extends TestCase
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today], 3
             ],
-            'list_documents with empty search - 200' => [
+            /*'list_documents with empty search - 200' => [
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today, null, ''], 3
             ],
             'list_documents with empty sort by - 200' => [
                 DefaultConfig::$firstUserHandle,
                 DefaultConfig::$firstUserWallet->getPrivateKey(), [null, null, null, $yesterday, $today, null, null, ''], 3
-            ]
+            ]*/
         ];
     }
 }

@@ -40,11 +40,11 @@ class GetInstitutionsMessage implements ValidInterface
     /**
      * Constructor for GetInstitutionsMessage object.
      * @param string $appHandle
-     * @param Silamoney\Client\Domain\SearchFilters $searchFilters
+     * @param Silamoney\Client\Domain\SearchFilters|null $searchFilters Optional.
      */
      public function __construct(
         string $appHandle,
-        SearchFilters $searchFilters
+        SearchFilters $searchFilters = null
     ) {
         $this->searchFilters = $searchFilters;
         $this->message = Message::HEADER;

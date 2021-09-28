@@ -42,8 +42,7 @@ class UpdateAccount extends TestCase
             'account new',
             'account new name1'
         );
-        var_dump($response);
-        var_dump($response->getData()->changes);
+        
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->changes));
@@ -57,7 +56,6 @@ class UpdateAccount extends TestCase
             'account new',
             'account name2'
         );
-        var_dump($response);
         $this->assertEquals(403, $response->getStatusCode());
         // $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         // $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->changes));

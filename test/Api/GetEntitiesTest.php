@@ -40,13 +40,6 @@ class GetEntitiesTest extends TestCase
         $this->assertTrue($response->getData()->success);
         $this->assertIsObject($response->getData()->entities);
         $this->assertIsArray($response->getData()->entities->individuals);
-        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->individuals));
-        $this->assertIsString($response->getData()->entities->individuals[0]->handle);
-        $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
-        $this->assertIsInt($response->getData()->entities->individuals[0]->created);
-        $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);
-        $this->assertIsArray($response->getData()->entities->individuals[0]->blockchain_addresses);
-        $this->assertEquals(1, sizeof($response->getData()->entities->individuals[0]->blockchain_addresses));
         $this->assertIsArray($response->getData()->entities->businesses);
         $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->businesses));
         $this->assertIsString($response->getData()->entities->businesses[0]->handle);
@@ -65,36 +58,11 @@ class GetEntitiesTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
     }
 
-    public function testGetEntitiesWithEmptyEntityType200()
+    public function testGetEntitiesWithEmptyEntityType400()
     {
         $response = self::$config->api->getEntities('', null, 10);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertIsObject($response->getData()->entities);
-        $this->assertIsArray($response->getData()->entities->individuals);
-        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->individuals));
-        $this->assertIsString($response->getData()->entities->individuals[0]->handle);
-        $this->assertIsString($response->getData()->entities->individuals[0]->full_name);
-        $this->assertIsInt($response->getData()->entities->individuals[0]->created);
-        $this->assertEquals('active', $response->getData()->entities->individuals[0]->status);
-        $this->assertIsArray($response->getData()->entities->individuals[0]->blockchain_addresses);
-        $this->assertEquals(1, sizeof($response->getData()->entities->individuals[0]->blockchain_addresses));
-        $this->assertIsArray($response->getData()->entities->businesses);
-        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->businesses));
-        $this->assertIsString($response->getData()->entities->businesses[0]->handle);
-        $this->assertIsString($response->getData()->entities->businesses[0]->full_name);
-        $this->assertIsInt($response->getData()->entities->businesses[0]->created);
-        $this->assertEquals('active', $response->getData()->entities->businesses[0]->status);
-        $this->assertIsArray($response->getData()->entities->businesses[0]->blockchain_addresses);
-        $this->assertEquals(1, sizeof($response->getData()->entities->businesses[0]->blockchain_addresses));
-        $this->assertIsString($response->getData()->entities->businesses[0]->uuid);
-        $this->assertIsString($response->getData()->entities->businesses[0]->business_type);
-        $this->assertIsString($response->getData()->entities->businesses[0]->dba);
-        $this->assertIsObject($response->getData()->pagination);
-        $this->assertEquals(10, $response->getData()->pagination->returned_count);
-        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_count);
-        $this->assertEquals(1, $response->getData()->pagination->current_page);
-        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
     }
 
     public function testGetEntities400()

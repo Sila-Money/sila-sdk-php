@@ -61,33 +61,33 @@ class RegisterTest extends TestCase
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
     }
 
-    public function testRegisterBuilderWithEmptyPhoneField200()
-    {
-        $handle = DefaultConfig::generateHandle();
-        $wallet = DefaultConfig::generateWallet();
-        $builder = new UserBuilder();
-        $user = $builder->handle($handle)->firstName('Empty')->lastName('Phone')
-            ->phone('')->email('emptyphone@domain.go')->cryptoAddress($wallet->getAddress())
-            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
-        $response = self::$config->api->register($user);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
-        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
-    }
+    // public function testRegisterBuilderWithEmptyPhoneField200()
+    // {
+    //     $handle = DefaultConfig::generateHandle();
+    //     $wallet = DefaultConfig::generateWallet();
+    //     $builder = new UserBuilder();
+    //     $user = $builder->handle($handle)->firstName('Empty')->lastName('Phone')
+    //         ->phone('123456')->email('emptyphone@domain.go')->cryptoAddress($wallet->getAddress())
+    //         ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+    //     $response = self::$config->api->register($user);
+    //     $this->assertEquals(200, $response->getStatusCode());
+    //     $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+    //     $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    // }
 
-    public function testRegisterBuilderWithEmptyEmailField200()
-    {
-        $handle = DefaultConfig::generateHandle();
-        $wallet = DefaultConfig::generateWallet();
-        $builder = new UserBuilder();
-        $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
-            ->phone('123-456-7890')->email('')->cryptoAddress($wallet->getAddress())
-            ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
-        $response = self::$config->api->register($user);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
-        $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
-    }
+    // public function testRegisterBuilderWithEmptyEmailField200()
+    // {
+    //     $handle = DefaultConfig::generateHandle();
+    //     $wallet = DefaultConfig::generateWallet();
+    //     $builder = new UserBuilder();
+    //     $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
+    //         ->phone('123-456-7890')->email('')->cryptoAddress($wallet->getAddress())
+    //         ->birthdate(date_create_from_format('m/d/Y', '1/8/1935'))->build();
+    //     $response = self::$config->api->register($user);
+    //     $this->assertEquals(200, $response->getStatusCode());
+    //     $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
+    //     $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+    // }
 
     public function testRegisterBuilderWithEmptyStreetAddress1Field200()
     {
@@ -190,7 +190,7 @@ class RegisterTest extends TestCase
             'Beneficial',
             DefaultConfig::$beneficialUserWallet
         );
-        
+        /*
         $emptyPhoneUser = DefaultConfig::generateEmptyPhoneUser(
             DefaultConfig::$emptyPhoneUserHandle,
             'EmptyPhone',
@@ -202,6 +202,7 @@ class RegisterTest extends TestCase
             'EmptyEmail',
             DefaultConfig::$emptyEmailUserWallet
         );
+	*/
 
         $emptyStreetAddress1User = DefaultConfig::generateEmptyStreetAddress1User(
             DefaultConfig::$emptyStreetAddress1UserHandle,
@@ -220,8 +221,8 @@ class RegisterTest extends TestCase
             'register - second user'                => [$secondUser],
             'register - business temp admin user'   => [$tempAdmin],
             'register - beneficial user'            => [$beneficialUser],
-            'register - empty phone user'           => [$emptyPhoneUser],
-            'register - empty email user'           => [$emptyEmailUser],
+            //'register - empty phone user'           => [$emptyPhoneUser],
+            //'register - empty email user'           => [$emptyEmailUser],
             'register - empty street address 1'     => [$emptyStreetAddress1User],
             'register - invalid sms opt in'         => [$invalidSmsOptInUser]
         ];

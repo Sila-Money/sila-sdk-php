@@ -37,7 +37,7 @@ class GetInstitutionsTest extends TestCase
     {
         $filters = new SearchFilters();
         $filters->setInstitutionName('institution name');
-        $filters->setRoutingNumber('123456789');
+        $filters->setRoutingNumber('123456780');
         $response = self::$config->api->getInstitutions(
             $filters
         );
@@ -56,12 +56,11 @@ class GetInstitutionsTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function testGetInstitutions404()
+    public function testGetInstitutionsNoFilters200()
     {
         $filters = new SearchFilters();
         $response = self::$config->api->getInstitutions($filters);
-        $this->assertEquals(404, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
-        $this->assertStringContainsString('must be provided', $response->getData()->message);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
     }
 }
