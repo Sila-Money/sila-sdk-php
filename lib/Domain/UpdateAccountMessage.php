@@ -30,6 +30,12 @@ class UpdateAccountMessage implements ValidInterface
      * @Type("string")
      */
      private $newAccountName;
+    
+     /**
+     * @var isActive
+     * @Type("bool")
+     */
+    private $isActve;
 
     /**
      * @var Silamoney\Client\Domain\Header
@@ -55,10 +61,12 @@ class UpdateAccountMessage implements ValidInterface
         string $userHandle,
         string $appHandle,
         string $accountName,
-        string $newAccountName
+        string $newAccountName,
+        bool $isActve=true
     ) {
         $this->accountName = $accountName;
         $this->newAccountName = $newAccountName;
+        $this->isActve = $isActve;
         $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::HEADER;
     }

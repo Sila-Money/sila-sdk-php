@@ -53,7 +53,7 @@ class DodcumentsTest extends TestCase
         DefaultConfig::$fileUuid = $response->getData()->document_id;
     }
 
-    public function testEmptyNameDocument200()
+    public function testEmptyNameDocument400()
     {
         $filePath = __DIR__ . '/Images/logo-geko.png';
         $response = self::$config->api->uploadDocument(
@@ -66,16 +66,12 @@ class DodcumentsTest extends TestCase
             DefaultConfig::$identityType,
             ''
         );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
-        $this->assertIsString($response->getData()->reference_id);
-        $this->assertIsString($response->getData()->document_id);
-        DefaultConfig::$fileUuid = $response->getData()->document_id;
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
     }
 
-    public function testEmptyDescriptionDocument200()
+    public function testEmptyDescriptionDocument400()
     {
         $filePath = __DIR__ . '/Images/logo-geko.png';
         $response = self::$config->api->uploadDocument(
@@ -89,13 +85,9 @@ class DodcumentsTest extends TestCase
             null,
             ''
         );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('File uploaded successfully.', $response->getData()->message);
-        $this->assertIsString($response->getData()->reference_id);
-        $this->assertIsString($response->getData()->document_id);
-        DefaultConfig::$fileUuid = $response->getData()->document_id;
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
     }
 
     public function testDocuments400()

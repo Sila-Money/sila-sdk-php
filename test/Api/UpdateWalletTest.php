@@ -34,7 +34,7 @@ class UpdateWalletTest extends TestCase
         $this->assertIsArray($response->getData()->changes);
     }
 
-    public function testUpdateWalletWithEmptyNickname200()
+    public function testUpdateWalletWithEmptyNickname400()
     {
         $response = self::$config->api->updateWallet(
             DefaultConfig::$firstUserHandle,
@@ -42,11 +42,11 @@ class UpdateWalletTest extends TestCase
             false,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertIsString($response->getData()->message);
-        $this->assertIsObject($response->getData()->wallet);
-        $this->assertIsArray($response->getData()->changes);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertFalse($response->getData()->success);
+        //$this->assertIsString($response->getData()->message);
+        //$this->assertIsObject($response->getData()->wallet);
+        //$this->assertIsArray($response->getData()->changes);
     }
 
     public function testUpdateWallet400()

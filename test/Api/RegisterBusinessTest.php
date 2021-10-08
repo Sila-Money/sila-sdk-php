@@ -62,7 +62,7 @@ class RegisterBusinessTest extends TestCase
         $this->assertStringContainsString('successfully registered', $response->getData()->message);
     }
 
-    public function testRegisterBusinessWithEmptyBusinessWebsiteBuilder200()
+    public function testRegisterBusinessWithEmptyBusinessWebsiteBuilder400()
     {
         $handle = DefaultConfig::generateHandle();
         $wallet = DefaultConfig::generateWallet();
@@ -72,12 +72,12 @@ class RegisterBusinessTest extends TestCase
         $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
             ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->businessWebsite('')->build();
         $response = self::$config->api->registerBusiness($user);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('successfully registered', $response->getData()->message);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
     }
 
-    public function testRegisterBusinessWithEmptyDoingBusinessAsBuilder200()
+    public function testRegisterBusinessWithEmptyDoingBusinessAsBuilder400()
     {
         $handle = DefaultConfig::generateHandle();
         $wallet = DefaultConfig::generateWallet();
@@ -87,9 +87,9 @@ class RegisterBusinessTest extends TestCase
         $user = $builder->handle($handle)->entityName('Builder Company')->cryptoAddress($wallet->getAddress())
             ->businessType(DefaultConfig::$businessType)->naicsCode(DefaultConfig::$naicsCode)->doingBusinessAs('')->build();
         $response = self::$config->api->registerBusiness($user);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('successfully registered', $response->getData()->message);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
     }
 
     public function testRegisterBusiness400()
@@ -214,8 +214,8 @@ class RegisterBusinessTest extends TestCase
 
         return [
             'register - business user' => [$businessUser],
-            'register - business user with empty business website' => [$businessUserWithEmptyBusinessWebsite],
-            'register - business user with empty doing business as' => [$businessUserWithEmptyDoingBusinessAs]
+            //'register - business user with empty business website' => [$businessUserWithEmptyBusinessWebsite],
+            //'register - business user with empty doing business as' => [$businessUserWithEmptyDoingBusinessAs]
         ];
     }
 }

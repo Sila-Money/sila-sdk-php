@@ -51,7 +51,7 @@ class IssueSilaTest extends TestCase
         DefaultConfig::$issueTransactionId = $response->getData()->getTransactionId();
     }
 
-    public function testIssueSilaWithEmptyBusinessUuid200()
+    public function testIssueSilaWithEmptyBusinessUuid400()
     {
         $response = self::$config->api->issueSila(
             DefaultConfig::$firstUserHandle,
@@ -62,11 +62,7 @@ class IssueSilaTest extends TestCase
             '',
             AchType::STANDARD()
         );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
-        $this->assertStringContainsString(DefaultConfig::SUCCESS_REGEX, $response->getData()->getMessage());
-        $this->assertIsString($response->getData()->getTransactionId());
-        DefaultConfig::$issueTransactionId = $response->getData()->getTransactionId();
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testIssueSila200Descriptor()

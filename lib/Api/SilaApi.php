@@ -340,20 +340,26 @@ class SilaApi
      * @param string $userPrivateKey
      * @param string $accountName
      * @param string $newAccountName
+     * @param bool|true $isActive Optional
      * @return ApiResponse
      */
     public function updateAccount(
         string $userHandle,
         string $userPrivateKey,
         string $accountName,
-        string $newAccountName
+        string $newAccountName,
+        bool $isActive=true
     ): ApiResponse {
         $body = new UpdateAccountMessage(
             $userHandle,
             $this->configuration->getAppHandle(),
             $accountName,
-            $newAccountName
+            $newAccountName,
+            $isActive
         );
+        
+        return $body;
+
         $path = "/update_account";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -535,21 +541,21 @@ class SilaApi
     /**
      * Gets a list of institutions related to a linked account.
      *
-     * @param SearchFilters $filters
+     * @param SearchFilters|null $filters Optional
      * @return ApiResponse
      * @throws ClientException
      */
-     public function getInstitutions(SearchFilters $filters): ApiResponse
-     {
-         $body = new GetInstitutionsMessage($this->configuration->getAppHandle(), $filters);
-         $path = '/get_institutions';
-         $json = $this->serializer->serialize($body, 'json');
-         $headers = [
-             SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-         ];
-         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, GetInstitutionsResponse::class);
-     }
+    public function getInstitutions(SearchFilters $filters = null): ApiResponse
+    {
+        $body = new GetInstitutionsMessage($this->configuration->getAppHandle(), $filters);
+        $path = '/get_institutions';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+       return $this->prepareResponse($response, GetInstitutionsResponse::class);
+    }
 
     public function getAccountBalance(string $userHandle, string $userPrivateKey, string $accontName): ApiResponse
     {

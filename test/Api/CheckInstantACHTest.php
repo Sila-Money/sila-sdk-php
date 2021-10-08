@@ -41,8 +41,8 @@ class CheckInstantACHTest extends TestCase
      {
         $response = self::$config->api->checkInstantACH($handle, $userPrivateKey);
         $statusCode = $response->getStatusCode();
-        $status = $response->getData()->getStatus();
-        $message = $response->getData()->getMessage();
+        //$status = $response->getData()->getStatus();
+        //$message = $response->getData()->getMessage();
         $this->assertEquals(200, $statusCode);
      }
 
@@ -56,9 +56,9 @@ class CheckInstantACHTest extends TestCase
     {
         $response = self::$config->api->checkInstantACH($handle, $userPrivateKey, $accountName);
         $statusCode = $response->getStatusCode();
-        $status = $response->getData()->getStatus();
-        $message = $response->getData()->getMessage();
         $this->assertEquals(200, $statusCode);
+        //$status = $response->getData()->getStatus();
+        //$message = $response->getData()->getMessage();
     }
 
     public function testCheckInstantACH400()
