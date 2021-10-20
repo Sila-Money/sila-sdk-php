@@ -63,7 +63,7 @@ class Entity extends BaseEntity implements ValidInterface
     public function isValid(): bool
     {
         $notEmptyString = v::stringType()->notEmpty();
-        return v::date()->validate($this->birthdate)
+        return ($this->birthdate === null ||  v::date()->validate($this->birthdate))
             && $notEmptyString->validate($this->entityName)
             && $notEmptyString->validate($this->firstName)
             && $notEmptyString->validate($this->lastName)
