@@ -26,12 +26,6 @@ class BankAccountMessage implements ValidInterface
     private $amount;
 
     /**
-     * @var string
-     * @Type("string")
-     */
-    private $accountName;
-
-    /**
      * @var Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
@@ -48,6 +42,18 @@ class BankAccountMessage implements ValidInterface
      * @Type("string")
      */
     private $descriptor;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $accountName;
+ 
+    /**
+     * @var string
+     * @Type("string")
+     */
+   private $cardName;
 
     /**
      * @var string
@@ -71,20 +77,30 @@ class BankAccountMessage implements ValidInterface
      * @param Message $message
      * @param string|null $descriptor
      * @param string|null $businessUuid
+     * @param AchType|null $processingType
+     * @param string|null $cardName
      */
     public function __construct(
         string $userHandle,
-        string $accountName,
+        string $accountName = null,
         float $amount,
         string $appHandle,
         Message $message,
         string $descriptor = null,
         string $businessUuid = null,
-        AchType $processingType = null
+        AchType $processingType = null,
+        $cardName = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->amount = $amount;
-        $this->accountName = $accountName;
+        if($accountName !== null) {
+            $this->accountName = $accountName;
+        } else if($cardName !== null) {
+            $this->cardName = $cardName;
+        } else {
+            $this->accountName = $accountName;
+        }
+
         $this->message = $message;
         $this->descriptor = $descriptor;
         $this->businessUuid = $businessUuid;
