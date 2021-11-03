@@ -54,10 +54,10 @@ class LinkCardMessage implements ValidInterface
      *
      * @param string $appHandle
      * @param string $userHandle
-     * @param string $token
-     * @param string $message
      * @param string $cardName
+     * @param string $token
      * @param string $accountPostalCode
+     * @param string $message
      */
     public function __construct(
         string $appHandle,

@@ -93,7 +93,7 @@ use Silamoney\Client\Domain\{
     GetCardsMessage,
     DeleteCardMessage,
     DeleteCardResponse,
-    DeleteTransactionMessage,
+    ReverseTransactionMessage,
     GetWebhooksMessage,
     GetWebhooksResponse
 };
@@ -385,8 +385,8 @@ class SilaApi
      * @param string $userPrivateKey
      * @param string $cardName
      * @param string $token
-     * @param string|null $message
      * @param string|null $accountPostalCode
+     * @param string|null $message
      * @return ApiResponse
      */
     public function linkCard(
@@ -394,16 +394,16 @@ class SilaApi
         string $userPrivateKey,
         string $cardName,
         string $token,
-        string $message = null,
-        string $accountPostalCode = null
+        string $accountPostalCode = null,
+        string $message = null
     ): ApiResponse {
         $body = new LinkCardMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
             $cardName,
             $token,
-            $message,
-            $accountPostalCode
+            $accountPostalCode,
+            $message
         );
         $path = "/link_card";
         $json = $this->serializer->serialize($body, 'json');
@@ -828,7 +828,7 @@ class SilaApi
     public function reverseTransactions(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
     {
         $path = '/reverse_transaction';
-        $body = new DeleteTransactionMessage($this->configuration->getAppHandle(), $userHandle, $transactionId);
+        $body = new ReverseTransactionMessage($this->configuration->getAppHandle(), $userHandle, $transactionId);
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
             self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),

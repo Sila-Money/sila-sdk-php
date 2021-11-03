@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Delete Transaction Message
+ * Reverse Transaction Message
  * PHP version 7.2
  */
 
@@ -10,13 +10,13 @@ namespace Silamoney\Client\Domain;
 use JMS\Serializer\Annotation\Type;
 
 /**
- * Delete Transaction Message
- * Object sent in the delete transaction method.
+ * Reverse Transaction Message
+ * Object sent in the reverse transaction method.
  * @category Class
  * @package  Silamoney\Client
  * @author   Shahid Ahmed Sheikh <shahid.sheikh@silamoney.com>
  */
-class DeleteTransactionMessage extends BaseMessage
+class ReverseTransactionMessage extends BaseMessage
 {
     /**
      * @var string
@@ -25,7 +25,7 @@ class DeleteTransactionMessage extends BaseMessage
     private $transactionId;
 
     /**
-     ** Constructor for DeleteWalletMessage object.
+     ** Constructor for ReverseTransactionMessage object.
      *
      * @param string $userHandle
      * @param string $appHandle
