@@ -149,7 +149,7 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $cardAccountName;
+    private $cardName;
 
     /**
      * @var string
@@ -186,7 +186,7 @@ class SearchFilters implements ValidInterface
             && ($this->routingNumber === null || v::stringType()->notEmpty()->validate($this->routingNumber))
             && ($this->accountType === null || v::stringType()->notEmpty()->validate($this->accountType))
             && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName))
-            && ($this->cardAccountName === null || v::stringType()->notEmpty()->validate($this->cardAccountName))
+            && ($this->cardName === null || v::stringType()->notEmpty()->validate($this->cardName))
             && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress))
             && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName));
     }
@@ -451,14 +451,14 @@ class SearchFilters implements ValidInterface
      }
 
     /**
-     * Sets the cardAccountName to the filters.
+     * Sets the cardName to the filters.
      *
-     * @param string $cardAccountName
+     * @param string $cardName
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setCardAccountName(string $cardAccountName): SearchFilters
+    public function setCardName(string $cardName): SearchFilters
     {
-       $this->cardAccountName = $cardAccountName;
+       $this->cardName = $cardName;
        return $this;
     }
 

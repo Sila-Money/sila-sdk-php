@@ -61,6 +61,12 @@ class Transaction
      */
     public $bankAccountName;
     /**
+     * String field used for the card name.
+     * @var string
+     * @Type("string")
+     */
+    public $cardName;
+    /**
      * String field used for the handle address.
      * @var string
      * @Type("string")
