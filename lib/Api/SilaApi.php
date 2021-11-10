@@ -87,7 +87,15 @@ use Silamoney\Client\Domain\{
     RegistrationDataOperation,
     RegistrationDataType,
     TransferResponse,
-    UnlinkBusinessMemberMessage
+    UnlinkBusinessMemberMessage,
+    LinkCardMessage,
+    LinkCardResponse,
+    GetCardsMessage,
+    DeleteCardMessage,
+    DeleteCardResponse,
+    ReverseTransactionMessage,
+    GetWebhooksMessage,
+    GetWebhooksResponse
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -371,6 +379,94 @@ class SilaApi
     }
 
     /**
+     * Uses a tabapay token to link a card to a verified entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $cardName
+     * @param string $token
+     * @param string|null $accountPostalCode
+     * @param string|null $message
+     * @return ApiResponse
+     */
+    public function linkCard(
+        string $userHandle,
+        string $userPrivateKey,
+        string $cardName,
+        string $token,
+        string $accountPostalCode = null,
+        string $message = null
+    ): ApiResponse {
+        $body = new LinkCardMessage(
+            $this->configuration->getAppHandle(),
+            $userHandle,
+            $cardName,
+            $token,
+            $accountPostalCode,
+            $message
+        );
+        $path = "/link_card";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, LinkCardResponse::class);
+    }
+
+    /**
+     * Gets a paginated list of "wallets"/blockchain addresses attached to a user handle.
+     *
+     * @param string $userHandle
+     * @param SearchFilters $searchFilters
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getCards(
+        string $userHandle,
+        string $userPrivateKey
+    ): ApiResponse {
+        $body = new GetCardsMessage($userHandle, $this->configuration->getAppHandle());
+        $path = '/get_cards';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Uses a card name to delete a card from a verified entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $cardName
+     * @return ApiResponse
+     */
+    public function deleteCard(
+        string $userHandle,
+        string $userPrivateKey,
+        string $cardName
+    ): ApiResponse {
+        $body = new DeleteCardMessage(
+            $this->configuration->getAppHandle(),
+            $userHandle,
+            $cardName
+        );
+        $path = "/delete_card";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, DeleteCardResponse::class);
+    }
+    /**
      * Verify KYC status of an entity in other application.
      *
      * @param string $userHandle
@@ -586,12 +682,14 @@ class SilaApi
     public function issueSila(
         string $userHandle,
         float $amount,
-        string $accountName,
+        string $accountName = null,
         string $userPrivateKey,
         string $descriptor = null,
         string $businessUuid = null,
-        AchType $processingType = null
-    ): ApiResponse {
+        AchType $processingType = null,
+        string $cardName = null
+    ): ApiResponse 
+    {
         $body = new BankAccountMessage(
             $userHandle,
             $accountName,
@@ -600,7 +698,8 @@ class SilaApi
             Message::ISSUE(),
             $descriptor,
             $businessUuid,
-            $processingType
+            $processingType,
+            $cardName
         );
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -669,11 +768,12 @@ class SilaApi
     public function redeemSila(
         string $userHandle,
         float $amount,
-        string $accountName,
+        string $accountName = null,
         string $userPrivateKey,
         string $descriptor = null,
         string $businessUuid = null,
-        AchType $processingType = null
+        AchType $processingType = null,
+        string $cardName = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -683,7 +783,8 @@ class SilaApi
             Message::REDEEM(),
             $descriptor,
             $businessUuid,
-            $processingType
+            $processingType,
+            $cardName
         );
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -717,6 +818,26 @@ class SilaApi
         return $this->prepareResponse($response, GetTransactionsResponse::class);
     }
 
+    /**
+     * Reverse a transaction using the transactionId
+     * @param string $userHandle The user handle
+     * @param string $userPrivateKey The user's private key
+     * @param string $transactionId The transaction id to cancel
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function reverseTransactions(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
+    {
+        $path = '/reverse_transaction';
+        $body = new ReverseTransactionMessage($this->configuration->getAppHandle(), $userHandle, $transactionId);
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+    
     /**
      * Gets Sila balance for a given blockchain address.
      *
@@ -1612,6 +1733,28 @@ class SilaApi
         return $this->prepareResponse($response);
     }
 
+
+    /**
+     * Gets array of user handle's webhooks .
+     *
+     * @param string|null $userPrivateKey
+     * @param \Silamoney\Client\Domain\SearchFilters $filters
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function getWebhooks(string $userPrivateKey = null, SearchFilters $filters): ApiResponse
+    {
+        $body = new GetWebhooksMessage($this->configuration->getAppHandle(), $filters);
+        $path = '/get_webhooks';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, GetWebhooksResponse::class);
+    }
+
     /**
      * @param int|null $page
      * @param int|null $perPage
@@ -1692,6 +1835,7 @@ class SilaApi
             $body = $this->serializer->deserialize($contents, $className, 'json');
         } else {
             $body = json_decode($contents);
+            //$body = $this->serializer->deserialize($contents, BaseResponse::class, 'json');
         }
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
     }

@@ -57,17 +57,18 @@ class LinkAccountsTest extends TestCase
         $this->assertTrue($response->getSuccess());
     }
 
-    public function testLinkAccountDirect400()
+    public function testLinkAccountDirect200()
     {
         $response = self::$config->api->linkAccountDirect(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            '123456789012',
+            '12345678912',
             '123456780',
             'sync_direct'
         );
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertFalse($response->getData()->getSuccess());
+        $this->assertTrue($response->getData()->getSuccess());
+        $this->assertNotNull($response->getData()->getSuccess());
+        $this->assertEquals('sync_direct', $response->getData()->getAccountName());
     }
 
     /**

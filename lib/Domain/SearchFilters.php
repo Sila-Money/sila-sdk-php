@@ -26,6 +26,36 @@ class SearchFilters implements ValidInterface
     private $transactionId;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $userHandle;
+
+    /**
+     * @var bool
+     * @Type("bool")
+     */
+    private $delivered;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $endpointName;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $eventType;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $uuid;
+    
+    /**
      * @var int
      * @Type("int")
      */
@@ -119,6 +149,12 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
+    private $cardName;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
      private $blockchainAddress;
 
      /**
@@ -130,6 +166,11 @@ class SearchFilters implements ValidInterface
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
+            && ($this->userHandle === null || v::stringType()->notEmpty()->validate($this->userHandle))
+            && ($this->delivered === null || v::boolType()->validate($this->delivered))
+            && ($this->endpointName === null || v::stringType()->notEmpty()->validate($this->endpointName))
+            && ($this->eventType === null || v::stringType()->notEmpty()->validate($this->eventType))
+            && ($this->uuid === null || v::stringType()->notEmpty()->validate($this->uuid))
             && ($this->referenceId === null || v::stringType()->notEmpty()->validate($this->referenceId))
             && ($this->statuses === null || v::arrayType()->validate($this->statuses))
             && ($this->transactionTypes === null || v::arrayType()->validate($this->transactionTypes))
@@ -145,6 +186,7 @@ class SearchFilters implements ValidInterface
             && ($this->routingNumber === null || v::stringType()->notEmpty()->validate($this->routingNumber))
             && ($this->accountType === null || v::stringType()->notEmpty()->validate($this->accountType))
             && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName))
+            && ($this->cardName === null || v::stringType()->notEmpty()->validate($this->cardName))
             && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress))
             && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName));
     }
@@ -160,7 +202,66 @@ class SearchFilters implements ValidInterface
         $this->transactionId = $transactionId;
         return $this;
     }
-
+    
+    /**
+     * Sets the user handle to the filters.
+     *
+     * @param string $userHandle
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setUserHandle(string $userHandle): SearchFilters
+    {
+        $this->userHandle = $userHandle;
+        return $this;
+    }
+    
+    /**
+     * Sets the delivered to true in the filters.
+     *
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setDelivered(): SearchFilters
+    {
+        $this->delivered = true;
+        return $this;
+    }
+    
+    /**
+     * Sets the endpoint name to the filters.
+     *
+     * @param string $endpointName
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setEndpointName(string $endpointName): SearchFilters
+    {
+        $this->endpointName = $endpointName;
+        return $this;
+    }
+    
+    /**
+     * Sets the event type to the filters.
+     *
+     * @param string $eventType
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setEventType(string $eventType): SearchFilters
+    {
+        $this->eventType = $eventType;
+        return $this;
+    }
+    
+    /**
+     * Sets the uuid to the filters.
+     *
+     * @param string $uuid
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setUuid(string $uuid): SearchFilters
+    {
+        $this->uuid = $uuid;
+        return $this;
+    }
+    
     /**
      * Sets the transactions per page to the filters.
      *
@@ -348,6 +449,18 @@ class SearchFilters implements ValidInterface
         $this->bankAccountName = $bankAccountName;
         return $this;
      }
+
+    /**
+     * Sets the cardName to the filters.
+     *
+     * @param string $cardName
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setCardName(string $cardName): SearchFilters
+    {
+       $this->cardName = $cardName;
+       return $this;
+    }
 
      /**
      * Sets the blockchainAddress to the filters.
