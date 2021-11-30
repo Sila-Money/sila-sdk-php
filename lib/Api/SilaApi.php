@@ -30,6 +30,7 @@ use Silamoney\Client\Domain\{
     CheckHandleResponse,
     CheckPartnerKYCMessage,
     CheckInstantACHMessage,
+    CheckInstantACHResponse,
     CheckPartnerKYCResponse,
     Country,
     DeleteRegistrationMessage,
@@ -366,8 +367,6 @@ class SilaApi
             $isActive
         );
         
-        return $body;
-
         $path = "/update_account";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -519,7 +518,7 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, BaseResponse::class);
+        return $this->prepareResponse($response, CheckInstantACHResponse::class);
     }
 
     /**

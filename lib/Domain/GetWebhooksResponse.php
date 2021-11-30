@@ -50,6 +50,7 @@ class GetWebhooksResponse
     public $totalCount;
     /**
      * webhooks list used for the webhooks.
+     * @Type("array")
      */
     public $webhooks;
     /**
