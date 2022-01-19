@@ -385,7 +385,6 @@ class SilaApi
      * @param string $cardName
      * @param string $token
      * @param string|null $accountPostalCode
-     * @param string|null $message
      * @return ApiResponse
      */
     public function linkCard(
@@ -798,7 +797,6 @@ class SilaApi
      *
      * @param string $userHandle
      * @param \Silamoney\Client\Domain\SearchFilters $filters
-     * @param string|null $userPrivateKey
      * @return ApiResponse
      * @throws ClientException
      * @throws Exception
