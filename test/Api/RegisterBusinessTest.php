@@ -168,7 +168,14 @@ class RegisterBusinessTest extends TestCase
             5415,
             // DefaultConfig::$businessType
             'Corporation',
-            true
+            null,//true,
+            null,
+            null,
+            null,
+            true,
+            "Crypto Alias",
+            "Address Alias",
+            "Contact Alias"
         );
 
         $businessUserWithEmptyBusinessWebsite = new BusinessUser(

@@ -29,12 +29,6 @@ class LinkCardMessage implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $message;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
     private $token;
 
     /**
@@ -57,19 +51,16 @@ class LinkCardMessage implements ValidInterface
      * @param string $cardName
      * @param string $token
      * @param string $accountPostalCode
-     * @param string $message
      */
     public function __construct(
         string $appHandle,
         string $userHandle,
         string $cardName = null,
         string $token,
-        string $accountPostalCode = null,
-        string $message = null
+        string $accountPostalCode = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->token = $token;
-        $this->message = $message;
         $this->accountPostalCode = $accountPostalCode;
         $this->cardName = $cardName;
     }
@@ -78,7 +69,6 @@ class LinkCardMessage implements ValidInterface
     {
         return v::notOptional()->validate($this->header)
             && $this->header->isValid()
-            && v::stringType()->notEmpty()->validate($this->message)
             && v::stringType()->notEmpty()->validate($this->token)
             && ($this->accountPostalCode === null || v::stringType()->validate($this->accountPostalCode))
             && ($this->cardName === null || v::stringType()->validate($this->cardName));

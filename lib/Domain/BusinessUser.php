@@ -75,6 +75,9 @@ class BusinessUser extends BaseUser
      * @param string|null $businessWebsite
      * @param string|null $deviceFingerprint
      * @param bool $smsOptIn
+     * @param string $cryptoAlias
+     * @param string $addressAlias
+     * @param string $contactAlias
      * @return \Silamoney\Client\Domain\BusinessUser
      */
     public function __construct(
@@ -95,7 +98,10 @@ class BusinessUser extends BaseUser
         ?string $doingBusinessAs = null,
         ?string $businessWebsite = null,
         ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = false
+        ?bool $smsOptIn = false,
+        ?string $cryptoAlias = null,
+        ?string $addressAlias = null,
+        ?string $contactAlias = null
     ) {
         parent::__construct(
             $handle,
@@ -109,7 +115,10 @@ class BusinessUser extends BaseUser
             $identityNumber,
             $cryptoAddress,
             $deviceFingerprint,
-            $smsOptIn
+            $smsOptIn,
+            $cryptoAlias,
+            $addressAlias,
+            $contactAlias
         );
         $this->name = $name;
         $this->naicsCode = $naicsCode;

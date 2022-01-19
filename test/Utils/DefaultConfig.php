@@ -292,7 +292,10 @@ class DefaultConfig
             $wallet->getAddress(),
             $birthDate,
             'fingerprint',
-            true
+            true,
+            "Crypto Alias",
+            "Address Alias",
+            "Contact Alias"
         );
     }
 

@@ -393,16 +393,14 @@ class SilaApi
         string $userPrivateKey,
         string $cardName,
         string $token,
-        string $accountPostalCode = null,
-        string $message = null
+        string $accountPostalCode = null
     ): ApiResponse {
         $body = new LinkCardMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
             $cardName,
             $token,
-            $accountPostalCode,
-            $message
+            $accountPostalCode
         );
         $path = "/link_card";
         $json = $this->serializer->serialize($body, 'json');
@@ -805,7 +803,7 @@ class SilaApi
      * @throws ClientException
      * @throws Exception
      */
-    public function getTransactions(string $userHandle, SearchFilters $filters, string $userPrivateKey = null): ApiResponse
+    public function getTransactions(string $userHandle, SearchFilters $filters): ApiResponse
     {
         $body = new GetTransactionsMessage($userHandle, $this->configuration->getAppHandle(), $filters);
         $path = '/get_transactions';
@@ -1095,7 +1093,7 @@ class SilaApi
      */
     public function registerBusiness(BusinessUser $business): ApiResponse
     {
-        $path = '/register';
+        $path = "/register";
         $body = new BusinessEntityMessage($this->configuration->getAppHandle(), $business);
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -1296,7 +1294,7 @@ class SilaApi
      * @param string $email The new email
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, ?string $email = null)
+    public function updateEmail(string $userHandle, string $userPrivateKey, string $uuid, ?string $email = null): ApiResponse
     {
         $body = new EmailMessage($this->configuration->getAppHandle(), $userHandle, $email, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::EMAIL(), $body);
