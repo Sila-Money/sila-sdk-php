@@ -82,13 +82,31 @@ class BaseUser
      * @var string
      * @Type("string")
      */
-     protected $deviceFingerprint;
+    protected $deviceFingerprint;
 
     /**
      * @var bool
      * @Type("bool")
      */
-     protected $smsOptIn;
+    protected $smsOptIn;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    protected $cryptoAlias;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    protected $addressAlias;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    protected $contactAlias;
 
     /**
      * @param string $handle
@@ -103,6 +121,9 @@ class BaseUser
      * @param string $cryptoAddress
      * @param string|null $deviceFingerprint
      * @param bool|null $smsOptIn
+     * @param string $cryptoAlias
+     * @param string $addressAlias
+     * @param string $contactAlias
      * @return \Silamoney\Client\Domain\BaseUser
      */
     public function __construct(
@@ -117,7 +138,10 @@ class BaseUser
         ?string $identityNumber = null,
         string $cryptoAddress,
         ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = null
+        ?bool $smsOptIn = null,
+        ?string $cryptoAlias = null,
+        ?string $addressAlias = null,
+        ?string $contactAlias = null
     ) {
         $this->handle = $handle;
         $this->address = $address;
@@ -131,6 +155,9 @@ class BaseUser
         $this->cryptoAddress = $cryptoAddress;
         $this->deviceFingerprint = $deviceFingerprint;
         $this->smsOptIn = $smsOptIn;
+        $this->cryptoAlias = $cryptoAlias;
+        $this->addressAlias = $addressAlias;
+        $this->contactAlias = $contactAlias;
     }
 
     /**
@@ -232,12 +259,41 @@ class BaseUser
          return $this->deviceFingerprint;
      }
 
-     /**
+    /**
      * Gets the sms opt-in address.
      * @return bool
      */
     public function getSmsOptIn(): ?bool
     {
         return $this->smsOptIn;
+    }
+    
+    
+    
+    /**
+     * Gets the Crypto Alias.
+     * @return bool
+     */
+    public function getCryptoAlias(): ?bool
+    {
+        return $this->cryptoAlias;
+    }
+
+    /**
+     * Gets the Address Alias.
+     * @return bool
+     */
+    public function getAddressAlias(): ?bool
+    {
+        return $this->addressAlias;
+    }
+
+    /**
+     * Gets the Contact Alias.
+     * @return bool
+     */
+    public function getContactAlias(): ?bool
+    {
+        return $this->contactAlias;
     }
 }

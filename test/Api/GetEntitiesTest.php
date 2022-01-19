@@ -47,7 +47,7 @@ class GetEntitiesTest extends TestCase
         $this->assertIsInt($response->getData()->entities->businesses[0]->created);
         $this->assertEquals('active', $response->getData()->entities->businesses[0]->status);
         $this->assertIsArray($response->getData()->entities->businesses[0]->blockchain_addresses);
-        $this->assertEquals(1, sizeof($response->getData()->entities->businesses[0]->blockchain_addresses));
+        $this->assertGreaterThanOrEqual(1, sizeof($response->getData()->entities->businesses[0]->blockchain_addresses));
         $this->assertIsString($response->getData()->entities->businesses[0]->uuid);
         $this->assertIsString($response->getData()->entities->businesses[0]->business_type);
         $this->assertIsString($response->getData()->entities->businesses[0]->dba);
