@@ -168,11 +168,68 @@ class Transaction
      * @var int
      * @Type("int")
      */
-     public $traceNumber;
-     /**
+    public $traceNumber;
+
+    /**
      * This field is only set for issue and redeem transactions.
      * @var string
      * @Type("string")
      */
     public $addenda;
+
+    /**
+     * This field is only .
+     * @var string
+     * @Type("string")
+     */
+    public $silaLedgerType;
+
+    /**
+     * String field used for the destination Sila Ledger Type field .
+     * @var string
+     * @Type("string")
+     */
+    public $destinationSilaLedgerType;
+
+    /**
+     * String field used for the ledger accoun id field .
+     * @var string
+     * @Type("string")
+     */
+    public $ledgerAccountId;
+    
+    /**
+     * String field used for the destination ledger accoun id field .
+     * @var string
+     * @Type("string")
+     */
+    public $destinationLedgerAccounId;
+
+    /**
+     * String field used for the source id field.
+     * @var string
+     * @Type("string")
+     */
+    public $sourceId;
+
+    /**
+     * String field used for the destination id field.
+     * @var string
+     * @Type("string")
+     */
+    public $destinationId;
+
+    /**
+     * String field used for the effective date field.
+     * @var string
+     * @Type("string")
+     */
+    public $effectiveDate;
+
+    /**
+     * Integer field used for the effective epoch.
+     * @var int
+     * @Type("int")
+     */
+    public $effectiveEpoch;
 }
