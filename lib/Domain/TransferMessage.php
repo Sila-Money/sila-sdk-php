@@ -68,6 +68,18 @@ class TransferMessage implements ValidInterface
     private $businessUuid;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $sourceId;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $destinationId;
+
+    /**
      ** Constructor for TransferMessage object.
      *
      * @param string $userHandle
@@ -76,6 +88,9 @@ class TransferMessage implements ValidInterface
      * @param string $appHandle
      * @param string $destination_address
      * @param string $descriptor
+     * @param string|null $businessUuid
+     * @param string|null $sourceId
+     * @param string|null $destinationId
      */
     public function __construct(
         string $userHandle,
@@ -85,7 +100,9 @@ class TransferMessage implements ValidInterface
         string $destinationAddress = null,
         string $destinationWallet = null,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        string $sourceId = null,
+        string $destinationId = null
     ) {
         $this->amount = $amount;
         $this->destination = $destination;
@@ -95,6 +112,8 @@ class TransferMessage implements ValidInterface
         $this->message = Message::TRANSFER;
         $this->descriptor = $descriptor;
         $this->businessUuid = $businessUuid;
+        $this->sourceId = $sourceId;
+        $this->destinationId = $destinationId;
     }
 
     public function isValid(): bool

@@ -68,6 +68,18 @@ class BankAccountMessage implements ValidInterface
     private $processingType;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $sourceId;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $destinationId;
+
+    /**
      * Constructor for BankAccountMessage object.
      *
      * @param string $userHandle
@@ -79,6 +91,8 @@ class BankAccountMessage implements ValidInterface
      * @param string|null $businessUuid
      * @param AchType|null $processingType
      * @param string|null $cardName
+     * @param string|null $sourceId
+     * @param string|null $destinationId
      */
     public function __construct(
         string $userHandle,
@@ -89,7 +103,9 @@ class BankAccountMessage implements ValidInterface
         string $descriptor = null,
         string $businessUuid = null,
         AchType $processingType = null,
-        $cardName = null
+        string $cardName = null,
+        string $sourceId = null,
+        string $destinationId = null
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->amount = $amount;
@@ -105,6 +121,8 @@ class BankAccountMessage implements ValidInterface
         $this->descriptor = $descriptor;
         $this->businessUuid = $businessUuid;
         $this->processingType = $processingType;
+        $this->sourceId = $sourceId;
+        $this->destinationId = $destinationId;
     }
 
     public function isValid(): bool

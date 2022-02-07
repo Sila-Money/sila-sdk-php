@@ -96,7 +96,12 @@ use Silamoney\Client\Domain\{
     DeleteCardResponse,
     ReverseTransactionMessage,
     GetWebhooksMessage,
-    GetWebhooksResponse
+    GetWebhooksResponse,
+    GetPaymentMethodsMessage,
+    VirtualAccountMessage,
+    VirtualAccountResponse,
+    GetVirtalAccountMessage,
+    UpdateVirtualAccountMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -233,6 +238,144 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareBaseResponse($response, RegisterResponse::class);
+    }
+
+    /**
+     * Gets a paginated list of payment methods attached to a user handle.
+     *
+     * @param string $userHandle
+     * @param SearchFilters $searchFilters
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getPaymentMethods(
+        string $userHandle,
+        string $userPrivateKey,
+        SearchFilters $searchFilters = null
+    ): ApiResponse {
+        $body = new GetPaymentMethodsMessage($userHandle, $this->configuration->getAppHandle(), $searchFilters);
+        $path = '/get_payment_methods';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Opens a new Virtual Account for the given to a verified
+     * entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $virtualAccountName
+     * @return ApiResponse
+     */
+    public function openVirtualAccount(
+        string $userHandle,
+        string $userPrivateKey,
+        string $virtualAccountName
+    ): ApiResponse {
+        $body = new VirtualAccountMessage(
+            $userHandle,
+            $virtualAccountName,
+            $this->configuration->getAppHandle()
+        );
+        $path = "/open_virtual_account";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, VirtualAccountResponse::class);
+    }
+
+    /**
+     * Gets details about of the user virtual account using virtual account id.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $virtualAccountId
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getVirtualAccount(string $userHandle, string $userPrivateKey, string $virtualAccountId): ApiResponse
+    {
+        $body = new GetVirtalAccountMessage($userHandle, $virtualAccountId, $this->configuration->getAppHandle());
+        $path = '/get_virtual_account';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Gets a paginated list of "wallets"/blockchain addresses attached to a user handle.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    /**
+     * Gets a paginated list of the user virtual accounts attached to a user handle.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param SearchFilters $searchFilters
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getVirtualAccounts(
+        string $userHandle,
+        string $userPrivateKey,
+        SearchFilters $searchFilters = null
+    ): ApiResponse {
+        $body = new GetWalletsMessage($userHandle, $this->configuration->getAppHandle(), $searchFilters);
+        $path = '/get_virtual_accounts';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+    
+    /**
+     * Updates nickname and/or default status of a wallet.
+     *
+     * @param string $userHandle
+     * @param string $virtualAccountId
+     * @param string $virtualAccountName
+     * @param boolean $active
+     * @param string $userPrivateKey
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function UpdateVirtualAccount(
+        string $userHandle,
+        string $userPrivateKey,
+        string $virtualAccountId,
+        string $virtualAccountName,
+        ?bool $active = null
+    ): ApiResponse 
+    {
+        $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $active);
+        $path = '/update_virtual_account';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     /**
@@ -673,6 +816,9 @@ class SilaApi
      * @param string|null $descriptor Optional. Max Length 100
      * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
      * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
+     * @param string $cardName Optional field
+     * @param string $sourceId Optional field
+     * @param string $destinationId Optional field
      * @return ApiResponse
      */
     public function issueSila(
@@ -683,7 +829,9 @@ class SilaApi
         string $descriptor = null,
         string $businessUuid = null,
         AchType $processingType = null,
-        string $cardName = null
+        string $cardName = null,
+        string $sourceId = null,
+        string $destinationId = null
     ): ApiResponse 
     {
         $body = new BankAccountMessage(
@@ -695,7 +843,9 @@ class SilaApi
             $descriptor,
             $businessUuid,
             $processingType,
-            $cardName
+            $cardName,
+            $sourceId,
+            $destinationId
         );
         $path = '/issue_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -716,6 +866,9 @@ class SilaApi
      * @param string $userPrivateKey
      * @param string $destinationAddress
      * @param string $descriptor
+     * @param string $businessUuid Optional field
+     * @param string $sourceId Optional field
+     * @param string $destinationId Optional field
      * @return ApiResponse
      */
     public function transferSila(
@@ -726,7 +879,9 @@ class SilaApi
         string $destinationAddress = null,
         string $destinationWalletName = null,
         string $descriptor = null,
-        string $businessUuid = null
+        string $businessUuid = null,
+        string $sourceId = null,
+        string $destinationId = null
     ): ApiResponse {
         $body = new TransferMessage(
             $userHandle,
@@ -736,7 +891,9 @@ class SilaApi
             $destinationAddress,
             $destinationWalletName,
             $descriptor,
-            $businessUuid
+            $businessUuid,
+            $sourceId,
+            $destinationId
         );
         $path = '/transfer_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -769,7 +926,9 @@ class SilaApi
         string $descriptor = null,
         string $businessUuid = null,
         AchType $processingType = null,
-        string $cardName = null
+        string $cardName = null,
+        string $sourceId = null,
+        string $destinationId = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -780,7 +939,9 @@ class SilaApi
             $descriptor,
             $businessUuid,
             $processingType,
-            $cardName
+            $cardName,
+            $sourceId,
+            $destinationId
         );
         $path = '/redeem_sila';
         $json = $this->serializer->serialize($body, 'json');
@@ -1728,7 +1889,6 @@ class SilaApi
         return $this->prepareResponse($response);
     }
 
-
     /**
      * Gets array of user handle's webhooks .
      *
@@ -1830,7 +1990,6 @@ class SilaApi
             $body = $this->serializer->deserialize($contents, $className, 'json');
         } else {
             $body = json_decode($contents);
-            //$body = $this->serializer->deserialize($contents, BaseResponse::class, 'json');
         }
         return new ApiResponse($statusCode, $response->getHeaders(), $body);
     }

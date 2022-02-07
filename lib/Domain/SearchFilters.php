@@ -29,6 +29,18 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
+    private $sourceId;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $destinationId;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     private $userHandle;
 
     /**
@@ -166,6 +178,8 @@ class SearchFilters implements ValidInterface
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
+            && ($this->sourceId === null || v::stringType()->notEmpty()->validate($this->sourceId))
+            && ($this->destinationId === null || v::stringType()->notEmpty()->validate($this->destinationId))
             && ($this->userHandle === null || v::stringType()->notEmpty()->validate($this->userHandle))
             && ($this->delivered === null || v::boolType()->validate($this->delivered))
             && ($this->endpointName === null || v::stringType()->notEmpty()->validate($this->endpointName))
@@ -203,6 +217,30 @@ class SearchFilters implements ValidInterface
         return $this;
     }
     
+    /**
+     * Sets the source id to the filters.
+     *
+     * @param string $sourceId
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setSourceId(string $sourceId): SearchFilters
+    {
+        $this->sourceId = $sourceId;
+        return $this;
+    }
+
+    /**
+     * Sets the destination id to the filters.
+     *
+     * @param string $destinationId
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setDestinationId(string $destinationId): SearchFilters
+    {
+        $this->destinationId = $destinationId;
+        return $this;
+    }
+
     /**
      * Sets the user handle to the filters.
      *
