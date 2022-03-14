@@ -34,6 +34,13 @@ class Device implements ValidInterface
     private $deviceFingerprint;
 
     /**
+     * Session Identifier used for INSTANT ACH users
+     * @var string
+     * @Type("string")
+     */
+    private $sessionIdentifier;
+
+    /**
      * Constructor for device object.
      *
      * @param \Silamoney\Client\Domain\BaseUser $user
@@ -43,12 +50,14 @@ class Device implements ValidInterface
     {
         $this->deviceAlias = $deviceAlias;
         $this->deviceFingerprint = $user->getDeviceFingerprint();
+        $this->sessionIdentifier = $user->getSessionIdentifier();
     }
 
     public function isValid(): bool
     {
         $notEmptyString = v::stringType()->notEmpty();
         return v::not(v::nullType())->validate($this->deviceAlias)
-            && $notEmptyString->validate($this->deviceFingerprint);
+            && $notEmptyString->validate($this->deviceFingerprint)
+            && $notEmptyString->validate($this->sessionIdentifier);
     }
 }

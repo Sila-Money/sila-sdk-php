@@ -29,6 +29,12 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
+    private $processingType;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
     private $sourceId;
 
     /**
@@ -178,6 +184,7 @@ class SearchFilters implements ValidInterface
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
+            && ($this->processingType === null || v::stringType()->notEmpty()->validate($this->processingType))
             && ($this->sourceId === null || v::stringType()->notEmpty()->validate($this->sourceId))
             && ($this->destinationId === null || v::stringType()->notEmpty()->validate($this->destinationId))
             && ($this->userHandle === null || v::stringType()->notEmpty()->validate($this->userHandle))
@@ -216,7 +223,19 @@ class SearchFilters implements ValidInterface
         $this->transactionId = $transactionId;
         return $this;
     }
-    
+
+    /**
+     * Sets the processing type to the filters.
+     *
+     * @param string $processingType
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setProcessingType(string $processingType): SearchFilters
+    {
+        $this->processingType = $processingType;
+        return $this;
+    }
+
     /**
      * Sets the source id to the filters.
      *

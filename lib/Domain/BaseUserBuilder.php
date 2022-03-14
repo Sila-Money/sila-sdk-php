@@ -21,6 +21,10 @@ class BaseUserBuilder
     protected $cryptoAddress;
     protected $deviceFingerprint;
     protected $smsOptIn;
+    protected $cryptoAlias;
+    protected $addressAlias;
+    protected $contactAlias;
+    protected $sessionIdentifier;
 
     public function handle(string $handle)
     {
@@ -93,6 +97,30 @@ class BaseUserBuilder
         if(is_bool($smsOptIn)){
             $this->smsOptIn = $smsOptIn;
         }
+        return $this;
+    }
+
+    public function cryptoAlias(string $cryptoAlias)
+    {
+        $this->cryptoAlias = $cryptoAlias;
+        return $this;
+    }
+
+    public function addressAlias(string $addressAlias)
+    {
+        $this->addressAlias = $addressAlias;
+        return $this;
+    }
+
+    public function contactAlias(string $contactAlias)
+    {
+        $this->contactAlias = $contactAlias;
+        return $this;
+    }
+
+    public function sessionIdentifier(string $sessionIdentifier)
+    {
+        $this->sessionIdentifier = $sessionIdentifier;
         return $this;
     }
 }

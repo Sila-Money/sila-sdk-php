@@ -26,6 +26,12 @@ class CheckInstantACHMessage implements ValidInterface
     private $accountName;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $kycLevel;
+
+    /**
      * @var Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
@@ -43,13 +49,16 @@ class CheckInstantACHMessage implements ValidInterface
      * @param string $userHandle
      * @param string $appHandle
      * @param string|null $accountName
+     * @param string|null $kycLevel
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
-        string $accountName = null
+        string $accountName = null,
+        string $kycLevel = null
     ) {
         $this->accountName = $accountName;
+        $this->kycLevel = $kycLevel;
         $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::HEADER;
     }
@@ -59,6 +68,7 @@ class CheckInstantACHMessage implements ValidInterface
         return v::notOptional()->validate($this->header)
             && $this->header->isValid()
             && v::stringType()->notEmpty()->validate($this->message)
-            && ($this->accountName === null || v::stringType()->validate($this->accountName));
+            && ($this->accountName === null || v::stringType()->validate($this->accountName))
+            && ($this->kycLevel === null || v::stringType()->validate($this->kycLevel));
     }
 }

@@ -232,4 +232,11 @@ class Transaction
      * @Type("int")
      */
     public $effectiveEpoch;
+
+    /**
+     * Array field used for the child transactions field.
+     * @var array
+     * @Type("array")
+     */
+    public $childTransactions;
 }

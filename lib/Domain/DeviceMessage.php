@@ -34,14 +34,17 @@ class DeviceMessage extends RegistrationDataBaseMessage
      * Constructor for Add Device Message object.
      * @param string $appHandle
      * @param string $userHandle
-     * @param string|null $device
+     * @param string|null $deviceAlias
+     * @param string|null $deviceFingerprint
      * @param string|null $uuid
+     * @param string|null $sessionIdentifier
      * @return \Silamoney\Client\Domain\AddDeviceMessage
      */
-    public function __construct(string $appHandle, string $userHandle, ?string $deviceAlias = null, ?string $deviceFingerprint = null, ?string $uuid = null)
+    public function __construct(string $appHandle, string $userHandle, ?string $deviceAlias = null, ?string $deviceFingerprint = null, ?string $uuid = null, ?string $sessionIdentifier = null)
     {
         parent::__construct($appHandle, $userHandle, $uuid);
         $this->deviceAlias = $deviceAlias;
         $this->deviceFingerprint = $deviceFingerprint;
+        $this->sessionIdentifier = $sessionIdentifier;
     }
 }

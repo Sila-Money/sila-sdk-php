@@ -21,5 +21,6 @@ class AchType extends Enum
     public const STANDARD = 'STANDARD_ACH';
     public const SAME_DAY = 'SAME_DAY_ACH';
     public const INSTANT  = 'INSTANT_ACH';
-    public const CARD     = 'CARD'; 
+    public const CARD     = 'CARD';
+    public const INSTANT_SETTLEMENT  = 'INSTANT_SETTLEMENT';
 }
