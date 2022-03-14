@@ -44,6 +44,7 @@ class RequestKYCTest extends TestCase
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertIsString($response->getData()->getReference());
         $this->assertStringContainsString('submitted for KYC review', $response->getData()->getMessage());
+        $this->assertNotEmpty($response->getData()->getVerificationUuid());
     }
 
     public function testRegister403KycLevel()
