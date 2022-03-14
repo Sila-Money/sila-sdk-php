@@ -1614,11 +1614,11 @@ class SilaApi
      * @param string $userPrivateKey The user's private key
      * @param string $deviceAlias 
      * @param string $deviceFingerprint 
-     * @param string $uuid 
-     * @param string $sessionIdentifier 
+     * @param string|null $uuid 
+     * @param string|null $sessionIdentifier
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint, string $uuid, string $sessionIdentifier): ApiResponse
+    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint, string $uuid = null, string $sessionIdentifier = null): ApiResponse
     {
         $body = new DeviceMessage($this->configuration->getAppHandle(), $userHandle, $deviceAlias, $deviceFingerprint, $uuid, $sessionIdentifier);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
