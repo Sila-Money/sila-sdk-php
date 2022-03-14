@@ -321,7 +321,7 @@ class VirtualAccountsTest extends TestCase
         $destinationId = self::$users[self::$prefix]["virtual_account_id2"];
 
         $amount = 100;
-        $descriptor = "Test transfer for release 0.2.37";
+        $descriptor = "Test transfer";
         
         $response = self::$config->api->transferSila($handle, $destination, $amount, $privateKey, null, null, $descriptor, null, $sourceId, $destinationId);
         $this->assertEquals(200, $response->getStatusCode());

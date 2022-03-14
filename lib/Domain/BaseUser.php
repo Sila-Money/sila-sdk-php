@@ -109,6 +109,12 @@ class BaseUser
     protected $contactAlias;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    protected $sessionIdentifier;
+
+    /**
      * @param string $handle
      * @param string|null $address
      * @param string|null $address2
@@ -124,6 +130,7 @@ class BaseUser
      * @param string $cryptoAlias
      * @param string $addressAlias
      * @param string $contactAlias
+     * @param string $sessionIdentifier
      * @return \Silamoney\Client\Domain\BaseUser
      */
     public function __construct(
@@ -141,7 +148,8 @@ class BaseUser
         ?bool $smsOptIn = null,
         ?string $cryptoAlias = null,
         ?string $addressAlias = null,
-        ?string $contactAlias = null
+        ?string $contactAlias = null,
+        ?string $sessionIdentifier = null
     ) {
         $this->handle = $handle;
         $this->address = $address;
@@ -158,6 +166,7 @@ class BaseUser
         $this->cryptoAlias = $cryptoAlias;
         $this->addressAlias = $addressAlias;
         $this->contactAlias = $contactAlias;
+        $this->sessionIdentifier = $sessionIdentifier;
     }
 
     /**
@@ -259,6 +268,16 @@ class BaseUser
          return $this->deviceFingerprint;
      }
 
+
+    /**
+     * Gets the device fingerprint address.
+     * @return string
+     */
+    public function getSessionIdentifier(): ?string
+    {
+        return $this->sessionIdentifier;
+    }
+    
     /**
      * Gets the sms opt-in address.
      * @return bool

@@ -97,11 +97,13 @@ use Silamoney\Client\Domain\{
     ReverseTransactionMessage,
     GetWebhooksMessage,
     GetWebhooksResponse,
+    RetryWebhookMessage,
     GetPaymentMethodsMessage,
     VirtualAccountMessage,
     VirtualAccountResponse,
     GetVirtalAccountMessage,
-    UpdateVirtualAccountMessage
+    UpdateVirtualAccountMessage,
+    RequestKYCResponse
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -421,7 +423,7 @@ class SilaApi
             SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, BaseResponse::class);
+        return $this->prepareResponse($response, RequestKYCResponse::class);
     }
 
     /**
@@ -429,12 +431,16 @@ class SilaApi
      *
      * @param string $handle
      * @param string $userPrivateKey
+     * @param string|null $kycLevel
      * @return ApiResponse
      * @throws ClientException
      */
-    public function checkKYC(string $handle, string $userPrivateKey): ApiResponse
+    public function checkKYC(string $handle, string $userPrivateKey, string $kycLevel = null): ApiResponse
     {
         $body = new HeaderMessage($handle, $this->configuration->getAppHandle());
+        if ($kycLevel != '' && $kycLevel != null) {
+            $body->setKycLevel($kycLevel);
+        }
         $path = "/check_kyc";
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -644,12 +650,14 @@ class SilaApi
      public function checkInstantACH(
         string $userHandle,
         string $userPrivateKey,
-        string $accountName = null
+        string $accountName = null,
+        string $kycLevel = null
     ): ApiResponse {
         $body = new checkInstantACHMessage(
             $userHandle,
             $this->configuration->getAppHandle(),
-            $accountName
+            $accountName,
+            $kycLevel
         );
         $path = "/check_instant_ach";
         $json = $this->serializer->serialize($body, 'json');
@@ -1604,14 +1612,17 @@ class SilaApi
      * Add a new device to a registered entity.
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
-     * @param string $device The new device
+     * @param string $deviceAlias 
+     * @param string $deviceFingerprint 
+     * @param string|null $uuid 
+     * @param string|null $sessionIdentifier
      * @return \Silamoney\Client\Api\ApiResponse
      */
-     public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint): ApiResponse
-     {
-         $body = new DeviceMessage($this->configuration->getAppHandle(), $userHandle, $deviceAlias, $deviceFingerprint);
-         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
-     }
+    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint, string $uuid = null, string $sessionIdentifier = null): ApiResponse
+    {
+        $body = new DeviceMessage($this->configuration->getAppHandle(), $userHandle, $deviceAlias, $deviceFingerprint, $uuid, $sessionIdentifier);
+        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
+    }
 
     /**
      * Update a registered individual entity
@@ -1908,6 +1919,26 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetWebhooksResponse::class);
+    }
+
+    /**
+     * Gets a user handle's webhook using retry_webhook .
+     *
+     * @param string $eventUuid
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function retryWebhook(string $eventUuid)//: ApiResponse
+    {
+        $body = new RetryWebhookMessage($this->configuration->getAppHandle(), $eventUuid);
+        $path = '/retry_webhook';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response);
     }
 
     /**
