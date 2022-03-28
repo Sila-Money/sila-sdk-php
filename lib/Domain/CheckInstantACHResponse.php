@@ -20,7 +20,7 @@ use phpDocumentor\Reflection\Types\Boolean;
 class CheckInstantACHResponse
 {
     /**
-     * Reference
+     * success
      * @var bool
      * @Type("bool")
      */
@@ -48,20 +48,17 @@ class CheckInstantACHResponse
     private $status;
 
     /**
-     * Gets the response reference.
-     * @return string
-     */
-
-     /**
-     * Status
-     * @var string
-     * @Type("array")
-     */
-    public $qualification_details;
-    /**
      * Gets the response qualification_details.
      * @return array
      */
+    public $qualification_details;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
 
     public function getReference(): string
     {
@@ -99,5 +96,14 @@ class CheckInstantACHResponse
     public function getSuccess()
     {
         return $this->success;
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

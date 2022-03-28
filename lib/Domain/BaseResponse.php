@@ -24,7 +24,7 @@ class BaseResponse
      * @var bool
      * @Type("bool")
      */
-     private $success;
+    private $success;
 
     /**
      * Reference
@@ -46,6 +46,13 @@ class BaseResponse
      * @Type("string")
      */
     private $status;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    private $response_time_ms;
 
     /**
      * Gets the response reference.
@@ -87,5 +94,14 @@ class BaseResponse
     public function getSuccess()
     {
         return $this->success;
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

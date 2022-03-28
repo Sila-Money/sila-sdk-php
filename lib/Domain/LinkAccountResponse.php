@@ -53,13 +53,13 @@ class LinkAccountResponse
      * @var string
      * @Type("string")
      */
-     private $accountOwnerName;
+    private $accountOwnerName;
 
      /**
      * @var string
      * @Type("string")
      */
-     private $entityName;
+    private $entityName;
 
     /**
      * @var float
@@ -71,7 +71,14 @@ class LinkAccountResponse
      * @var float
      * @Type("float")
      */
-     private $matchScore;
+    private $matchScore;
+
+     /**
+      * response_time_ms
+      * @var string
+      * @Type("string")
+      */
+    private $response_time_ms;
 
     /**
      * Gets the response status.
@@ -124,5 +131,14 @@ class LinkAccountResponse
     public function getSuccess(): bool
     {
         return $this->success;
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

@@ -56,6 +56,13 @@ class DeleteAccountResponse
     private $matchCode;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    private $response_time_ms;
+
+    /**
      * Gets the response status.
      * @return string
      */
@@ -91,5 +98,14 @@ class DeleteAccountResponse
     public function getSuccess(): bool
     {
         return $this->success;
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

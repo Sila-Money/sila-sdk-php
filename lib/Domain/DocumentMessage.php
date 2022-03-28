@@ -49,11 +49,7 @@ class DocumentMessage
      * @Type("string")
      */
     private $name;
-    /**
-     * @var string
-     * @Type("string")
-     */
-    private $identityType;
+
     /**
      * @var string
      * @Type("string")
@@ -68,7 +64,6 @@ class DocumentMessage
      * @param string $hash
      * @param string $mimeType
      * @param string $documentType
-     * @param string $identityType
      * @param string|null $name
      * @param string|null $description
      */
@@ -79,7 +74,6 @@ class DocumentMessage
         string $hash,
         string $mimeType,
         string $documentType,
-        string $identityType,
         string $name = null,
         string $description = null
     ) {
@@ -89,7 +83,6 @@ class DocumentMessage
         $this->mimeType = $mimeType;
         $this->documentType = $documentType;
         $this->name = $name;
-        $this->identityType = $identityType;
         $this->description = $description;
     }
 }

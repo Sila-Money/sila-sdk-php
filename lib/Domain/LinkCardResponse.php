@@ -23,38 +23,44 @@ class LinkCardResponse
      * @var bool
      * @Type("bool")
      */
-     private $success;
+    public $success;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $status;
+    public $status;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $reference;
+    public $reference;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $message;
+    public $message;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $accountName;
+    public $accountName;
 
     /**
      * @var string
      * @Type("string")
      */
-    private $avs;
+    public $avs;
 
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
 
     /**
      * Gets the response status.
@@ -92,5 +98,14 @@ class LinkCardResponse
     public function getSuccess(): bool
     {
         return $this->success;
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

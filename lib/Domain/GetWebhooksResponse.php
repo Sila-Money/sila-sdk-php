@@ -61,6 +61,14 @@ class GetWebhooksResponse
     public $pagination;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
+
+
+    /**
      * Checks to see if the request was successful
      * @return bool
      */
@@ -71,11 +79,20 @@ class GetWebhooksResponse
 
     /**
      * @return string
-     */
-     public function getStatus(): string
-     {
-         return $this->status;
-     }
+    */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+    */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
+    }
 
      /**
      * @return Silamoney\Client\Domain\Pagination

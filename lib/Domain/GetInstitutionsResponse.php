@@ -54,6 +54,14 @@ class GetInstitutionsResponse
      * @Type("array<Silamoney\Client\Domain\Institution>")
      */
     public $institutions;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
+
     /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
@@ -84,6 +92,15 @@ class GetInstitutionsResponse
     public function getPagination(): Simanoney\Client\Domain\Pagination
     {
         return $this->pagination;
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 
     public function getInstitutionById($id)
