@@ -49,7 +49,8 @@ class CheckInstantACHResponse
 
     /**
      * Gets the response qualification_details.
-     * @return array
+     * @var array
+     * @Type("array")
      */
     public $qualification_details;
 
