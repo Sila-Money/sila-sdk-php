@@ -50,6 +50,13 @@ class VirtualAccountResponse
     public $virtualAccount;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
+
+    /**
      * Gets the response status.
      * @return string
      */
@@ -82,4 +89,12 @@ class VirtualAccountResponse
         return $this->success;
     }
 
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
+    }
 }

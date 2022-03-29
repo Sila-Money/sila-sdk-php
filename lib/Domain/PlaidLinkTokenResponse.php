@@ -47,7 +47,14 @@ class PlaidLinkTokenResponse
      * @var string
      * @Type("string")
      */
-     private $linkToken;
+    private $linkToken;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+    */
+    private $response_time_ms;
 
     /**
      * Gets the response status.
@@ -85,5 +92,14 @@ class PlaidLinkTokenResponse
     public function getSuccess(): bool
     {
         return $this->status == 'SUCCESS';
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

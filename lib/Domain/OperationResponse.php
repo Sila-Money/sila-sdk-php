@@ -61,6 +61,13 @@ class OperationResponse
     private $descriptor;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    private $response_time_ms;
+
+    /**
      * Gets the response reference.
      * @return string
      */
@@ -104,5 +111,14 @@ class OperationResponse
     public function getSuccess(): bool
     {
         return ($this->success == null)  ? ($this->getStatus() == 'SUCCESS') : $this->success;
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

@@ -42,6 +42,14 @@ class GetTransactionsResponse
      * @Type("int")
      */
     public $returnedCount;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
+
     /**
      * Integer field used for the total count.
      * @var int
@@ -73,10 +81,19 @@ class GetTransactionsResponse
     /**
      * @return string
      */
-     public function getStatus(): string
-     {
-         return $this->status;
-     }
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+    
+    /**
+      * Gets the response response_time_ms.
+      * @return bool
+      */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
+    }
 
      /**
      * @return Silamoney\Client\Domain\Pagination

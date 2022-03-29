@@ -71,7 +71,7 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $uuid;
+    private $wallet_id;
     
     /**
      * @var int
@@ -161,7 +161,7 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
-     private $bankAccountName;
+    private $bankAccountName;
 
     /**
      * @var string
@@ -173,17 +173,24 @@ class SearchFilters implements ValidInterface
      * @var string
      * @Type("string")
      */
-     private $blockchainAddress;
+    private $blockchainAddress;
 
      /**
      * @var string
      * @Type("string")
      */
-     private $institutionName;
+    private $institutionName;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $paymentMethodId;
 
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
+            && ($this->paymentMethodId === null || v::stringType()->notEmpty()->validate($this->paymentMethodId))
             && ($this->processingType === null || v::stringType()->notEmpty()->validate($this->processingType))
             && ($this->sourceId === null || v::stringType()->notEmpty()->validate($this->sourceId))
             && ($this->destinationId === null || v::stringType()->notEmpty()->validate($this->destinationId))
@@ -191,7 +198,7 @@ class SearchFilters implements ValidInterface
             && ($this->delivered === null || v::boolType()->validate($this->delivered))
             && ($this->endpointName === null || v::stringType()->notEmpty()->validate($this->endpointName))
             && ($this->eventType === null || v::stringType()->notEmpty()->validate($this->eventType))
-            && ($this->uuid === null || v::stringType()->notEmpty()->validate($this->uuid))
+            && ($this->wallet_id === null || v::stringType()->notEmpty()->validate($this->wallet_id))
             && ($this->referenceId === null || v::stringType()->notEmpty()->validate($this->referenceId))
             && ($this->statuses === null || v::arrayType()->validate($this->statuses))
             && ($this->transactionTypes === null || v::arrayType()->validate($this->transactionTypes))
@@ -221,6 +228,18 @@ class SearchFilters implements ValidInterface
     public function setTransactionId(string $transactionId): SearchFilters
     {
         $this->transactionId = $transactionId;
+        return $this;
+    }
+
+    /**
+     * Sets the transaction id to the filters.
+     *
+     * @param string $paymentMethodId
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setPaymentMethodId(string $paymentMethodId): SearchFilters
+    {
+        $this->paymentMethodId = $paymentMethodId;
         return $this;
     }
 
@@ -308,14 +327,14 @@ class SearchFilters implements ValidInterface
     }
     
     /**
-     * Sets the uuid to the filters.
+     * Sets the wallet_id to the filters.
      *
-     * @param string $uuid
+     * @param string $wallet_id
      * @return Silamoney\Client\Domain\SearchFilters
      */
-    public function setUuid(string $uuid): SearchFilters
+    public function setUuid(string $wallet_id): SearchFilters
     {
-        $this->uuid = $uuid;
+        $this->wallet_id = $wallet_id;
         return $this;
     }
     

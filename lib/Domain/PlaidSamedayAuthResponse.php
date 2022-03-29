@@ -24,7 +24,7 @@ class PlaidSamedayAuthResponse
      * @var bool
      * @Type("bool")
      */
-     private $success;
+    private $success;
 
     /**
      * Public Token
@@ -48,6 +48,13 @@ class PlaidSamedayAuthResponse
     private $status;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    private $response_time_ms;
+
+    /**
      * Gets the response reference.
      * @return string
      */
@@ -59,7 +66,7 @@ class PlaidSamedayAuthResponse
     /**
      * Gets the response message.
      * @return string
-     */
+    */
     public function getMessage(): string
     {
         return $this->message;
@@ -68,7 +75,7 @@ class PlaidSamedayAuthResponse
     /**
      * Gets the response status.
      * @return string
-     */
+    */
     public function getStatus(): string
     {
         return $this->status;
@@ -77,9 +84,18 @@ class PlaidSamedayAuthResponse
     /**
      * Gets the response success.
      * @return bool
-     */
-     public function getSuccess(): bool
-     {
-         return $this->success;
-     }
+    */
+    public function getSuccess(): bool
+    {
+        return $this->success;
+    }
+    
+    /**
+     * Gets the response response_time_ms.
+     * @return bool
+    */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
+    }
 }

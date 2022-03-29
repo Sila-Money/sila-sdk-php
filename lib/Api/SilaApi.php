@@ -103,7 +103,9 @@ use Silamoney\Client\Domain\{
     VirtualAccountResponse,
     GetVirtalAccountMessage,
     UpdateVirtualAccountMessage,
-    RequestKYCResponse
+    CloseVirtualAccountMessage,
+    RequestKYCResponse,
+    CreateTestVirtualAccountAchTransactionMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -273,17 +275,23 @@ class SilaApi
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param string $virtualAccountName
+     * @param boolean|null $achDebitEnabled
+     * @param boolean|null $achCreditEnabled
      * @return ApiResponse
      */
     public function openVirtualAccount(
         string $userHandle,
         string $userPrivateKey,
-        string $virtualAccountName
+        string $virtualAccountName,
+        ?bool $achDebitEnabled = null,
+        ?bool $achCreditEnabled = null
     ): ApiResponse {
         $body = new VirtualAccountMessage(
+            $this->configuration->getAppHandle(),
             $userHandle,
             $virtualAccountName,
-            $this->configuration->getAppHandle()
+            $achDebitEnabled,
+            $achCreditEnabled
         );
         $path = "/open_virtual_account";
         $json = $this->serializer->serialize($body, 'json');
@@ -351,13 +359,15 @@ class SilaApi
     }
     
     /**
-     * Updates nickname and/or default status of a wallet.
+     * Updates nickname and/or default status of a virtual account.
      *
      * @param string $userHandle
+     * @param string $userPrivateKey
      * @param string $virtualAccountId
      * @param string $virtualAccountName
      * @param boolean $active
-     * @param string $userPrivateKey
+     * @param boolean|null $achDebitEnabled
+     * @param boolean|null $achCreditEnabled
      * @return ApiResponse
      * @throws Exception
      */
@@ -366,10 +376,12 @@ class SilaApi
         string $userPrivateKey,
         string $virtualAccountId,
         string $virtualAccountName,
-        ?bool $active = null
+        ?bool $active = null,
+        ?bool $achDebitEnabled = null,
+        ?bool $achCreditEnabled = null
     ): ApiResponse 
     {
-        $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $active);
+        $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $active, $achDebitEnabled, $achCreditEnabled);
         $path = '/update_virtual_account';
         $json = $this->serializer->serialize($body, 'json');
         $headers = [
@@ -377,6 +389,80 @@ class SilaApi
             self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Close virtual account.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $virtualAccountId
+     * @param string $virtualAccountNumber
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function closeVirtualAccount(
+        string $userHandle,
+        string $userPrivateKey,
+        string $virtualAccountId,
+        string $virtualAccountNumber
+    ): ApiResponse {
+        $body = new CloseVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountNumber);
+        $path = '/close_virtual_account';
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Creates a test Ach transaction for Virtual Account 
+     * entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $virtualAccountNumber
+     * @param int $amount
+     * @param int $tranCode
+     * @param string $entityName
+     * @param DateTime|null $effectiveDate 
+     * @param string|null $ced
+     * @param string|null $achName
+     * @return ApiResponse
+     */
+    public function createTestVirtualAccountAchTransaction(
+        string $userHandle,
+        string $userPrivateKey,
+        string $virtualAccountNumber,
+        string $amount,
+        string $tranCode,
+        string $entityName,
+        ?DateTime $effectiveDate = null,
+        ?string $ced = null,
+        ?string $achName = null
+    ): ApiResponse {
+        $body = new CreateTestVirtualAccountAchTransactionMessage(
+            $this->configuration->getAppHandle(),
+            $userHandle,
+            $virtualAccountNumber,
+            $amount,
+            $tranCode,
+            $entityName,
+            $effectiveDate,
+            $ced,
+            $achName
+        );
+        $path = "/create_test_virtual_account_ach_transaction";
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = [
+            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
+            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
+        ];
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
     }
 
@@ -1735,7 +1821,7 @@ class SilaApi
         string $filename,
         string $mimeType,
         string $documentType,
-        string $identityType,
+        string $identityType = null,
         string $name = null,
         string $description = null
     ): ApiResponse {
@@ -1751,7 +1837,6 @@ class SilaApi
             $hash,
             $mimeType,
             $documentType,
-            $identityType,
             $name,
             $description
         );

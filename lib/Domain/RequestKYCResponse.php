@@ -55,6 +55,13 @@ class RequestKYCResponse
     public $verification_uuid;
 
     /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
+
+    /**
      * Gets the response reference.
      * @return string
      */
@@ -99,5 +106,14 @@ class RequestKYCResponse
     public function getVerificationUuid()
     {
         return $this->verification_uuid;
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

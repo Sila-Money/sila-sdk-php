@@ -22,19 +22,19 @@ class UpdateAccountResponse
     /**
      * @var string
      * @Type("string")
-     */
+    */
     public $status;
 
     /**
      * @var string
      * @Type("string")
-     */
+    */
     public $reference;
 
     /**
      * @var string
      * @Type("string")
-     */
+    */
     public $message;
 
     /**
@@ -42,14 +42,21 @@ class UpdateAccountResponse
      * @var Silamoney\Client\Domain\Account
      * @Type("Silamoney\Client\Domain\Account")
      */
-     public $account;
+    public $account;
      
-     /**
+    /**
      * Changes list.
      * @var array<Silamoney\Client\Domain\Change>
      * @Type("array<Silamoney\Client\Domain\Change>")
-     */
+    */
     public $changes;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+    */
+    public $response_time_ms;
 
     /**
      * Gets the response status.
@@ -87,5 +94,14 @@ class UpdateAccountResponse
     public function getSuccess(): bool
     {
         return $this->status == 'SUCCESS';
+    }
+    
+    /**
+     * Gets the response status.
+     * @return bool
+     */
+    public function getResponseTimeMs(): bool
+    {
+        return $this->response_time_ms;
     }
 }

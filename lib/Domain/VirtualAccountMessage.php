@@ -26,6 +26,18 @@ class VirtualAccountMessage implements ValidInterface
     private $virtualAccountName;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $achDebitEnabled;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $achCreditEnabled;
+
+    /**
      * @var Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
@@ -40,11 +52,15 @@ class VirtualAccountMessage implements ValidInterface
      * 
      */
     public function __construct(
+        string $appHandle,
         string $userHandle,
         string $virtualAccountName,
-        string $appHandle
+        ?bool $achDebitEnabled = null,
+        ?bool $achCreditEnabled = null
     ) {
         $this->virtualAccountName = $virtualAccountName;
+        $this->achDebitEnabled = $achDebitEnabled;
+        $this->achCreditEnabled = $achCreditEnabled;
         $this->header = new Header($appHandle, $userHandle);
     }
 

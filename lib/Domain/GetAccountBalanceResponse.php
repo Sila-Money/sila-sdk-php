@@ -59,4 +59,11 @@ class GetAccountBalanceResponse
      * @Type("string")
      */
     public $accountName;
+
+    /**
+     * response_time_ms
+     * @var string
+     * @Type("string")
+     */
+    public $response_time_ms;
 }
