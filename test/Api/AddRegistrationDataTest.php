@@ -49,6 +49,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsInt($response->getData()->email->modified_epoch);
         $this->assertIsString($response->getData()->email->uuid);
         $this->assertIsString($response->getData()->email->email);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
     public function testAddPhone200()
@@ -68,6 +69,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsInt($response->getData()->phone->modified_epoch);
         $this->assertIsString($response->getData()->phone->uuid);
         $this->assertIsString($response->getData()->phone->phone);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
     public function testAddDevice200()
@@ -82,6 +84,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertTrue($response->getData()->success);
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertStringContainsString('Device successfully registered', $response->getData()->message);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
     public function testAddIdentity200()
@@ -102,6 +105,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->identity->uuid);
         $this->assertIsString($response->getData()->identity->identity_type);
         $this->assertIsString($response->getData()->identity->identity);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
     public function testAddAddress200()
@@ -131,6 +135,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->address->state);
         $this->assertIsString($response->getData()->address->country);
         $this->assertIsString($response->getData()->address->postal_code);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
     /**

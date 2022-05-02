@@ -17,72 +17,14 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class CheckInstantACHResponse
+class CheckInstantACHResponse extends BaseResponse
 {
-    /**
-     * success
-     * @var bool
-     * @Type("bool")
-     */
-     private $success;
-
-    /**
-     * Reference
-     * @var string
-     * @Type("string")
-     */
-    private $reference;
-
-    /**
-     * Message
-     * @var string
-     * @Type("string")
-     */
-    private $message;
-
-    /**
-     * Status
-     * @var string
-     * @Type("string")
-     */
-    private $status;
-
     /**
      * Gets the response qualification_details.
      * @var array
      * @Type("array")
      */
     public $qualification_details;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    public $response_time_ms;
-
-    public function getReference(): string
-    {
-        return $this->reference;
-    }
-
-    /**
-     * Gets the response message.
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * Gets the response status.
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
 
     /**
      * Gets any response attribute.
@@ -93,18 +35,12 @@ class CheckInstantACHResponse
     {
         return property_exists($this, $attr) ? $this->{$attr} : null;
     }
-
-    public function getSuccess()
-    {
-        return $this->success;
-    }
-    
     /**
-     * Gets the response response_time_ms.
+     * Gets the response qualification_details.
      * @return bool
      */
-    public function getResponseTimeMs(): bool
+    public function getQualificationDetails(): bool
     {
-        return $this->response_time_ms;
+        return $this->qualification_details;
     }
 }

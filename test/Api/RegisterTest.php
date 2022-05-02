@@ -45,6 +45,7 @@ class RegisterTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+        $this->assertNotEmpty($response->getData()->getResponseTimeMs());
     }
 
     public function testRegisterBuilder200()
@@ -59,6 +60,7 @@ class RegisterTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+        $this->assertNotEmpty($response->getData()->getResponseTimeMs());
     }
 
     // public function testRegisterBuilderWithEmptyPhoneField200()
@@ -101,6 +103,7 @@ class RegisterTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
+        $this->assertNotEmpty($response->getData()->getResponseTimeMs());
     }
 
     public function testRegisterBuilderWithInvalidSmsOptInField200()

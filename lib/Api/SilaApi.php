@@ -17,6 +17,7 @@ use Silamoney\Client\Configuration\Configuration;
 use Silamoney\Client\Domain\{
     Account,
     AchType,
+    ApiEndpoints,
     AddressMessage,
     BalanceEnvironments,
     BankAccountMessage,
@@ -216,13 +217,11 @@ class SilaApi
     public function checkHandle(string $handle): ApiResponse
     {
         $body = new HeaderMessage($handle, $this->configuration->getAppHandle());
-        $path = "/check_handle";
+        $path = ApiEndpoints::CHECK_HANDLE;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response, CheckHandleResponse::class);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -235,13 +234,11 @@ class SilaApi
     public function register(User $user): ApiResponse
     {
         $body = new EntityMessage($user, $this->configuration->getAppHandle());
-        $path = "/register";
+        $path = ApiEndpoints::REGISTER;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response, RegisterResponse::class);
+        return $this->prepareBaseResponse($response);
     }
 
     /**
@@ -258,12 +255,9 @@ class SilaApi
         SearchFilters $searchFilters = null
     ): ApiResponse {
         $body = new GetPaymentMethodsMessage($userHandle, $this->configuration->getAppHandle(), $searchFilters);
-        $path = '/get_payment_methods';
+        $path = ApiEndpoints::GET_PAYMENT_METHODS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -293,12 +287,9 @@ class SilaApi
             $achDebitEnabled,
             $achCreditEnabled
         );
-        $path = "/open_virtual_account";
+        $path = ApiEndpoints::OPEN_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, VirtualAccountResponse::class);
     }
@@ -315,12 +306,9 @@ class SilaApi
     public function getVirtualAccount(string $userHandle, string $userPrivateKey, string $virtualAccountId): ApiResponse
     {
         $body = new GetVirtalAccountMessage($userHandle, $virtualAccountId, $this->configuration->getAppHandle());
-        $path = '/get_virtual_account';
+        $path = ApiEndpoints::GET_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -348,12 +336,9 @@ class SilaApi
         SearchFilters $searchFilters = null
     ): ApiResponse {
         $body = new GetWalletsMessage($userHandle, $this->configuration->getAppHandle(), $searchFilters);
-        $path = '/get_virtual_accounts';
+        $path = ApiEndpoints::GET_VIRTUAL_ACCOUNTS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -382,12 +367,9 @@ class SilaApi
     ): ApiResponse 
     {
         $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $active, $achDebitEnabled, $achCreditEnabled);
-        $path = '/update_virtual_account';
+        $path = ApiEndpoints::UPDATE_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -409,12 +391,9 @@ class SilaApi
         string $virtualAccountNumber
     ): ApiResponse {
         $body = new CloseVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountNumber);
-        $path = '/close_virtual_account';
+        $path = ApiEndpoints::CLOSE_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -456,12 +435,9 @@ class SilaApi
             $ced,
             $achName
         );
-        $path = "/create_test_virtual_account_ach_transaction";
+        $path = ApiEndpoints::CREATE_TEST_VIRTUAL_ACCOUNT_ACH_TRANSACTION;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -474,18 +450,15 @@ class SilaApi
      * @return ApiResponse
      * @throws Exception
      */
-     public function plaidUpdateLinkToken(string $userHandle, string $userPrivateKey, string $accountName): ApiResponse
-     {
+    public function plaidUpdateLinkToken(string $userHandle, string $userPrivateKey, string $accountName): ApiResponse
+    {
         $body = new PlaidUpdateLinkTokenMessage($userHandle, $this->configuration->getAppHandle(), $accountName);
-        $path = "/plaid_update_link_token";
+        $path = ApiEndpoints::PLAID_UPDATE_LINK_TOKEN;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response, PlaidUpdateLinkTokenResponse::class);
-     }
+        return $this->prepareBaseResponse($response);
+    }
 
     /**
      * Starts KYC verification process on a registered user handle.
@@ -502,12 +475,9 @@ class SilaApi
         if ($kycLevel != '' && $kycLevel != null) {
             $body->setKycLevel($kycLevel);
         }
-        $path = '/request_kyc';
+        $path = ApiEndpoints::REQUEST_KYC;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, RequestKYCResponse::class);
     }
@@ -527,12 +497,9 @@ class SilaApi
         if ($kycLevel != '' && $kycLevel != null) {
             $body->setKycLevel($kycLevel);
         }
-        $path = "/check_kyc";
+        $path = ApiEndpoints::CHECK_KYC;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -567,12 +534,9 @@ class SilaApi
             null,
             $plaidTokenType
         );
-        $path = "/link_account";
+        $path = ApiEndpoints::LINK_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, LinkAccountResponse::class);
     }
@@ -602,12 +566,9 @@ class SilaApi
             $isActive
         );
         
-        $path = "/update_account";
+        $path = ApiEndpoints::UPDATE_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, UpdateAccountResponse::class);
     }
@@ -636,12 +597,9 @@ class SilaApi
             $token,
             $accountPostalCode
         );
-        $path = "/link_card";
+        $path = ApiEndpoints::LINK_CARD;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, LinkCardResponse::class);
     }
@@ -660,12 +618,9 @@ class SilaApi
         string $userPrivateKey
     ): ApiResponse {
         $body = new GetCardsMessage($userHandle, $this->configuration->getAppHandle());
-        $path = '/get_cards';
+        $path = ApiEndpoints::GET_CARDS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -688,12 +643,9 @@ class SilaApi
             $userHandle,
             $cardName
         );
-        $path = "/delete_card";
+        $path = ApiEndpoints::DELETE_CARD;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, DeleteCardResponse::class);
     }
@@ -716,11 +668,9 @@ class SilaApi
             $queryAppHandle,
             $queryUserHandle
         );
-        $path = "/check_partner_kyc";
+        $path = ApiEndpoints::CHECK_PARTNER_KYC;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -731,6 +681,7 @@ class SilaApi
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param string|null $accountName
+     * @param string|null $kycLevel
      * @return ApiResponse
      */
      public function checkInstantACH(
@@ -745,12 +696,9 @@ class SilaApi
             $accountName,
             $kycLevel
         );
-        $path = "/check_instant_ach";
+        $path = ApiEndpoints::CHECK_INSTANT_ACH;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, CheckInstantACHResponse::class);
     }
@@ -759,7 +707,6 @@ class SilaApi
      * Uses an account name to delete a bank account from an entity.
      *
      * @param string $userHandle
-     * @param string $userPrivateKey
      * @param string $accountName
      * @return ApiResponse
      */
@@ -772,11 +719,9 @@ class SilaApi
             $this->configuration->getAppHandle(),
             $accountName
         );
-        $path = "/delete_account";
+        $path = ApiEndpoints::DELETE_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, DeleteAccountResponse::class);
     }
@@ -797,11 +742,9 @@ class SilaApi
             $this->configuration->getAppHandle(),
             $androidPackageName
         );
-        $path = "/plaid_link_token";
+        $path = ApiEndpoints::PLAID_LINK_TOKEN;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, PlaidLinkTokenResponse::class);
     }
@@ -836,12 +779,9 @@ class SilaApi
             $routingNumber,
             $accountType
         );
-        $path = "/link_account";
+        $path = ApiEndpoints::LINK_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, LinkAccountResponse::class);
     }
@@ -857,12 +797,9 @@ class SilaApi
     public function getAccounts(string $userHandle, string $userPrivateKey): ApiResponse
     {
         $body = new GetAccountsMessage($userHandle, $this->configuration->getAppHandle());
-        $path = '/get_accounts';
+        $path = ApiEndpoints::GET_ACCOUNTS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, 'array<' . Account::class . '>');
     }
@@ -877,24 +814,28 @@ class SilaApi
     public function getInstitutions(SearchFilters $filters = null): ApiResponse
     {
         $body = new GetInstitutionsMessage($this->configuration->getAppHandle(), $filters);
-        $path = '/get_institutions';
+        $path = ApiEndpoints::GET_INSTITUTIONS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
        return $this->prepareResponse($response, GetInstitutionsResponse::class);
     }
 
+    /**
+     * Gets account balance.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $accontName
+     * @return ApiResponse
+     * @throws ClientException
+     */
     public function getAccountBalance(string $userHandle, string $userPrivateKey, string $accontName): ApiResponse
     {
         $body = new GetAccountBalanceMessage($userHandle, $this->configuration->getAppHandle(), $accontName);
-        $path = '/get_account_balance';
+        $path = ApiEndpoints::GET_ACCOUNT_BALANCE;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetAccountBalanceResponse::class);
     }
@@ -941,12 +882,9 @@ class SilaApi
             $sourceId,
             $destinationId
         );
-        $path = '/issue_sila';
+        $path = ApiEndpoints::ISSUE_SILA;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, OperationResponse::class);
     }
@@ -989,12 +927,9 @@ class SilaApi
             $sourceId,
             $destinationId
         );
-        $path = '/transfer_sila';
+        $path = ApiEndpoints::TRANSFER_SILA;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            SilaApi::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            SilaApi::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, TransferResponse::class);
     }
@@ -1037,12 +972,9 @@ class SilaApi
             $sourceId,
             $destinationId
         );
-        $path = '/redeem_sila';
+        $path = ApiEndpoints::REDEEM_SILA;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, OperationResponse::class);
     }
@@ -1056,14 +988,12 @@ class SilaApi
      * @throws ClientException
      * @throws Exception
      */
-    public function getTransactions(string $userHandle, SearchFilters $filters): ApiResponse
+    public function getTransactions(string $userHandle = null, SearchFilters $filters): ApiResponse
     {
         $body = new GetTransactionsMessage($userHandle, $this->configuration->getAppHandle(), $filters);
-        $path = '/get_transactions';
+        $path = ApiEndpoints::GET_TRANSACTIONS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetTransactionsResponse::class);
     }
@@ -1077,13 +1007,10 @@ class SilaApi
      */
     public function reverseTransactions(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
     {
-        $path = '/reverse_transaction';
+        $path = ApiEndpoints::REVERSE_TRANSACTION;
         $body = new ReverseTransactionMessage($this->configuration->getAppHandle(), $userHandle, $transactionId);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1098,7 +1025,7 @@ class SilaApi
     public function silaBalance(string $address): ApiResponse
     {
         $body = new SilaBalanceMessage($address);
-        $path = '/get_sila_balance';
+        $path = ApiEndpoints::GET_SILA_BALANCE;
         $json = $this->serializer->serialize($body, 'json');
         $response = $this->configuration->getApiClient()->callAPI($path, $json, []);
         return $this->prepareResponse($response);
@@ -1114,11 +1041,9 @@ class SilaApi
     public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
     {
         $body = new PlaidSamedayAuthMessage($userHandle, $accountName, $this->configuration->getAppHandle());
-        $path = '/plaid_sameday_auth';
+        $path = ApiEndpoints::PLAID_SAMEDAY_AUTH;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response, PlaidSamedayAuthResponse::class);
     }
@@ -1127,7 +1052,6 @@ class SilaApi
      * Gets details about the user wallet used to generate the usersignature header..
      *
      * @param string $userHandle
-     * @param string $accountName
      * @param string $userPrivateKey
      * @return ApiResponse
      * @throws Exception
@@ -1135,12 +1059,9 @@ class SilaApi
     public function getWallet(string $userHandle, string $userPrivateKey): ApiResponse
     {
         $body = new GetWalletMessage($userHandle, $this->configuration->getAppHandle());
-        $path = '/get_wallet';
+        $path = ApiEndpoints::GET_WALLET;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1211,12 +1132,9 @@ class SilaApi
         string $userPrivateKey
     ): ApiResponse {
         $body = new UpdateWalletMessage($userHandle, $this->configuration->getAppHandle(), $nickname, $default);
-        $path = '/update_wallet';
+        $path = ApiEndpoints::UPDATE_WALLET;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1232,12 +1150,9 @@ class SilaApi
     public function deleteWallet(string $userHandle, string $userPrivateKey): ApiResponse
     {
         $body = new DeleteWalletMessage($userHandle, $this->configuration->getAppHandle());
-        $path = '/delete_wallet';
+        $path = ApiEndpoints::DELETE_WALLET;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1257,12 +1172,9 @@ class SilaApi
         SearchFilters $searchFilters = null
     ): ApiResponse {
         $body = new GetWalletsMessage($userHandle, $this->configuration->getAppHandle(), $searchFilters);
-        $path = '/get_wallets';
+        $path = ApiEndpoints::GET_WALLETS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1273,7 +1185,7 @@ class SilaApi
      */
     public function getBusinessTypes(): ApiResponse
     {
-        $path = '/get_business_types';
+        $path = ApiEndpoints::GET_BUSINESS_TYPES;
         return $this->makeHeaderBaseRequest($path);
     }
 
@@ -1283,7 +1195,7 @@ class SilaApi
      */
     public function getBusinessRoles(): ApiResponse
     {
-        $path = '/get_business_roles';
+        $path = ApiEndpoints::GET_BUSINESS_ROLES;
         return $this->makeHeaderBaseRequest($path);
     }
 
@@ -1293,7 +1205,7 @@ class SilaApi
      */
     public function getNaicsCategories(): ApiResponse
     {
-        $path = '/get_naics_categories';
+        $path = ApiEndpoints::GET_NAICS_CATEGORIES;
         return $this->makeHeaderBaseRequest($path);
     }
 
@@ -1305,13 +1217,10 @@ class SilaApi
      */
     public function getEntity(string $userHandle, string $userPrivateKey)
     {
-        $path = '/get_entity';
+        $path = ApiEndpoints::GET_ENTITY;
         $body = new HeaderBaseMessage($this->configuration->getAppHandle(), $userHandle);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1329,12 +1238,10 @@ class SilaApi
         int $perPage = null
     ) {
         $params = $this->pageParams($page, $perPage);
-        $path = "/get_entities{$params}";
+        $path = ApiEndpoints::GET_ENTITIES."{$params}";
         $body = new GetEntitiesMessage($this->configuration->getAppHandle(), $entityType);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1346,12 +1253,10 @@ class SilaApi
      */
     public function registerBusiness(BusinessUser $business): ApiResponse
     {
-        $path = "/register";
+        $path = ApiEndpoints::REGISTER;
         $body = new BusinessEntityMessage($this->configuration->getAppHandle(), $business);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1382,7 +1287,7 @@ class SilaApi
         string $memberHandle = null,
         string $details = null
     ): ApiResponse {
-        $path = '/link_business_member';
+        $path = ApiEndpoints::LINK_BUSINESS_MEMBER;
         $body = new LinkBusinessMemberMessage(
             $this->configuration->getAppHandle(),
             $businessHandle,
@@ -1417,7 +1322,7 @@ class SilaApi
         string $role = null,
         string $roleUuid = null
     ): ApiResponse {
-        $path = '/unlink_business_member';
+        $path = ApiEndpoints::UNLINK_BUSINESS_MEMBER;
         $body = new UnlinkBusinessMemberMessage(
             $this->configuration->getAppHandle(),
             $businessHandle,
@@ -1449,7 +1354,7 @@ class SilaApi
         string $memberHandle,
         string $certificationToken
     ): ApiResponse {
-        $path = '/certify_beneficial_owner';
+        $path = ApiEndpoints::CERTIFY_BENEFICIAL_OWNER;
         $body = new CertifyBeneficialOwnerMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
@@ -1477,7 +1382,7 @@ class SilaApi
         string $userHandle,
         string $userPrivateKey
     ): ApiResponse {
-        $path = '/certify_business';
+        $path = ApiEndpoints::CERTIFY_BUSINESS;
         $body = new BaseBusinessMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
@@ -1498,10 +1403,10 @@ class SilaApi
     public function getDocumentTypes(int $page = null, int $perPage = null): ApiResponse
     {
         $params = $this->pageParams($page, $perPage);
-        $path = "/document_types{$params}";
+        $path = ApiEndpoints::DOCUMENT_TYPES."{$params}";
         $body = new BaseMessage($this->configuration->getAppHandle());
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1515,13 +1420,10 @@ class SilaApi
      */
     public function cancelTransaction(string $userHandle, string $userPrivateKey, string $transactionId): ApiResponse
     {
-        $path = '/cancel_transaction';
+        $path = ApiEndpoints::CANCEL_TRANSACTION;
         $body = new CancelTransactionMessage($this->configuration->getAppHandle(), $userHandle, $transactionId);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1790,13 +1692,10 @@ class SilaApi
      */
     public function deleteRegistrationData(string $userHandle, string $userPrivateKey, RegistrationDataType $dataType, string $uuid): ApiResponse
     {
-        $path = "/delete/{$dataType}";
+        $path = ApiEndpoints::DELETE."/{$dataType}";
         $body = new DeleteRegistrationMessage($this->configuration->getAppHandle(), $userHandle, $uuid);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1825,7 +1724,7 @@ class SilaApi
         string $name = null,
         string $description = null
     ): ApiResponse {
-        $path = '/documents';
+        $path = ApiEndpoints::DOCUMENTS;
         $file = fopen($filePath, 'rb');
         $contents = fread($file, filesize($filePath));
         fclose($file);
@@ -1841,10 +1740,7 @@ class SilaApi
             $description
         );
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callFileApi(
             $path,
             [['name' => 'file', 'contents' => fopen($filePath, 'rb')], ['name' => 'data', 'contents' => $json]],
@@ -1880,13 +1776,10 @@ class SilaApi
         string $sortBy = null
     ): ApiResponse {
         $params = $this->pageParams($page, $perPage, $sort);
-        $path = "/list_documents{$params}";
+        $path = ApiEndpoints::LIST_DOCUMENTS."{$params}";
         $body = new ListDocumentsMessage($this->configuration->getAppHandle(), $userHandle, $startDate, $endDate, $docTypes, $search, $sortBy);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1900,13 +1793,10 @@ class SilaApi
      */
     public function getDocument(string $userHandle, string $userPrivateKey, string $uuid): ApiResponse
     {
-        $path = '/get_document';
+        $path = ApiEndpoints::GET_DOCUMENT;
         $body = new GetDocumentMessage($this->configuration->getAppHandle(), $userHandle, $uuid);
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareFileResponse($response);
     }
@@ -1945,12 +1835,9 @@ class SilaApi
 
     private function sendNewWallet(RegisterWalletMessage $body, string $userPrivateKey): ApiResponse
     {
-        $path = '/register_wallet';
+        $path = ApiEndpoints::REGISTER_WALLET;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1977,10 +1864,7 @@ class SilaApi
         }
         $path = "/{$operation}/{$dataType}";
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userPrivateKey)
-        ];
+        $headers = $this->makeHeaders($json, $userPrivateKey);
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -1988,20 +1872,18 @@ class SilaApi
     /**
      * Gets array of user handle's webhooks .
      *
-     * @param string|null $userPrivateKey
+     * @param string|null $userHandle
      * @param \Silamoney\Client\Domain\SearchFilters $filters
      * @return ApiResponse
      * @throws ClientException
      * @throws Exception
      */
-    public function getWebhooks(string $userPrivateKey = null, SearchFilters $filters): ApiResponse
+    public function getWebhooks(string $userHandle = null, SearchFilters $filters): ApiResponse
     {
-        $body = new GetWebhooksMessage($this->configuration->getAppHandle(), $filters);
-        $path = '/get_webhooks';
+        $body = new GetWebhooksMessage($this->configuration->getAppHandle(), $userHandle, $filters);
+        $path = ApiEndpoints::GET_WEBHOOKS;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetWebhooksResponse::class);
     }
@@ -2017,11 +1899,9 @@ class SilaApi
     public function retryWebhook(string $eventUuid)//: ApiResponse
     {
         $body = new RetryWebhookMessage($this->configuration->getAppHandle(), $eventUuid);
-        $path = '/retry_webhook';
+        $path = ApiEndpoints::RETRY_WEBHOOK;
         $json = $this->serializer->serialize($body, 'json');
-        $headers = [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey())
-        ];
+        $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
     }
@@ -2080,11 +1960,24 @@ class SilaApi
      */
     private function makeBusinessHeaders(string $json, string $businessKey, string $userKey): array
     {
-        return [
-            self::AUTH_SIGNATURE => EcdsaUtil::sign($json, $this->configuration->getPrivateKey()),
-            self::USER_SIGNATURE => EcdsaUtil::sign($json, $userKey),
-            self::BUSINESS_SIGNATURE => EcdsaUtil::sign($json, $businessKey)
-        ];
+        return $this->makeHeaders($json, $userKey, $businessKey);
+    }
+
+    /**
+     * Makes the signing headers for request that uses auth_signature and/or user_signature and/or business_signature
+     * @param string $json The json string body to sign
+     * @param string|null $userKey The user private key for the user_signature
+     * @param string|null $businessKey The business private key for the business_signature
+     * @return array An associative array with the signatures
+     */
+    private function makeHeaders(string $json, string $userKey = null, string $businessKey = null): array
+    {
+        $headers = [];
+        $headers[self::AUTH_SIGNATURE] = EcdsaUtil::sign($json, $this->configuration->getPrivateKey());
+        if(!empty($userKey)) $headers[self::USER_SIGNATURE] = EcdsaUtil::sign($json, $userKey);
+        if(!empty($businessKey)) $headers[self::BUSINESS_SIGNATURE] = EcdsaUtil::sign($json, $businessKey);
+
+        return $headers;
     }
 
     /**

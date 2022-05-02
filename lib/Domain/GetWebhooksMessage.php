@@ -35,14 +35,16 @@ class GetWebhooksMessage implements ValidInterface
      * Constructor for GetTransactionMsg object.
      *
      * @param string $appHandle
+     * @param string $userHandle
      * @param Silamoney\Client\Domain\SearchFilters $searchFilters
      */
     public function __construct(
         string $appHandle,
+        string $userHandle,
         SearchFilters $searchFilters
     ) {
         $this->searchFilters = $searchFilters;
-        $this->header = new Header($appHandle);
+        $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool

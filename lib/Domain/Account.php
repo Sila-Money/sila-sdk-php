@@ -87,4 +87,11 @@ class Account
      * @Type("string")
      */
      public $entityName;
+
+     /**
+      * webDebitVerified
+      * @var bool
+      * @Type("bool")
+      */
+     public $webDebitVerified;
 }
