@@ -17,15 +17,8 @@ use Respect\Validation\Validator as v;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class PlaidSamedayAuthResponse
+class PlaidSamedayAuthResponse extends BaseResponse
 {
-    /**
-     * Success
-     * @var bool
-     * @Type("bool")
-     */
-    private $success;
-
     /**
      * Public Token
      * @var string
@@ -34,68 +27,11 @@ class PlaidSamedayAuthResponse
     private $publicToken;
 
     /**
-     * Message
-     * @var string
-     * @Type("string")
-     */
-    private $message;
-
-    /**
-     * Status
-     * @var string
-     * @Type("string")
-     */
-    private $status;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    private $response_time_ms;
-
-    /**
      * Gets the response reference.
      * @return string
      */
     public function getPublicToken(): string
     {
         return $this->publicToken;
-    }
-
-    /**
-     * Gets the response message.
-     * @return string
-    */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-    
-    /**
-     * Gets the response status.
-     * @return string
-    */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * Gets the response success.
-     * @return bool
-    */
-    public function getSuccess(): bool
-    {
-        return $this->success;
-    }
-    
-    /**
-     * Gets the response response_time_ms.
-     * @return bool
-    */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
     }
 }

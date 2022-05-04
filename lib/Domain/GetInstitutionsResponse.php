@@ -17,19 +17,8 @@ use Pagination;
  * @package  Silamoney\Client
  * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class GetInstitutionsResponse
+class GetInstitutionsResponse extends BaseResponseWithoutMessage
 {
-    /**
-     * Boolean field used for success.
-     * @var bool
-     * @Type("bool")
-     */
-    public $success;
-    /**
-     * @var string
-     * @Type("string")
-     */
-    public $status;
     /**
      * Integer field used for the page.
      * @var int
@@ -56,13 +45,6 @@ class GetInstitutionsResponse
     public $institutions;
 
     /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    public $response_time_ms;
-
-    /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
      * @Type("Silamoney\Client\Domain\Pagination")
@@ -70,23 +52,6 @@ class GetInstitutionsResponse
     public $pagination;
 
     /**
-     * Checks to see if the request was successful
-     * @return bool
-     */
-    public function getSuccess(): bool
-    {
-        return $this->success;
-    }
-
-    /**
-     * @return string
-     */
-     public function getStatus(): string
-     {
-         return $this->status;
-     }
-
-     /**
      * @return Silamoney\Client\Domain\Pagination
      */
     public function getPagination(): Simanoney\Client\Domain\Pagination
@@ -94,15 +59,6 @@ class GetInstitutionsResponse
         return $this->pagination;
     }
     
-    /**
-     * Gets the response response_time_ms.
-     * @return bool
-     */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
-    }
-
     public function getInstitutionById($id)
     {
         $tx = array_values(array_filter($this->institutions, function ($v) use ($id) {

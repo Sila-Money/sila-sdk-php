@@ -17,19 +17,8 @@ use Pagination;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class GetTransactionsResponse
+class GetTransactionsResponse extends BaseResponseWithoutMessage
 {
-    /**
-     * Boolean field used for success.
-     * @var bool
-     * @Type("bool")
-     */
-    public $success;
-    /**
-     * @var string
-     * @Type("string")
-     */
-    public $status;
     /**
      * Integer field used for the page.
      * @var int
@@ -42,13 +31,6 @@ class GetTransactionsResponse
      * @Type("int")
      */
     public $returnedCount;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    public $response_time_ms;
 
     /**
      * Integer field used for the total count.
@@ -70,32 +52,6 @@ class GetTransactionsResponse
     public $pagination;
 
     /**
-     * Checks to see if the request was successful
-     * @return bool
-     */
-    public function getSuccess(): bool
-    {
-        return $this->success;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-    
-    /**
-      * Gets the response response_time_ms.
-      * @return bool
-      */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
-    }
-
-     /**
      * @return Silamoney\Client\Domain\Pagination
      */
     public function getPagination(): Simanoney\Client\Domain\Pagination

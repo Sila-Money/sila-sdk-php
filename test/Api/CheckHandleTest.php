@@ -45,6 +45,7 @@ class CheckHandleTest extends TestCase
         $this->assertEquals($status, $response->getData()->getStatus());
         $this->assertStringContainsString($message, $response->getData()->getMessage());
         $this->assertIsString($response->getData()->getReference());
+        $this->assertNotEmpty($response->getData()->getResponseTimeMs());
     }
 
     public function testCheckHandle400()

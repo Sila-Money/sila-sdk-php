@@ -17,26 +17,8 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   Alanfer Orozco <aorozco@digitalgeko.com>
  */
-class UpdateAccountResponse
+class UpdateAccountResponse extends BaseResponse
 {
-    /**
-     * @var string
-     * @Type("string")
-    */
-    public $status;
-
-    /**
-     * @var string
-     * @Type("string")
-    */
-    public $reference;
-
-    /**
-     * @var string
-     * @Type("string")
-    */
-    public $message;
-
     /**
      * Updated account.
      * @var Silamoney\Client\Domain\Account
@@ -52,30 +34,11 @@ class UpdateAccountResponse
     public $changes;
 
     /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-    */
-    public $response_time_ms;
-
-    /**
-     * Gets the response status.
-     * @return string
+     * webDebitVerified
+     * @var bool
+     * @Type("bool")
      */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function getReference(): string 
-    {
-        return $this->reference;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
+    public $webDebitVerified;
 
     public function getAccount(): Silamoney\Client\Domain\Account
     {
@@ -87,21 +50,9 @@ class UpdateAccountResponse
         return $this->changes;
     }
 
-    /**
-     * Returns a boolean success indicator
-     * @return bool
-     */
-    public function getSuccess(): bool
+    public function getWebDebitVerified(): float
     {
-        return $this->status == 'SUCCESS';
+        return $this->webDebitVerified;
     }
-    
-    /**
-     * Gets the response status.
-     * @return bool
-     */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
-    }
+
 }

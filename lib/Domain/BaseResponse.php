@@ -17,51 +17,14 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class BaseResponse
+class BaseResponse extends BaseResponseWithoutMessage
 {
-    /**
-     * Reference
-     * @var bool
-     * @Type("bool")
-     */
-    private $success;
-
-    /**
-     * Reference
-     * @var string
-     * @Type("string")
-     */
-    private $reference;
-
     /**
      * Message
      * @var string
      * @Type("string")
      */
-    private $message;
-
-    /**
-     * Status
-     * @var string
-     * @Type("string")
-     */
-    private $status;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    private $response_time_ms;
-
-    /**
-     * Gets the response reference.
-     * @return string
-     */
-    public function getReference(): string
-    {
-        return $this->reference;
-    }
+    public $message;
 
     /**
      * Gets the response message.
@@ -70,38 +33,5 @@ class BaseResponse
     public function getMessage(): string
     {
         return $this->message;
-    }
-
-    /**
-     * Gets the response status.
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * Gets any response attribute.
-     * @param $attr string
-     * @return mixed
-     */
-    public function getAttr($attr)
-    {
-        return property_exists($this, $attr) ? $this->{$attr} : null;
-    }
-
-    public function getSuccess()
-    {
-        return $this->success;
-    }
-    
-    /**
-     * Gets the response status.
-     * @return bool
-     */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
     }
 }

@@ -16,20 +16,8 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class GetAccountBalanceResponse
+class GetAccountBalanceResponse extends BaseResponseWithoutMessage
 {
-    /**
-     * @var bool
-     * @Type("bool")
-     */
-    public $success;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-     private $status;
-
     /**
      * @var float
      * @Type("float")
@@ -59,11 +47,4 @@ class GetAccountBalanceResponse
      * @Type("string")
      */
     public $accountName;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    public $response_time_ms;
 }

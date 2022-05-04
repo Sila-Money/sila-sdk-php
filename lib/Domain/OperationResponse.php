@@ -16,83 +16,21 @@ use JMS\Serializer\Annotation\Type;
  * @package  Silamoney\Client
  * @author   José Morales <jmorales@digitalgeko.com>
  */
-class OperationResponse
+class OperationResponse extends BaseResponse
 {
-    /**
-     * Reference
-     * @var bool
-     * @Type("bool")
-     */
-     private $success;
-
-    /**
-     * Reference
-     * @var string
-     * @Type("string")
-     */
-    private $reference;
-
-    /**
-     * Message
-     * @var string
-     * @Type("string")
-     */
-    private $message;
-
-    /**
-     * Status
-     * @var string
-     * @Type("string")
-     */
-    private $status;
-
     /**
      * Transaction Id
      * @var string
      * @Type("string")
      */
-    private $transactionId;
+    public $transactionId;
 
     /**
      * Descriptor
      * @var string
      * @Type("string")
      */
-    private $descriptor;
-
-    /**
-     * response_time_ms
-     * @var string
-     * @Type("string")
-     */
-    private $response_time_ms;
-
-    /**
-     * Gets the response reference.
-     * @return string
-     */
-    public function getReference(): string
-    {
-        return $this->reference;
-    }
-
-    /**
-     * Gets the response message.
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * Gets the response status.
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
+    public $descriptor;
 
     /**
      * Gets the response descriptor.
@@ -111,14 +49,5 @@ class OperationResponse
     public function getSuccess(): bool
     {
         return ($this->success == null)  ? ($this->getStatus() == 'SUCCESS') : $this->success;
-    }
-    
-    /**
-     * Gets the response response_time_ms.
-     * @return bool
-     */
-    public function getResponseTimeMs(): bool
-    {
-        return $this->response_time_ms;
     }
 }
