@@ -11,7 +11,7 @@ namespace Silamoney\Client\Domain;
  * API Endpoints Constants
  * @category Class
  * @package  Silamoney\Client
- * @author   Shahid Ahmed Sheikh <shahidw2@gmail.com>
+ * @author   Shahid Ahmed Sheikh <shahid.sheikh@silamoney.com>
  */
 class ApiEndpoints
 {
