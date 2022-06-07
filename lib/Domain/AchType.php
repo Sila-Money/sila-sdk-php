@@ -23,4 +23,5 @@ class AchType extends Enum
     public const INSTANT  = 'INSTANT_ACH';
     public const CARD     = 'CARD';
     public const INSTANT_SETTLEMENT  = 'INSTANT_SETTLEMENT';
+    public const WIRE  = 'WIRE';
 }

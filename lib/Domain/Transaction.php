@@ -298,4 +298,32 @@ class Transaction
      * @Type("string")
      */
     public $secCode;
+
+    /**
+     * String field used for the IMAD.
+     * @var string
+     * @Type("string")
+     */
+    public $IMAD;
+
+    /**
+     * String field used for the OMAD.
+     * @var string
+     * @Type("string")
+     */
+    public $OMAD;
+
+    /**
+     * String field used for the provider_tx_id.
+     * @var string
+     * @Type("string")
+     */
+    public $providerTxId;
+
+    /**
+     * String field used for the provider_status.
+     * @var string
+     * @Type("string")
+     */
+    public $providerStatus;
 }

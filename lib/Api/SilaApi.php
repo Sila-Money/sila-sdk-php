@@ -106,7 +106,10 @@ use Silamoney\Client\Domain\{
     UpdateVirtualAccountMessage,
     CloseVirtualAccountMessage,
     RequestKYCResponse,
-    CreateTestVirtualAccountAchTransactionMessage
+    CreateTestVirtualAccountAchTransactionMessage,
+    ApproveWireMessage,
+    MockWireOutFileMessage,
+    MockWireOutFileResponse
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -945,6 +948,10 @@ class SilaApi
      * @param string|null $descriptor Optional. Max Length 100
      * @param string|null $businessUuid Optional. UUID of a business with an approved ACH name. The format should be a UUID string.
      * @param \Silamoney\Client\Domain\AchType|null $processingType Optional. Choice Field
+     * @param string|null $cardName Optional.
+     * @param string|null $sourceId Optional.
+     * @param string|null $destinationId Optional.
+     * @param string|null $mockWireAccountName Optional.
      * @return ApiResponse
      */
     public function redeemSila(
@@ -957,7 +964,8 @@ class SilaApi
         AchType $processingType = null,
         string $cardName = null,
         string $sourceId = null,
-        string $destinationId = null
+        string $destinationId = null,
+        string $mockWireAccountName = null
     ): ApiResponse {
         $body = new BankAccountMessage(
             $userHandle,
@@ -970,7 +978,8 @@ class SilaApi
             $processingType,
             $cardName,
             $sourceId,
-            $destinationId
+            $destinationId,
+            $mockWireAccountName
         );
         $path = ApiEndpoints::REDEEM_SILA;
         $json = $this->serializer->serialize($body, 'json');
@@ -1896,7 +1905,7 @@ class SilaApi
      * @throws ClientException
      * @throws Exception
      */
-    public function retryWebhook(string $eventUuid)//: ApiResponse
+    public function retryWebhook(string $eventUuid): ApiResponse
     {
         $body = new RetryWebhookMessage($this->configuration->getAppHandle(), $eventUuid);
         $path = ApiEndpoints::RETRY_WEBHOOK;
@@ -1904,6 +1913,50 @@ class SilaApi
         $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
+    }
+
+    /**
+     * This function is used to approve/deny WIRE transaction.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $transactionId - The transaction id to approve or deny
+     * @param boolean $approve
+     * @param string|null $notes - Optional.
+     * @param string|null $mockWireAccountName - Optional.
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function approveWire(string $userHandle, string $userPrivateKey, string $transactionId, $approve, $notes = null, $mockWireAccountName = null): ApiResponse
+    {
+        $body = new ApproveWireMessage($this->configuration->getAppHandle(), $userHandle, $transactionId, $approve, $notes, $mockWireAccountName);
+        $path = ApiEndpoints::APPROVE_WIRE;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * This function is used to approve/deny WIRE transaction.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $transactionId - The transaction id to approve or deny
+     * @param string $wireStatus - Optional.
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function mockWireOutFile(string $userHandle, string $userPrivateKey, string $transactionId, $wireStatus): ApiResponse
+    {
+        $body = new MockWireOutFileMessage($this->configuration->getAppHandle(), $userHandle, $transactionId, $wireStatus);
+        $path = ApiEndpoints::MOCK_WIRE_OUT_FILE;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, MockWireOutFileResponse::class);
     }
 
     /**

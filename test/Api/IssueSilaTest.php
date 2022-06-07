@@ -186,4 +186,102 @@ class IssueSilaTest extends TestCase
         $this->assertTrue($success);
         $this->assertEquals('success', $status);
     }
+
+    public function testIssueSila200Wire()
+    {
+        $response = self::$config->api->issueSila(
+            DefaultConfig::$firstUserHandle,
+            55000,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            DefaultConfig::VALID_BUSINESS_UUID
+        );
+        
+        $issueTransactionId = $response->getData()->getTransactionId();
+        $filters = new SearchFilters();
+        $filters->setTransactionId($issueTransactionId);
+        do {
+            $responseTrans = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters, DefaultConfig::$firstUserWallet->getPrivateKey());
+            $statusCode = $responseTrans->getStatusCode();
+            $success = $responseTrans->getData()->success;
+            $status = $responseTrans->getData()->transactions[0]->status;
+            sleep(30);
+            echo '.';
+        } while ($statusCode == 200 && $success && ($status === 'pending' || $status === 'queued'));
+
+        $businessUuid = "25e77968-1ca3-4a4b-8e72-506dcac20dc7"; //DefaultConfig::VALID_BUSINESS_UUID
+        $processingType = AchType::WIRE();
+        $mockWireAccountName = "mock_account_success";
+        $responseRedeem = self::$config->api->redeemSila(
+            DefaultConfig::$firstUserHandle,
+            50000,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            $businessUuid,
+            $processingType,
+            null,
+            null,
+            null,
+            $mockWireAccountName
+        );
+
+        $redeemTransactionId = $responseRedeem->getData()->getTransactionId();
+
+        $approve = true;
+        $notes = "test notes...";
+        $mockWireAccountName = "mock_account_success";
+        $filters = new SearchFilters();
+        $filters->setTransactionId($redeemTransactionId);
+
+        for ($i=0; $i <= 10; $i++) {
+            $responseTransaction = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters, DefaultConfig::$firstUserWallet->getPrivateKey());
+            $data = $responseTransaction->getData();
+            if($data->transactions[0]->providerStatus == "pending_approval") {
+                break;
+            }
+            sleep(30);
+        }
+
+        $responseApproveWire = self::$config->api->approveWire(DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), $redeemTransactionId, $approve, $notes, $mockWireAccountName);
+
+        $businessUuid = "25e77968-1ca3-4a4b-8e72-506dcac20dc7"; //DefaultConfig::VALID_BUSINESS_UUID
+        $processingType = AchType::WIRE();
+        $mockWireAccountName = "mock_account_success";
+        $responseRedeem2 = self::$config->api->redeemSila(
+            DefaultConfig::$firstUserHandle,
+            5000,
+            DefaultConfig::DEFAULT_ACCOUNT,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            $businessUuid,
+            $processingType,
+            null,
+            null,
+            null,
+            $mockWireAccountName
+        );
+
+        $redeemTransactionId2 = $responseRedeem2->getData()->getTransactionId();
+
+        $filters = new SearchFilters();
+        $filters->setTransactionId($redeemTransactionId2);
+        for ($i=0; $i <= 10; $i++) {
+            $responseTransaction = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters, DefaultConfig::$firstUserWallet->getPrivateKey());
+            $data = $responseTransaction->getData();
+            if($data->transactions[0]->providerStatus == "pending_approval") {
+                break;
+            }
+            sleep(30);
+        }
+
+        $responseMockWireOutFile = self::$config->api->mockWireOutFile(DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), $redeemTransactionId2, "PR");
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $responseRedeem->getStatusCode());
+        $this->assertEquals(200, $responseApproveWire->getStatusCode());
+        $this->assertEquals(200, $responseRedeem2->getStatusCode());
+        $this->assertEquals(200, $responseMockWireOutFile->getStatusCode());
+    }
 }
