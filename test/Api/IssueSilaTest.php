@@ -187,7 +187,6 @@ class IssueSilaTest extends TestCase
         $this->assertEquals('success', $status);
     }
 
-
     public function testIssueSila200Wire()
     {
         $response = self::$config->api->issueSila(
@@ -285,5 +284,4 @@ class IssueSilaTest extends TestCase
         $this->assertEquals(200, $responseRedeem2->getStatusCode());
         $this->assertEquals(200, $responseMockWireOutFile->getStatusCode());
     }
-
 }
