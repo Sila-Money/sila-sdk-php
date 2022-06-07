@@ -15,6 +15,7 @@ namespace Silamoney\Client\Domain;
  */
 class ApiEndpoints
 {
+    public const APPROVE_WIRE = "/approve_wire";
     public const CANCEL_TRANSACTION = "/cancel_transaction";
     public const CERTIFY_BENEFICIAL_OWNER = "/certify_beneficial_owner";
     public const CERTIFY_BUSINESS = "/certify_business";
@@ -53,6 +54,7 @@ class ApiEndpoints
     public const LINK_BUSINESS_MEMBER = "/link_business_member";
     public const LINK_CARD = "/link_card";
     public const LIST_DOCUMENTS = "/list_documents";
+    public const MOCK_WIRE_OUT_FILE = "/mock_wire_out_file";
     public const OPEN_VIRTUAL_ACCOUNT = "/open_virtual_account";
     public const PLAID_LINK_TOKEN = "/plaid_link_token";
     public const PLAID_SAMEDAY_AUTH = "/plaid_sameday_auth";

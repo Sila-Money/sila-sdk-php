@@ -52,4 +52,11 @@ class TransactionStatus
      * @Type("string")
      */
     public $tokenStatus;
+
+    /**
+     * String field used for the provider_status.
+     * @var string
+     * @Type("string")
+     */
+    public $providerStatus;
 }
