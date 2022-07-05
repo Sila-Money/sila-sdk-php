@@ -109,7 +109,9 @@ use Silamoney\Client\Domain\{
     CreateTestVirtualAccountAchTransactionMessage,
     ApproveWireMessage,
     MockWireOutFileMessage,
-    MockWireOutFileResponse
+    MockWireOutFileResponse,
+    DocumentListMessage,
+    DocumentWithoutHeaderMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -869,7 +871,8 @@ class SilaApi
         AchType $processingType = null,
         string $cardName = null,
         string $sourceId = null,
-        string $destinationId = null
+        string $destinationId = null,
+        string $transactionIdempotencyId = null
     ): ApiResponse 
     {
         $body = new BankAccountMessage(
@@ -883,7 +886,10 @@ class SilaApi
             $processingType,
             $cardName,
             $sourceId,
-            $destinationId
+            $destinationId,
+            null, // null for mockWireAccountName optional input
+            $transactionIdempotencyId
+
         );
         $path = ApiEndpoints::ISSUE_SILA;
         $json = $this->serializer->serialize($body, 'json');
@@ -904,6 +910,7 @@ class SilaApi
      * @param string $businessUuid Optional field
      * @param string $sourceId Optional field
      * @param string $destinationId Optional field
+     * @param string $transactionIdempotencyId Optional field
      * @return ApiResponse
      */
     public function transferSila(
@@ -916,8 +923,10 @@ class SilaApi
         string $descriptor = null,
         string $businessUuid = null,
         string $sourceId = null,
-        string $destinationId = null
-    ): ApiResponse {
+        string $destinationId = null,
+        string $transactionIdempotencyId = null
+    ): ApiResponse 
+    {
         $body = new TransferMessage(
             $userHandle,
             $destination,
@@ -928,7 +937,8 @@ class SilaApi
             $descriptor,
             $businessUuid,
             $sourceId,
-            $destinationId
+            $destinationId,
+            $transactionIdempotencyId
         );
         $path = ApiEndpoints::TRANSFER_SILA;
         $json = $this->serializer->serialize($body, 'json');
@@ -965,8 +975,10 @@ class SilaApi
         string $cardName = null,
         string $sourceId = null,
         string $destinationId = null,
-        string $mockWireAccountName = null
-    ): ApiResponse {
+        string $mockWireAccountName = null,
+        string $transactionIdempotencyId = null
+        ): ApiResponse 
+        {
         $body = new BankAccountMessage(
             $userHandle,
             $accountName,
@@ -979,7 +991,8 @@ class SilaApi
             $cardName,
             $sourceId,
             $destinationId,
-            $mockWireAccountName
+            $mockWireAccountName,
+            $transactionIdempotencyId
         );
         $path = ApiEndpoints::REDEEM_SILA;
         $json = $this->serializer->serialize($body, 'json');
@@ -1664,6 +1677,7 @@ class SilaApi
      * @param string|null $naicsCode
      * @param string|null $doingBusinessAs
      * @param string|null $businessWebsite
+     * @param string|null $registrationState
      * @return \Silamoney\Client\Api\ApiResponse
      */
     public function updateBusinessEntity(
@@ -1674,8 +1688,10 @@ class SilaApi
         string $businessType = null,
         string $naicsCode = null,
         string $doingBusinessAs = null,
-        string $businessWebsite = null
-    ): ApiResponse {
+        string $businessWebsite = null,
+        string $registrationState = null
+    ): ApiResponse 
+    {
         $body = new EntityUpdateMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
@@ -1686,7 +1702,8 @@ class SilaApi
             $businessType,
             $naicsCode,
             $doingBusinessAs,
-            $businessWebsite
+            $businessWebsite,
+            $registrationState
         );
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ENTITY(), $body);
     }
@@ -1711,6 +1728,7 @@ class SilaApi
 
     /**
      * Upload supporting documentation for KYC
+     *  This function Should be deprecated and use uploadDocuments instead 
      * @param string $userHandle
      * @param string $userPrivateKey
      * @param string $filePath
@@ -1729,7 +1747,7 @@ class SilaApi
         string $filename,
         string $mimeType,
         string $documentType,
-        string $identityType = null,
+        string $identityType = null, //depricated and should be removed
         string $name = null,
         string $description = null
     ): ApiResponse {
@@ -1750,11 +1768,87 @@ class SilaApi
         );
         $json = $this->serializer->serialize($body, 'json');
         $headers = $this->makeHeaders($json, $userPrivateKey);
+        $data = [
+            ['name' => 'file', 'contents' => fopen($filePath, 'rb')],
+            ['name' => 'data', 'contents' => $json]
+        ];
         $response = $this->configuration->getApiClient()->callFileApi(
             $path,
-            [['name' => 'file', 'contents' => fopen($filePath, 'rb')], ['name' => 'data', 'contents' => $json]],
+            $data,
             $headers
         );
+        
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * Upload supporting documentation for KYC
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param array $documents
+     * @return \Silamoney\Client\Api\ApiResponse
+     */
+    public function uploadDocuments(
+        string $userHandle,
+        string $userPrivateKey,
+        $documents // array of one or more documents
+    ): ApiResponse {
+        $path = ApiEndpoints::DOCUMENTS;
+        if(gettype($documents) === "array") {
+            $files = [];
+            $files_metadata = [];
+            $data = [];
+            $counter = 0;
+            foreach ($documents as $key => $document) {
+                $counter++;
+                $filePath = $document["filePath"];
+                $filename = $document["filename"];
+                $mimeType = $document["mimeType"];
+                $documentType = $document["documentType"];
+                $name = !empty($document["name"])?$document["name"]:null;
+                $description = !empty($document["description"])?$document["description"]:null;
+                
+                $file = fopen($filePath, 'rb');
+                $contents = fread($file, filesize($filePath));
+                fclose($file);
+                $hash = hash('sha256', $contents);
+                
+                $files["file_".$counter] = fopen($filePath, 'rb');
+                
+                $body = new DocumentWithoutHeaderMessage(
+                    $this->configuration->getAppHandle(),
+                    $userHandle,
+                    $filename,
+                    $hash,
+                    $mimeType,
+                    $documentType,
+                    ($name),
+                    $description
+                );
+                $json = $this->serializer->serialize($body, 'json');
+                $json = $body;
+                $files_metadata["file_".$counter] = $json;
+                
+                $data[] = ["name" => "file_".($counter), "contents" => fopen($filePath, 'rb')];
+            }
+
+            $fullBody = new DocumentListMessage(
+                $this->configuration->getAppHandle(),
+                $userHandle,
+                $files_metadata
+            );
+            $fullJson = $this->serializer->serialize($fullBody, 'json');
+            $headers = $this->makeHeaders($fullJson, $userPrivateKey);
+            $data[] = ["name" => "data", "contents" => $fullJson];
+            
+            $response = $this->configuration->getApiClient()->callFileApi(
+                $path,
+                $data,
+                $headers
+            );
+        } else {
+            throw new InvalidArgumentException('The documents variable must be an array');
+        }
         return $this->prepareResponse($response);
     }
 
@@ -1856,7 +1950,12 @@ class SilaApi
      * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\DeviceMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    private function modifyRegistrationData(string $userPrivateKey, RegistrationDataOperation $operation, RegistrationDataType $dataType, $body): ApiResponse
+    private function modifyRegistrationData(
+        string $userPrivateKey,
+        RegistrationDataOperation $operation,
+        RegistrationDataType $dataType,
+        $body
+    ): ApiResponse
     {
         switch (get_class($body)) {
             case EmailMessage::class:
