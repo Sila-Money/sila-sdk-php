@@ -56,6 +56,12 @@ class BusinessUser extends BaseUser
     private $businessWebsite;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $registrationState;
+    
+    /**
      * Constructor for user object
      * @param string $handle
      * @param string $name
@@ -78,6 +84,7 @@ class BusinessUser extends BaseUser
      * @param string $cryptoAlias
      * @param string $addressAlias
      * @param string $contactAlias
+     * @param string|null $registrationState
      * @return \Silamoney\Client\Domain\BusinessUser
      */
     public function __construct(
@@ -101,7 +108,8 @@ class BusinessUser extends BaseUser
         ?bool $smsOptIn = false,
         ?string $cryptoAlias = null,
         ?string $addressAlias = null,
-        ?string $contactAlias = null
+        ?string $contactAlias = null,
+        ?string $registrationState = null
     ) {
         parent::__construct(
             $handle,
@@ -126,6 +134,7 @@ class BusinessUser extends BaseUser
         $this->businessTypeUuid = $businessTypeUuid;
         $this->doingBusinessAs = $doingBusinessAs;
         $this->businessWebsite = $businessWebsite;
+        $this->registrationState = $registrationState;
     }
 
     /**
@@ -180,5 +189,14 @@ class BusinessUser extends BaseUser
     public function getBusinessWebsite(): ?string
     {
         return $this->businessWebsite;
+    }
+
+    /**
+     * Gets the business registration state
+     * @return string
+     */
+    public function getRegistrationState(): ?string
+    {
+        return $this->registrationState;
     }
 }

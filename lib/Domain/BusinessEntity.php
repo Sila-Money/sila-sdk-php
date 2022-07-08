@@ -39,6 +39,11 @@ class BusinessEntity extends BaseEntity
     private $naicsCode;
 
     /**
+     * @var string
+     */
+    private $registrationState;
+
+    /**
      * @param \Silamoney\Client\Domain\BusinessUser $business
      * @return \Silamoney\Client\Domain\BusinessEnity
      */
@@ -50,5 +55,6 @@ class BusinessEntity extends BaseEntity
         $this->businessTypeUuid = $business->getBusinessTypeUuid();
         $this->doingBusinessAs = $business->getDoingBusinessAs();
         $this->businessWebsite = $business->getBusinessWebsite();
+        $this->registrationState = $business->getRegistrationState();
     }
 }

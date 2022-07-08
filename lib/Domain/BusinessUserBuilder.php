@@ -15,6 +15,7 @@ class BusinessUserBuilder extends BaseUserBuilder
     private $businessTypeUuid;
     private $doingBusinessAs;
     private $businessWebsite;
+    private $registrationState;
 
     public function entityName(string $entityName): BusinessUserBuilder
     {
@@ -52,6 +53,12 @@ class BusinessUserBuilder extends BaseUserBuilder
         return $this;
     }
 
+    public function registrationState(string $registrationState): BusinessUserBuilder
+    {
+        $this->registrationState = $registrationState;
+        return $this;
+    }
+
     public function build(): BusinessUser
     {
         return new BusinessUser(
@@ -70,7 +77,13 @@ class BusinessUserBuilder extends BaseUserBuilder
             $this->businessType,
             $this->businessTypeUuid,
             $this->doingBusinessAs,
-            $this->businessWebsite
+            $this->businessWebsite,
+            $this->deviceFingerprint,
+            $this->smsOptIn,
+            $this->cryptoAlias,
+            $this->addressAlias,
+            $this->contactAlias,
+            $this->registrationState
         );
     }
 }

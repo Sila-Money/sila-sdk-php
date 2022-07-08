@@ -59,6 +59,11 @@ class EntityUpdateMessage extends HeaderBaseMessage
      * @Type("string")
      */
     private $businessWebsite;
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $registrationState;
 
     /**
      * Constructor for Entity Update Message object.
@@ -68,6 +73,11 @@ class EntityUpdateMessage extends HeaderBaseMessage
      * @param string|null $lastName
      * @param string|null $entityName
      * @param DateTime|null $birthDate
+     * @param string|null $businessType
+     * @param string|null $naicsCode
+     * @param string|null $doingBusinessAs
+     * @param string|null $businessWebsite
+     * @param string|null $registrationState
      * @return \Silamoney\Client\Domain\EntityUpdateMessage
      */
     public function __construct(
@@ -80,7 +90,8 @@ class EntityUpdateMessage extends HeaderBaseMessage
         string $businessType = null,
         string $naicsCode = null,
         string $doingBusinessAs = null,
-        string $businessWebsite = null
+        string $businessWebsite = null,
+        string $registrationState = null
     ) {
         parent::__construct($appHandle, $userHandle);
         $this->appHandle = $appHandle;
@@ -93,5 +104,6 @@ class EntityUpdateMessage extends HeaderBaseMessage
         $this->naicsCode = $naicsCode;
         $this->doingBusinessAs = $doingBusinessAs;
         $this->businessWebsite = $businessWebsite;
+        $this->registrationState = $registrationState;
     }
 }
