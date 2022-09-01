@@ -130,6 +130,22 @@ class RegisterTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
+    public function testRegisteremptyDviceFingerprint400()
+    {
+        $emptyDviceFingerprintHandle = DefaultConfig::generateHandle();
+        $emptyDviceFingerprintWallet = DefaultConfig::generateWallet();
+        $emptyDviceFingerprintUser = DefaultConfig::generateUserEmptyDeviceFingerPrint(
+            $emptyDviceFingerprintHandle,
+            'First',
+            $emptyDviceFingerprintWallet
+        );
+        $response = self::$config->api->register($emptyDviceFingerprintUser);
+        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
+        $this->assertStringContainsString('Bad request', $response->getData()->message);
+        $this->assertTrue($response->getData()->validation_details != null);
+    }
+
     public function testRegister401()
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();

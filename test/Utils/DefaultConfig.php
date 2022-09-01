@@ -399,7 +399,31 @@ class DefaultConfig
             'test'
         );
     }
-
+    public static function generateUserEmptyDeviceFingerPrint(string $handle, string $firstName, SilaWallet $wallet): User
+    {
+        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
+        return new User(
+            $handle,
+            $firstName,
+            'User',
+            '123 Main St',
+            null,
+            'Anytown',
+            'NY',
+            '12345',
+            '123-456-7890',
+            'you@awesomedomain.com',
+            '123452222',
+            $wallet->getAddress(),
+            $birthDate,
+            '',
+            true,
+            "Crypto Alias",
+            "Address Alias",
+            "Contact Alias",
+            "session-identifier-uuid"
+        );
+    }
     public static function uuid(): string
     {
         $data = random_bytes(16);
