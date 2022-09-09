@@ -1628,7 +1628,7 @@ class SilaApi
      * @param string|null $sessionIdentifier
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias, string $deviceFingerprint, string $uuid = null, string $sessionIdentifier = null): ApiResponse
+    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias = null, string $deviceFingerprint = null, string $uuid = null, string $sessionIdentifier = null): ApiResponse
     {
         $body = new DeviceMessage($this->configuration->getAppHandle(), $userHandle, $deviceAlias, $deviceFingerprint, $uuid, $sessionIdentifier);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);

@@ -30,6 +30,12 @@ class DeviceMessage extends RegistrationDataBaseMessage
      */
      private $deviceFingerprint;
 
+     /**
+      * @var string
+      * @Type("string")
+      */
+      private $sessionIdentifier;
+
     /**
      * Constructor for Add Device Message object.
      * @param string $appHandle
