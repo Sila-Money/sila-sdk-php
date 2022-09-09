@@ -11,3 +11,5 @@ composer.lock
 composer.phar
 response.txt
 .vscode
+.DS_Store
+*/.DS_Store
