@@ -87,6 +87,23 @@ class AddRegistrationDataTest extends TestCase
         $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
+    public function testAddDeviceWithEmptySessionIdentifier200()
+    {
+        $response = self::$config->api->addDevice(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            null,
+            'Device Fingerprint',
+            DefaultConfig::uuid(),
+            'he1h1-aaaa-dddd-99ce-c45944174e0c'
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertStringContainsString('Device successfully registered', $response->getData()->message);
+        $this->assertNotEmpty($response->getData()->response_time_ms);
+    }
+
     public function testAddIdentity200()
     {
         $response = self::$config->api->addIdentity(
