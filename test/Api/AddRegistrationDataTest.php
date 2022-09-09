@@ -93,7 +93,7 @@ class AddRegistrationDataTest extends TestCase
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             null,
-            'Device Fingerprint',
+            null,
             DefaultConfig::uuid(),
             'he1h1-aaaa-dddd-99ce-c45944174e0c'
         );
