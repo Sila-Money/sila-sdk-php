@@ -29,15 +29,6 @@ steps:
     php -version
   displayName: 'Use PHP version $(phpVersion)'
 
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'silamoney'
-    scannerMode: 'CLI'
-    configMode: 'file'
-  displayName: 'Prepare Sonar analysis'
-  condition: and(succeeded(), eq(variables['executeSonar'], true))
-
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
 
@@ -54,13 +45,3 @@ steps:
     testResultsFiles: '**/test-*.xml'
   displayName: 'Publish test results'
   condition: succeededOrFailed()
-
-- task: SonarCloudAnalyze@1
-  displayName: 'Sonar analysis'
-  condition: and(succeededOrFailed(), eq(variables['executeSonar'], true))
-
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
-  displayName: 'Sonar quality gate'
-  condition: and(succeeded(), eq(variables['executeSonar'], true))
