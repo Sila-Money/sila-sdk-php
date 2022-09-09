@@ -87,7 +87,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
-    public function testAddDeviceWithEmptySessionIdentifier200()
+    public function testAddDeviceWithEmptyDeviceFingerprint200()
     {
         $response = self::$config->api->addDevice(
             DefaultConfig::$firstUserHandle,
