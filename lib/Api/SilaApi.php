@@ -111,7 +111,8 @@ use Silamoney\Client\Domain\{
     MockWireOutFileMessage,
     MockWireOutFileResponse,
     DocumentListMessage,
-    DocumentWithoutHeaderMessage
+    DocumentWithoutHeaderMessage,
+    LinkAccountMxMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -538,6 +539,44 @@ class SilaApi
             null,
             null,
             $plaidTokenType
+        );
+        $path = ApiEndpoints::LINK_ACCOUNT;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, LinkAccountResponse::class);
+    }
+
+    /**
+     * Uses a provided MX public token to link a bank account to a verified
+     * entity.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string|null $accountName
+     * @param string|null $accountId
+     * @param string $provider
+     * @param string $providerToken
+     * @param string $providerTokenType
+     * @return ApiResponse
+     */
+    public function linkAccountMx(
+        string $userHandle,
+        string $userPrivateKey,
+        string $provider = "mx",
+        string $providerToken,
+        string $providerTokenType = "processor",
+        string $accountName = null,
+        string $accountId = null
+    ): ApiResponse {
+        $body = new LinkAccountMxMessage(
+            $userHandle,
+            $this->configuration->getAppHandle(),
+            $provider,
+            $providerToken,
+            $providerTokenType,
+            $accountName,
+            $accountId
         );
         $path = ApiEndpoints::LINK_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
