@@ -36,7 +36,6 @@ class GetTransactionsTest extends TestCase
     public function testGetTransactions200()
     {
         $filters = new SearchFilters();
-        $filters->setBankAccountName('wallet_php_upd2');
         $filters->setBlockchainAddress(DefaultConfig::$firstUserWallet->getBlockchainAddress());
         $response = self::$config->api->getTransactions(
             DefaultConfig::$firstUserHandle,
