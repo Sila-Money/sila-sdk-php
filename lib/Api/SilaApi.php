@@ -548,7 +548,7 @@ class SilaApi
     }
 
     /**
-     * Uses a provided MX public token to link a bank account to a verified
+     * Uses an MX processor token to link a bank account to a verified
      * entity.
      *
      * @param string $userHandle
