@@ -72,7 +72,7 @@ class Account
      * @var string
      * @Type("string")
      */
-     public $matchScore;
+    public $matchScore;
 
      /**
      * Account Owner Name
@@ -86,12 +86,19 @@ class Account
      * @var string
      * @Type("string")
      */
-     public $entityName;
+    public $entityName;
 
      /**
       * webDebitVerified
       * @var bool
       * @Type("bool")
       */
-     public $webDebitVerified;
+    public $webDebitVerified;
+
+     /**
+      * Provider Name
+      * @var string
+      * @Type("string")
+      */
+    public $providerName;
 }

@@ -61,6 +61,13 @@ class LinkAccountResponse extends BaseResponse
      */
     public $webDebitVerified;
 
+    /**
+     * provider
+     * @var string
+     * @Type("string")
+     */
+    public $provider;
+
     public function getAccountName(): string
     {
         return $this->accountName;
@@ -89,5 +96,10 @@ class LinkAccountResponse extends BaseResponse
     public function getWebDebitVerified(): float
     {
         return $this->webDebitVerified;
+    }
+
+    public function getProvider(): string
+    {
+        return $this->provider;
     }
 }

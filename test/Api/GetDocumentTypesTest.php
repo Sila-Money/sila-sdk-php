@@ -68,7 +68,7 @@ class GetDocumentTypesTest extends TestCase
         $this->assertGreaterThan(20, $response->getData()->pagination->returned_count);
         $this->assertGreaterThan(20, $response->getData()->pagination->total_count);
         $this->assertEquals(1, $response->getData()->pagination->current_page);
-        $this->assertEquals(1, $response->getData()->pagination->total_pages);
+        $this->assertGreaterThanOrEqual(1, $response->getData()->pagination->total_pages);
     }
 
     public function testGetDocumentTypes403()

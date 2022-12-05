@@ -47,4 +47,10 @@ class GetAccountBalanceResponse extends BaseResponseWithoutMessage
      * @Type("string")
      */
     public $accountName;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    public $provider;
 }
