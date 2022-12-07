@@ -112,7 +112,10 @@ use Silamoney\Client\Domain\{
     MockWireOutFileResponse,
     DocumentListMessage,
     DocumentWithoutHeaderMessage,
-    LinkAccountMxMessage
+    LinkAccountMxMessage,
+    GetStatementsMessage,
+    GetStatementsResponse,
+    Statements
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -1057,6 +1060,46 @@ class SilaApi
         $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, GetTransactionsResponse::class);
+    }
+
+    /**
+     * Gets array of user handle's transaction statements with detailed status information.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\SearchFilters $filters
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function getStatementsData(string $userHandle = null, string $userPrivateKey, SearchFilters $filters): ApiResponse
+    {
+        $body = new GetStatementsMessage($userHandle, $this->configuration->getAppHandle(),Message::GET_STATEMENTS_DATA, $filters);
+        $path = ApiEndpoints::GET_STATEMENTS_DATA;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json);
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, GetStatementsResponse::class);
+    }
+
+    /**
+     * Gets array of user handle's transaction wallet statements with detailed status information.
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\SearchFilters $filters
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function getWalletStatementData(string $userHandle = null, string $userPrivateKey, string $walletId, SearchFilters $filters): ApiResponse
+    {
+        $body = new GetStatementsMessage($userHandle, $this->configuration->getAppHandle(),Message::GET_WALLET_STATEMENT_DATA, $filters, $walletId);
+        $path = ApiEndpoints::GET_WALLET_STATEMENT_DATA;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json);
+        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
+        return $this->prepareResponse($response, GetStatementsResponse::class);
     }
 
     /**

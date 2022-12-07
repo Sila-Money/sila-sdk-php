@@ -30,7 +30,7 @@ class ApiClient
 
     private const BASE_URI = 'base_uri';
 
-    private const USER_AGENT = 'SilaSDK-php / 0.2.49';
+    private const USER_AGENT = 'SilaSDK-php / 0.2.50';
 
     /**
      * Api Client constructor

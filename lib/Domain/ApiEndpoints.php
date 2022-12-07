@@ -44,6 +44,8 @@ class ApiEndpoints
     public const GET_PAYMENT_METHODS = "/get_payment_methods";
     public const GET_SILA_BALANCE = "/get_sila_balance";
     public const GET_TRANSACTIONS = "/get_transactions";
+    public const GET_STATEMENTS_DATA = "/get_statements_data";
+    public const GET_WALLET_STATEMENT_DATA = "/get_wallet_statement_data";
     public const GET_VIRTUAL_ACCOUNT = "/get_virtual_account";
     public const GET_VIRTUAL_ACCOUNTS = "/get_virtual_accounts";
     public const GET_WALLET = "/get_wallet";
