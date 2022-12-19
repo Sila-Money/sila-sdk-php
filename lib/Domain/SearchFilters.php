@@ -187,6 +187,24 @@ class SearchFilters implements ValidInterface
      */
     private $paymentMethodId;
 
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $month;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $startMonth;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $endMonth;
+
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
@@ -216,7 +234,10 @@ class SearchFilters implements ValidInterface
             && ($this->bankAccountName === null || v::stringType()->notEmpty()->validate($this->bankAccountName))
             && ($this->cardName === null || v::stringType()->notEmpty()->validate($this->cardName))
             && ($this->blockchainAddress === null || v::stringType()->notEmpty()->validate($this->blockchainAddress))
-            && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName));
+            && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName))
+            && ($this->month === null || v::stringType()->notEmpty()->validate($this->month))
+            && ($this->startMonth === null || v::stringType()->notEmpty()->validate($this->startMonth))
+            && ($this->endMonth === null || v::stringType()->notEmpty()->validate($this->endMonth));
     }
 
     /**
@@ -561,4 +582,40 @@ class SearchFilters implements ValidInterface
         $this->institutionName = $institutionName;
         return $this;
      }
+
+     /**
+     * Sets the month to the filters.
+     *
+     * @param string $month
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setMonth(string $month): SearchFilters
+    {
+       $this->month = $month;
+       return $this;
+    }
+
+    /**
+     * Sets the startMonth to the filters.
+     *
+     * @param string $startMonth
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setStartMonth(string $startMonth): SearchFilters
+    {
+       $this->startMonth = $startMonth;
+       return $this;
+    }
+
+    /**
+     * Sets the endMonth to the filters.
+     *
+     * @param string $endMonth
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setEndMonth(string $endMonth): SearchFilters
+    {
+       $this->endMonth = $endMonth;
+       return $this;
+    }
 }
