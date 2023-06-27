@@ -73,4 +73,6 @@ class ApiEndpoints
     public const UPDATE_VIRTUAL_ACCOUNT = "/update_virtual_account";
     public const UPDATE_WALLET = "/update_wallet";
 
+    public const STATEMENTS = "/statements";
+    public const RESEND_STATEMENTS = "/statements";
 }

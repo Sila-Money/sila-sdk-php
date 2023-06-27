@@ -25,13 +25,15 @@ class UpdateWalletTest extends TestCase
             DefaultConfig::$firstUserHandle,
             "wallet_php_upd2",
             false,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            false
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsString($response->getData()->message);
         $this->assertIsObject($response->getData()->wallet);
         $this->assertIsArray($response->getData()->changes);
+        $this->assertIsBool($response->getData()->wallet->statements_enabled);
     }
 
     public function testUpdateWalletWithEmptyNickname400()
@@ -40,7 +42,8 @@ class UpdateWalletTest extends TestCase
             DefaultConfig::$firstUserHandle,
             "",
             false,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            false
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
@@ -55,7 +58,8 @@ class UpdateWalletTest extends TestCase
             0,
             "wallet_php_upd",
             false,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            false
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals(false, $response->getData()->success);
@@ -71,7 +75,8 @@ class UpdateWalletTest extends TestCase
             DefaultConfig::$firstUserHandle,
             "wallet_php_upd",
             false,
-            DefaultConfig::$firstUserWallet->getPrivateKey()
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            false
         );
         $this->assertEquals(403, $response->getStatusCode());
     }

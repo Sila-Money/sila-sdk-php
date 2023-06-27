@@ -32,6 +32,7 @@ class GetWalletsTest extends TestCase
         $this->assertIsInt($response->getData()->returned_count);
         $this->assertIsInt($response->getData()->total_count);
         $this->assertIsInt($response->getData()->total_page_count);
+        $this->assertIsBool($response->getData()->wallets[0]->statements_enabled);
     }
 
     public function testGetWallets400()

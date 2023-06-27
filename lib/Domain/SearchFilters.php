@@ -205,6 +205,42 @@ class SearchFilters implements ValidInterface
      */
     private $endMonth;
 
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $startDate;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $endDate;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $userName;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $email;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $status;
+
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $identifier;
+
     public function isValid(): bool
     {
         return ($this->transactionId === null || v::stringType()->notEmpty()->validate($this->transactionId))
@@ -237,7 +273,13 @@ class SearchFilters implements ValidInterface
             && ($this->institutionName === null || v::stringType()->notEmpty()->validate($this->institutionName))
             && ($this->month === null || v::stringType()->notEmpty()->validate($this->month))
             && ($this->startMonth === null || v::stringType()->notEmpty()->validate($this->startMonth))
-            && ($this->endMonth === null || v::stringType()->notEmpty()->validate($this->endMonth));
+            && ($this->endMonth === null || v::stringType()->notEmpty()->validate($this->endMonth))
+            && ($this->startDate === null || v::stringType()->notEmpty()->validate($this->startDate))
+            && ($this->endDate === null || v::stringType()->notEmpty()->validate($this->endDate))
+            && ($this->userName === null || v::stringType()->notEmpty()->validate($this->userName))
+            && ($this->email === null || v::stringType()->notEmpty()->validate($this->email))
+            && ($this->status === null || v::stringType()->notEmpty()->validate($this->status))
+            && ($this->identifier === null || v::stringType()->notEmpty()->validate($this->identifier));
     }
 
     /**
@@ -583,7 +625,7 @@ class SearchFilters implements ValidInterface
         return $this;
      }
 
-     /**
+      /**
      * Sets the month to the filters.
      *
      * @param string $month
@@ -591,8 +633,8 @@ class SearchFilters implements ValidInterface
      */
     public function setMonth(string $month): SearchFilters
     {
-       $this->month = $month;
-       return $this;
+        $this->month = $month;
+        return $this;
     }
 
     /**
@@ -603,11 +645,11 @@ class SearchFilters implements ValidInterface
      */
     public function setStartMonth(string $startMonth): SearchFilters
     {
-       $this->startMonth = $startMonth;
-       return $this;
+        $this->startMonth = $startMonth;
+        return $this;
     }
 
-    /**
+     /**
      * Sets the endMonth to the filters.
      *
      * @param string $endMonth
@@ -615,7 +657,79 @@ class SearchFilters implements ValidInterface
      */
     public function setEndMonth(string $endMonth): SearchFilters
     {
-       $this->endMonth = $endMonth;
-       return $this;
+        $this->endMonth = $endMonth;
+        return $this;
+    }
+
+     /**
+     * Sets the startDate to the filters.
+     *
+     * @param string $startDate
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setStartDate(string $startDate): SearchFilters
+    {
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    /**
+     * Sets the endDate to the filters.
+     *
+     * @param string $endDate
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setEndDate(string $endDate): SearchFilters
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * Sets the userName to the filters.
+     *
+     * @param string $userName
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setUserName(string $userName): SearchFilters
+    {
+        $this->userName = $userName;
+        return $this;
+    }
+
+    /**
+     * Sets the email to the filters.
+     *
+     * @param string $email
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setEmail(string $email): SearchFilters
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * Sets the status to the filters.
+     *
+     * @param string $status
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setStatus(string $status): SearchFilters
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * Sets the identifier to the filters.
+     *
+     * @param string $identifier
+     * @return Silamoney\Client\Domain\SearchFilters
+     */
+    public function setIdentifier(string $identifier): SearchFilters
+    {
+        $this->identifier = $identifier;
+        return $this;
     }
 }

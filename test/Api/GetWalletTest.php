@@ -32,6 +32,7 @@ class GetWalletTest extends TestCase
         $this->assertIsObject($response->getData()->wallet);
         $this->assertIsBool($response->getData()->is_whitelisted);
         $this->assertIsNumeric($response->getData()->sila_balance);
+        $this->assertIsBool($response->getData()->wallet->statements_enabled);
     }
 
     public function testGetWallet400()

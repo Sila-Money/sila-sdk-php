@@ -30,7 +30,7 @@ class ApiClient
 
     private const BASE_URI = 'base_uri';
 
-    private const USER_AGENT = 'SilaSDK-php / 0.2.50';
+    private const USER_AGENT = 'SilaSDK-php / 0.2.51';
 
     /**
      * Api Client constructor
@@ -56,6 +56,50 @@ class ApiClient
         $headers['User-Agent'] = ApiClient::USER_AGENT;
         try {
             return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (RequestException $e) {
+            return $e->getResponse();
+        } catch (ServerException $e) {
+            return $e->getResponse();
+        }
+    }
+
+    /**
+     * Makes the get call to the sila API
+     * @param string $url
+     * @param array $data
+     * @param string $headers
+     * @return \GuzzleHttp\Psr7\Response
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function callGetAPI(string $url, string $data, array $headers): Response
+    {
+        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        try {
+            return $this->client->get("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
+        } catch (ClientException $e) {
+            return $e->getResponse();
+        } catch (RequestException $e) {
+            return $e->getResponse();
+        } catch (ServerException $e) {
+            return $e->getResponse();
+        }
+    }
+
+    /**
+     * Makes the put call to the sila API
+     * @param string $url
+     * @param array $data
+     * @param string $headers
+     * @return \GuzzleHttp\Psr7\Response
+     * @throws \GuzzleHttp\Exception\ClientException
+     */
+    public function callPutAPI(string $url, string $data, array $headers): Response
+    {
+        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        try {
+            return $this->client->put("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
         } catch (RequestException $e) {

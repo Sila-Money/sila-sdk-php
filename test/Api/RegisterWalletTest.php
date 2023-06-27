@@ -33,12 +33,12 @@ class RegisterWalletTest extends TestCase
             $wallet_verification_signature,
             DefaultConfig::$firstUserWallet->getPrivateKey()
         );
-
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsString($response->getData()->reference);
         $this->assertIsString($response->getData()->message);
         $this->assertEquals("new_wallet", $response->getData()->wallet_nickname);
+        $this->assertIsBool($response->getData()->statements_enabled);
     }
 
     public function testRegisterWallet200WithPrivateKey()

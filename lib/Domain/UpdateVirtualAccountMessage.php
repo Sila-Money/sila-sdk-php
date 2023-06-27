@@ -41,7 +41,11 @@ class UpdateVirtualAccountMessage implements ValidInterface
      * @Type("boolean")
      */
     private $active;
-
+    /**
+     * @var boolean
+     * @Type("boolean")
+     */
+    private $statements_enabled;
     /**
      ** Constructor for UpdateVirtualAccountMessage object.
      *
@@ -50,17 +54,20 @@ class UpdateVirtualAccountMessage implements ValidInterface
      * @param string $virtualAccountId
      * @param string $virtualAccountName
      * @param boolean $active
+     * @param boolean $statements_enabled
      */
     public function __construct(
         string $appHandle,
         string $userHandle,
         string $virtualAccountId,
         string $virtualAccountName,
+        ?bool $statements_enabled,
         ?bool $active
     ) {
         $this->virtualAccountId = $virtualAccountId;
         $this->virtualAccountName = $virtualAccountName;
         $this->active = $active;
+        $this->statements_enabled = $statements_enabled;
         $this->header = new Header($appHandle, $userHandle);
     }
 

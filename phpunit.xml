@@ -52,6 +52,10 @@
       <file>test/Api/DeleteWalletTest.php</file>
       <file>test/Api/SilaBalanceTest.php</file>
       <file>test/Api/VirtualAccountsTest.php</file>
+      <file>test/Api/getStatementsDataTest.php</file>
+      <file>test/Api/getWalletStatementDataTest.php</file>
+      <file>test/Api/StatementsTest.php</file>
+      <file>test/Api/ResendStatementsTest.php</file> 
     </testsuite>
   </testsuites>
   <filter>
@@ -59,4 +63,10 @@
       <directory suffix=".php">./lib</directory>
     </whitelist>
   </filter>
+  <php>
+      <server name='SILA_PRIVATE_KEY' value='c8a8a06bc329dc20314da7c33bb541674af1bf6ba632bda8bcff05ac8694f046' />
+      <server name='SILA_PRIVATE_KEY_INVALID' value='c8a8a06bc329dc20314da7c33bb541674af1bf6ba632bda8bcff05ac8694f046999' />
+      <server name='SILA_INVALID_APP_HANDLE' value='sdap1' />
+      <server name='SILA_INVALID_USER_HANDLE_PATTERN' value='test:30.silamoeny.eth' />
+  </php>
 </phpunit>

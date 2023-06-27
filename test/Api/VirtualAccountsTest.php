@@ -216,7 +216,8 @@ class VirtualAccountsTest extends TestCase
         
         extract(self::$users[self::$prefix2]);
         $virtualAccountName = "Personal Loan EMI";
-        $response = self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName);
+        $statements_enabled = true;
+        $response = self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName, $statements_enabled);
         self::$users[self::$prefix2]["virtual_account_id"] = $response->getData()->virtualAccount["virtual_account_id"];
         self::$users[self::$prefix2]["virtual_account_name"] = $virtualAccountName;
         
@@ -225,7 +226,7 @@ class VirtualAccountsTest extends TestCase
         $this->assertEquals(TRUE, $response->getData()->success);
         $this->assertEquals("VIRTUAL_ACCOUNT", $response->getData()->virtualAccount["account_type"]);
         $this->assertEquals($virtualAccountName, $response->getData()->virtualAccount["virtual_account_name"]);
-
+        $this->assertIsBool($response->getData()->virtualAccount["statements_enabled"]);
     }
     
     /**
@@ -353,12 +354,13 @@ class VirtualAccountsTest extends TestCase
         $active = true;
         $virtual_account_name = "Personal Loan EMI Updated";
         self::$users[self::$prefix]["virtual_account_name"] = $virtual_account_name;
-
-        $response = self::$config->api->UpdateVirtualAccount($handle, $privateKey, $virtual_account_id, $virtual_account_name);
-
+        $statements_enabled = true;
+        $response = self::$config->api->UpdateVirtualAccount($handle, $privateKey, $virtual_account_id, $virtual_account_name, $statements_enabled);
+        
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertEquals(TRUE, $response->getData()->success);
+        $this->assertIsBool($response->getData()->virtual_account->statements_enabled);
     }
 
     /**
@@ -405,7 +407,29 @@ class VirtualAccountsTest extends TestCase
         $this->assertEquals(TRUE, $response->getData()->success);
     }
     
+    /**
+    *@Title("testCloseVirtualAccount")
+    *@Description("Close virtual account by account number")
+    */
+    public function testCloseVirtualAccount()
+    {
+        extract(self::$users[self::$prefix2]);
+        $virtualAccountName     =   "Home Loan EMI";
+        $accountNumber          =   "1234567812345678";
+        $response               =   self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName);
+        
+        $virtualAccountId       =   $response->getData()->virtualAccount["virtual_account_id"];
+        $accountNumber          =   $response->getData()->virtualAccount["account_number"];
+        self::$users[self::$prefix2]["virtual_account_id"]      =   $virtualAccountId;
+        self::$users[self::$prefix2]["account_number"]          =   $accountNumber;
+        
+        $response               =   self::$config->api->closeVirtualAccount($handle, $privateKey, $virtualAccountId, $accountNumber);
+        
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(TRUE, $response->getData()->success);
+        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
+        $this->assertIsBool($response->getData()->virtual_account->statements_enabled);
 
-
+    }
 
 }

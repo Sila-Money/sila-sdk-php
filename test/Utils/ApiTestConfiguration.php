@@ -46,7 +46,10 @@ class ApiTestConfiguration
         $this->serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         $this->config = $this->serializer->deserialize($json, TestConfiguration::class, 'json');
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $appHandle = 'digital_geko_e2e.silamoney.eth';
+        $privateKey = '0xe60a5c57130f4e82782cbdb498943f31fe8f92ab96daac2cc13cbbbf9c0b4d9e';
+        //$this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
     }
 
     public function setUpBeforeClassInvalidAuthSignature(): void
@@ -56,6 +59,9 @@ class ApiTestConfiguration
 
     public function setUpBeforeClassValidAuthSignature(): void
     {
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(),$this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $appHandle = 'digital_geko_e2e.silamoney.eth';
+        $privateKey = '0xe60a5c57130f4e82782cbdb498943f31fe8f92ab96daac2cc13cbbbf9c0b4d9e';
+        //$this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(),$this->config->appHandle, $_SERVER['SILA_PRIVATE_KEY']);
+        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
     }
 }
