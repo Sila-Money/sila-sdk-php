@@ -1141,7 +1141,7 @@ class SilaApi
     public function resendStatements( string $userHandle, string $userPrivateKey, string $statement_id, string $email ): ApiResponse 
     {
         $body = new ResendStatementsMessage($userHandle, $userPrivateKey, $email);
-        $path = ApiEndpoints::RESEND_STATEMENTS . '/'. $statement_id;
+        $path = ApiEndpoints::STATEMENTS . '/'. $statement_id;
         $json = $this->serializer->serialize($body, 'json');
         $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callPutAPI($path, $json, $headers);

@@ -69,8 +69,8 @@ class GetStatementsMessage implements ValidInterface
     {
         return v::notOptional()->validate($this->header)
             && $this->header->isValid()
-            && v::stringType()->notEmpty()->validate($this->message);
+            && v::stringType()->notEmpty()->validate($this->message)
             // && v::stringType()->notEmpty()->validate($this->walletId)
-            // && ($this->searchFilters === null || $this->searchFilters->isValid());
+            && ($this->searchFilters === null || $this->searchFilters->isValid());
     }
 }

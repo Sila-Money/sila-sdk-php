@@ -47,10 +47,6 @@ class Message extends Enum
      */
     public const STATEMENTS = "statement_msg";
     /**
-     * String value for resendStatements.
-     */
-    public const RESEND_STATEMENTS = "resend_statements_msg";
-    /**
      * String value for GetTransactionsMsg.
      */
      public const GET_INSTITUTIONS = "get_institutions_msg";

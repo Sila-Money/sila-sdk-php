@@ -74,5 +74,4 @@ class ApiEndpoints
     public const UPDATE_WALLET = "/update_wallet";
 
     public const STATEMENTS = "/statements";
-    public const RESEND_STATEMENTS = "/statements";
 }
