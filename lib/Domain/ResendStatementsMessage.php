@@ -17,7 +17,7 @@ use Respect\Validation\Validator as v;
  * @package  Silamoney\Client
  * @author   shahid
  */
-class GetStatementsMessage implements ValidInterface
+class ResendStatementsMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
@@ -29,7 +29,6 @@ class GetStatementsMessage implements ValidInterface
      * @var Silamoney\Client\Domain\SearchFilters
      * @Type("Silamoney\Client\Domain\SearchFilters")
      */
-    private $searchFilters;
 
     /**
      * @var string
@@ -41,7 +40,7 @@ class GetStatementsMessage implements ValidInterface
      * @var string
      * @Type("string")
      */
-    private $walletId;
+    private $email;
 
     /**
      * Constructor for GetStatementsMsg object.
@@ -49,28 +48,22 @@ class GetStatementsMessage implements ValidInterface
      * @param string $userHandle
      * @param string $appHandle
      * @param string $message
-     * @param \Silamoney\Client\Domain\SearchFilters $searchFilters
+     * @param Silamoney\Client\Domain\SearchFilters $searchFilters
      * @param string $walletId
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
-        string $message,
-        SearchFilters $searchFilters,
-        string $walletId = null
+        string $email
     ) {
-        $this->searchFilters = $searchFilters;
-        $this->walletId = $walletId;
-        $this->message = $message;
         $this->header = new Header($appHandle, $userHandle);
+        $this->email = $email;
     }
 
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header)
             && $this->header->isValid()
-            && v::stringType()->notEmpty()->validate($this->message)
-            // && v::stringType()->notEmpty()->validate($this->walletId)
-            && ($this->searchFilters === null || $this->searchFilters->isValid());
+            && v::stringType()->notEmpty()->validate($this->email);
     }
 }

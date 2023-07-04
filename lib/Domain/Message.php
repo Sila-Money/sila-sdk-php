@@ -38,11 +38,14 @@ class Message extends Enum
      * String value for GetStatementsDataMsg.
      */
     public const GET_STATEMENTS_DATA = "get_statements_data_msg";
-    
     /**
      * String value for GetWalletStatementDataMsg.
      */
     public const GET_WALLET_STATEMENT_DATA = "get_statement_data_msg";
+    /**
+     * String value for Statements.
+     */
+    public const STATEMENTS = "statement_msg";
     /**
      * String value for GetTransactionsMsg.
      */

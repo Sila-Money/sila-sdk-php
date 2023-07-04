@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Get Statements Message
+ * Get List Statement Message
  * PHP version 7.2
  */
 
@@ -11,13 +11,13 @@ use JMS\Serializer\Annotation\Type;
 use Respect\Validation\Validator as v;
 
 /**
- * Get Statements Message
- * Object sent in the Get Statements method.
+ * Get Wallets Message
+ * Object sent in the get wallet method.
  * @category Class
  * @package  Silamoney\Client
- * @author   shahid
+ * @author   Walter Zelada <wzelada@digitalgeko.com>
  */
-class GetStatementsMessage implements ValidInterface
+class StatementsMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
@@ -32,45 +32,24 @@ class GetStatementsMessage implements ValidInterface
     private $searchFilters;
 
     /**
-     * @var string
-     * @Type("string")
-     */
-    private $message;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
-    private $walletId;
-
-    /**
-     * Constructor for GetStatementsMsg object.
+     ** Constructor for GetWalletsMessage object.
      *
      * @param string $userHandle
      * @param string $appHandle
-     * @param string $message
-     * @param \Silamoney\Client\Domain\SearchFilters $searchFilters
-     * @param string $walletId
+     * @param Silamoney\Client\Domain\SearchFilters $searchFilters
      */
     public function __construct(
         string $userHandle,
         string $appHandle,
-        string $message,
-        SearchFilters $searchFilters,
-        string $walletId = null
+        SearchFilters $searchFilters = null
     ) {
         $this->searchFilters = $searchFilters;
-        $this->walletId = $walletId;
-        $this->message = $message;
         $this->header = new Header($appHandle, $userHandle);
     }
 
     public function isValid(): bool
     {
         return v::notOptional()->validate($this->header)
-            && $this->header->isValid()
-            && v::stringType()->notEmpty()->validate($this->message)
-            // && v::stringType()->notEmpty()->validate($this->walletId)
             && ($this->searchFilters === null || $this->searchFilters->isValid());
     }
 }

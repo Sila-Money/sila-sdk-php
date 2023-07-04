@@ -52,6 +52,10 @@
       <file>test/Api/DeleteWalletTest.php</file>
       <file>test/Api/SilaBalanceTest.php</file>
       <file>test/Api/VirtualAccountsTest.php</file>
+      <file>test/Api/getStatementsDataTest.php</file>
+      <file>test/Api/getWalletStatementDataTest.php</file>
+      <file>test/Api/StatementsTest.php</file>
+      <file>test/Api/ResendStatementsTest.php</file> 
     </testsuite>
   </testsuites>
   <filter>

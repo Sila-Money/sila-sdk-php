@@ -115,7 +115,9 @@ use Silamoney\Client\Domain\{
     LinkAccountMxMessage,
     GetStatementsMessage,
     GetStatementsResponse,
-    Statements
+    Statements,
+    StatementsMessage,
+    ResendStatementsMessage
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -287,14 +289,16 @@ class SilaApi
         string $userPrivateKey,
         string $virtualAccountName,
         ?bool $achDebitEnabled = null,
-        ?bool $achCreditEnabled = null
+        ?bool $achCreditEnabled = null,
+        ?bool $statements_enabled = null
     ): ApiResponse {
         $body = new VirtualAccountMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
             $virtualAccountName,
             $achDebitEnabled,
-            $achCreditEnabled
+            $achCreditEnabled,
+            $statements_enabled
         );
         $path = ApiEndpoints::OPEN_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
@@ -370,12 +374,13 @@ class SilaApi
         string $userPrivateKey,
         string $virtualAccountId,
         string $virtualAccountName,
+        ?bool $statements_enabled,
         ?bool $active = null,
         ?bool $achDebitEnabled = null,
         ?bool $achCreditEnabled = null
     ): ApiResponse 
     {
-        $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $active, $achDebitEnabled, $achCreditEnabled);
+        $body = new UpdateVirtualAccountMessage($this->configuration->getAppHandle(), $userHandle, $virtualAccountId, $virtualAccountName, $statements_enabled, $active, $achDebitEnabled, $achCreditEnabled);
         $path = ApiEndpoints::UPDATE_VIRTUAL_ACCOUNT;
         $json = $this->serializer->serialize($body, 'json');
         $headers = $this->makeHeaders($json, $userPrivateKey);
@@ -1103,6 +1108,47 @@ class SilaApi
     }
 
     /**
+     * Gets array of statements as per filter statements
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param \Silamoney\Client\Domain\SearchFilters $filters
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+    */
+    public function statements(string $userHandle, string $userPrivateKey, SearchFilters $searchFilters): ApiResponse
+    {
+        $body = new StatementsMessage($userHandle, $userPrivateKey, $searchFilters);
+        $path = ApiEndpoints::STATEMENTS;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json);
+        $response = $this->configuration->getApiClient()->callGetAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
+     * To resend statement request on email : statement/<statement_id>, resendStatements
+     *
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $statement_id is UUID of statement to be sent
+     * @param string $email The email to request resend statement 
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+    */
+    public function resendStatements( string $userHandle, string $userPrivateKey, string $statement_id, string $email ): ApiResponse 
+    {
+        $body = new ResendStatementsMessage($userHandle, $userPrivateKey, $email);
+        $path = ApiEndpoints::STATEMENTS . '/'. $statement_id;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json);
+        $response = $this->configuration->getApiClient()->callPutAPI($path, $json, $headers);
+        return $this->prepareResponse($response);
+    }
+
+    /**
      * Reverse a transaction using the transactionId
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
@@ -1210,7 +1256,7 @@ class SilaApi
         string $wallet_verification_signature,
         string $userPrivateKey
     ): ApiResponse {
-        $body = new RegisterWalletMessage(
+            $body = new RegisterWalletMessage(
             $userHandle,
             $this->configuration->getAppHandle(),
             $wallet,
@@ -1233,13 +1279,14 @@ class SilaApi
         string $userHandle,
         string $nickname,
         bool $default,
-        string $userPrivateKey
+        string $userPrivateKey,
+        ?bool $statements_enabled
     ): ApiResponse {
-        $body = new UpdateWalletMessage($userHandle, $this->configuration->getAppHandle(), $nickname, $default);
-        $path = ApiEndpoints::UPDATE_WALLET;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        $body = new UpdateWalletMessage($userHandle, $this->configuration->getAppHandle(), $nickname, $default, $statements_enabled);
+        $path       =   ApiEndpoints::UPDATE_WALLET;
+        $json       =   $this->serializer->serialize($body, 'json');
+        $headers    =   $this->makeHeaders($json, $userPrivateKey);
+        $response   =   $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
 
@@ -2020,10 +2067,10 @@ class SilaApi
 
     private function sendNewWallet(RegisterWalletMessage $body, string $userPrivateKey): ApiResponse
     {
-        $path = ApiEndpoints::REGISTER_WALLET;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        $path       =   ApiEndpoints::REGISTER_WALLET;
+        $json       =   $this->serializer->serialize($body, 'json');
+        $headers    =   $this->makeHeaders($json, $userPrivateKey);
+        $response   =   $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
     }
 

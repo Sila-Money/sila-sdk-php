@@ -38,6 +38,12 @@ class UpdateWalletMessage implements ValidInterface
      */
     private $default;
 
+    /**
+     * @var boolean
+     * @Type("boolean")
+     */
+    private $statements_enabled;
+
 
     /**
      ** Constructor for UpdateWalletMessage object.
@@ -51,11 +57,13 @@ class UpdateWalletMessage implements ValidInterface
         string $userHandle,
         string $appHandle,
         ?string $nickname,
-        ?bool $default
+        ?bool $default,
+        ?bool $statements_enabled
     ) {
+        $this->header = new Header($appHandle, $userHandle);
         $this->nickname = $nickname;
         $this->default = $default;
-        $this->header = new Header($appHandle, $userHandle);
+        $this->statements_enabled = $statements_enabled;
     }
 
     public function isValid(): bool
