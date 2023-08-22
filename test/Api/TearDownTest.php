@@ -15,28 +15,19 @@ use Silamoney\Client\Utils\{
 
 use Silamoney\Client\Api\VirtualAccountsTest;
 
-/**
- * UnlinkBusinessMember Test
- * Tests for the unlink_business_member endpoint in the Sila Api class.
- *
- * @category Class
- * @package Silamoney\Client
- * @author José Morales <jmorales@digitalgeko.com>
- */
 class TearDownTest extends TestCase
 {
+    
+    private static $config;
+
     /**
      * @var \Silamoney\Client\Utils\ApiTestConfiguration
      */
-    private static $config;
-
     public static function setUpBeforeClass(): void
     {
         self::$config = new ApiTestConfiguration();
     }
 
-    /**
-     */
     public function testTearDownUnlinkBusinessMember200()
     {
         $businessRole = DefaultConfig::$businessRoles[0];
@@ -65,7 +56,7 @@ class TearDownTest extends TestCase
         
     }
 
-    public function testTearDownLinkedAccounts200(): void
+    public function testTearDownLinkedAccounts200()
     {
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
@@ -82,7 +73,7 @@ class TearDownTest extends TestCase
 
     }
     
-    public function testTearDownCloseVirtualAccount(): void
+    public function testTearDownCloseVirtualAccount()
     {
         $virtualAccountTest =   new VirtualAccountsTest();
         

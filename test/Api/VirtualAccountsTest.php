@@ -33,7 +33,7 @@ class VirtualAccountsTest extends TestCase
     private static $prefix;
     private static $prefix2;
     private static $users = [];
-    
+
     public static function setUpBeforeClass(): void
     {
         self::$config = new ApiTestConfiguration();
@@ -231,7 +231,7 @@ class VirtualAccountsTest extends TestCase
         $this->assertEquals($virtualAccountName, $response->getData()->virtualAccount["virtual_account_name"]);
         $this->assertIsBool($response->getData()->virtualAccount["statements_enabled"]);
     }
-
+    
     /**
     *@Title("testIssueSilaBankToVirtualAccount")
     *@Description("Verify user is able to issue sila for instant ach user")
