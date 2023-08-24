@@ -41,7 +41,7 @@ class VirtualAccountsTest extends TestCase
         self::$prefix  = "User001";
         self::$prefix2 = "User002";
     }
-    
+
     /**
     *@Title("testRegister200Success")
     *@Description("Verify user is able to register successfully.")
@@ -200,12 +200,14 @@ class VirtualAccountsTest extends TestCase
         $response = self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName);
 
         self::$users[self::$prefix]["virtual_account_id"] = $response->getData()->virtualAccount["virtual_account_id"];
+        self::$users[self::$prefix]["account_number"] = $response->getData()->virtualAccount["account_number"];
         self::$users[self::$prefix]["virtual_account_name"] = $virtualAccountName;
 
         $virtualAccountName = "Home Loan EMI";
         $response = self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName);
 
         self::$users[self::$prefix]["virtual_account_id2"] = $response->getData()->virtualAccount["virtual_account_id"];
+        self::$users[self::$prefix]["account_number2"] = $response->getData()->virtualAccount["account_number"];
         self::$users[self::$prefix]["virtual_account_name2"] = $virtualAccountName;
         
         $payload = [
@@ -219,6 +221,7 @@ class VirtualAccountsTest extends TestCase
         $statements_enabled = true;
         $response = self::$config->api->openVirtualAccount($handle, $privateKey, $virtualAccountName, $statements_enabled);
         self::$users[self::$prefix2]["virtual_account_id"] = $response->getData()->virtualAccount["virtual_account_id"];
+        self::$users[self::$prefix2]["account_number"]     = $response->getData()->virtualAccount["account_number"];
         self::$users[self::$prefix2]["virtual_account_name"] = $virtualAccountName;
         
         $this->assertEquals(200, $response->getStatusCode());
@@ -405,6 +408,35 @@ class VirtualAccountsTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
         $this->assertEquals(TRUE, $response->getData()->success);
+    }
+    
+    public function getVirtualAccountId()
+    {
+        $handle     = self::$users[self::$prefix]['handle'];
+        $privateKey = self::$users[self::$prefix]['privateKey'];
+
+        $virtualAccountDetail = [
+            'user1' => [
+                'handle'                => $handle,
+                'privateKey'            => $privateKey,
+                'virtual_account_id'    => self::$users[self::$prefix]['virtual_account_id'],
+                'account_number'        => self::$users[self::$prefix]['account_number']
+            ],
+            'user2' => [
+                'handle'                => $handle,
+                'privateKey'            => $privateKey,
+                'virtual_account_id'    => self::$users[self::$prefix]['virtual_account_id2'],
+                'account_number'        => self::$users[self::$prefix]['account_number2'],
+            ],
+            'user3' => [
+                'handle'                => $handle,
+                'privateKey'            => $privateKey,
+                'virtual_account_id'    => self::$users[self::$prefix2]["virtual_account_id"],
+                'account_number'        => self::$users[self::$prefix2]["account_number"],
+            ],
+        ];
+        
+        return $virtualAccountDetail;
     }
     
     /**

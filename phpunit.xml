@@ -56,6 +56,7 @@
       <file>test/Api/getWalletStatementDataTest.php</file>
       <file>test/Api/StatementsTest.php</file>
       <file>test/Api/ResendStatementsTest.php</file> 
+      <file>test/Api/TearDownTest.php</file>
     </testsuite>
   </testsuites>
   <filter>
