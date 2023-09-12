@@ -38,6 +38,12 @@ class DeleteCardMessage implements ValidInterface
     private $message;
 
     /**
+     * @var string
+     * @Type("string")
+     */
+    private $provider;
+
+    /**
      * Constructor for DeleteCardMessage object.
      *
      * @param string $appHandle
@@ -47,9 +53,11 @@ class DeleteCardMessage implements ValidInterface
     public function __construct(
         string $appHandle,
         string $userHandle,
-        string $cardName = null
+        string $cardName = null,
+        string $provider
     ) {
         $this->cardName = $cardName;
+        $this->provider = $provider;
         $this->header = new Header($appHandle, $userHandle);
         $this->message = Message::HEADER;
     }

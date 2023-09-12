@@ -74,4 +74,6 @@ class ApiEndpoints
     public const UPDATE_WALLET = "/update_wallet";
 
     public const STATEMENTS = "/statements";
+    public const CREATE_CKO_TESTING_TOKEN = "/create_cko_testing_token";
+    public const REFUND_DEBIT_CARD = "/refund_debit_card";
 }

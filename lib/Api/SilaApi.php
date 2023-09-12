@@ -117,7 +117,11 @@ use Silamoney\Client\Domain\{
     GetStatementsResponse,
     Statements,
     StatementsMessage,
-    ResendStatementsMessage
+    ResendStatementsMessage,
+    CreateCKOTestingTokenMessage,
+    CreateCKOTestingTokenResponse,
+    RefundDebitCardMessage,
+    RefundDebitCardResponse
 };
 use Silamoney\Client\Security\EcdsaUtil;
 
@@ -633,6 +637,7 @@ class SilaApi
      * @param string $cardName
      * @param string $token
      * @param string|null $accountPostalCode
+     * @param bool|false $skipVerification Optional
      * @return ApiResponse
      */
     public function linkCard(
@@ -640,14 +645,18 @@ class SilaApi
         string $userPrivateKey,
         string $cardName,
         string $token,
-        string $accountPostalCode = null
+        string $accountPostalCode = null,
+        string $provider,
+        bool   $skipVerification = false
     ): ApiResponse {
         $body = new LinkCardMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
             $cardName,
             $token,
-            $accountPostalCode
+            $accountPostalCode,
+            $provider,
+            $skipVerification
         );
         $path = ApiEndpoints::LINK_CARD;
         $json = $this->serializer->serialize($body, 'json');
@@ -688,12 +697,14 @@ class SilaApi
     public function deleteCard(
         string $userHandle,
         string $userPrivateKey,
-        string $cardName
+        string $cardName,
+        string $provider
     ): ApiResponse {
         $body = new DeleteCardMessage(
             $this->configuration->getAppHandle(),
             $userHandle,
-            $cardName
+            $cardName,
+            $provider
         );
         $path = ApiEndpoints::DELETE_CARD;
         $json = $this->serializer->serialize($body, 'json');
@@ -2230,6 +2241,45 @@ class SilaApi
         ];
         $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
         return $this->prepareResponse($response);
+    }
+
+    /**
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $cardNumber
+     * @param string $expiryMonth
+     * @param string $expiryYear
+     * @param string $ckoPublicKey
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function createCKOTestingToken(string $userHandle, string $userPrivateKey, $cardNumber, $expiryMonth, $expiryYear, $ckoPublicKey): ApiResponse
+    {
+        $body = new CreateCKOTestingTokenMessage($userHandle, $this->configuration->getAppHandle(), $cardNumber, $expiryMonth, $expiryYear, $ckoPublicKey);
+        $path = ApiEndpoints::CREATE_CKO_TESTING_TOKEN;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response, CreateCKOTestingTokenResponse::class);
+    }
+
+    /**
+     * @param string $userHandle
+     * @param string $userPrivateKey
+     * @param string $transaction_id
+     * @return ApiResponse
+     * @throws ClientException
+     * @throws Exception
+     */
+    public function refundDebitCard(string $userHandle, string $userPrivateKey, $transaction_id): ApiResponse
+    {
+        $body = new RefundDebitCardMessage($userHandle, $this->configuration->getAppHandle(), $transaction_id);
+        $path = ApiEndpoints::REFUND_DEBIT_CARD;
+        $json = $this->serializer->serialize($body, 'json');
+        $headers = $this->makeHeaders($json, $userPrivateKey);
+        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
+        return $this->prepareResponse($response, RefundDebitCardResponse::class);
     }
 
     /**
