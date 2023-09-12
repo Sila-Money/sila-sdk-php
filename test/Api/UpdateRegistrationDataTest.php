@@ -54,11 +54,12 @@ class UpdateRegistrationDataTest extends TestCase
 
     public function testUpdateEmail200()
     {
+        $email = uniqid().'@domain.com'; // some.updated.email@domain.com
         $response = self::$config->api->updateEmail(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             DefaultConfig::$registrationDataUuids[4],
-            'some.updated.email@domain.com'
+            $email
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);

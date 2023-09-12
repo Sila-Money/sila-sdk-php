@@ -42,6 +42,18 @@ class LinkCardMessage implements ValidInterface
      * @Type("string")
      */
     private $cardName;
+    
+    /**
+     * @var string
+     * @Type("string")
+     */
+    private $provider;
+
+    /**
+     * @var bool
+     * @Type("bool")
+     */
+    private $skipVerification;
 
     /**
      * Constructor for LinkCardMessage object.
@@ -51,18 +63,24 @@ class LinkCardMessage implements ValidInterface
      * @param string $cardName
      * @param string $token
      * @param string $accountPostalCode
+     * @param string $provider
+     * @param bool   $skipVerification
      */
     public function __construct(
         string $appHandle,
         string $userHandle,
         string $cardName = null,
         string $token,
-        string $accountPostalCode = null
+        string $accountPostalCode = null,
+        string $provider,
+        bool   $skipVerification = false
     ) {
         $this->header = new Header($appHandle, $userHandle);
         $this->token = $token;
         $this->accountPostalCode = $accountPostalCode;
         $this->cardName = $cardName;
+        $this->provider = $provider;
+        $this->skipVerification = $skipVerification;
     }
 
     public function isValid(): bool

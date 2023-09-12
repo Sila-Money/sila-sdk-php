@@ -34,11 +34,13 @@
       <file>test/Api/CertifyBeneficialOwnerTest.php</file>
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
+      <file>test/Api/CreateCKOTestingTokenTest.php</file>
       <file>test/Api/CheckInstantACHTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetInstitutionsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>
       <file>test/Api/IssueSilaTest.php</file>
+      <file>test/Api/RefundDebitCardTest.php</file>
       <file>test/Api/CancelTransactionTest.php</file>
       <file>test/Api/TransferSilaTest.php</file>
       <file>test/Api/RedeemSilaTest.php</file>
@@ -56,7 +58,7 @@
       <file>test/Api/getWalletStatementDataTest.php</file>
       <file>test/Api/StatementsTest.php</file>
       <file>test/Api/ResendStatementsTest.php</file> 
-      <file>test/Api/TearDownTest.php</file>
+      <file>test/Api/TearDownTest.php</file>   
     </testsuite>
   </testsuites>
   <filter>

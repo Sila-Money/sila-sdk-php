@@ -92,4 +92,17 @@ class TearDownTest extends TestCase
         }
     }    
 
+    public function testDeleteCard()
+    {
+        $cardName = 'TestingCard';
+        $provider = 'cko';
+        $response = self::$config->api->deleteCard(
+            DefaultConfig::$firstUserHandle,
+            DefaultConfig::$firstUserWallet->getPrivateKey(),
+            $cardName, $provider
+        );
+
+        $this->assertEquals(true, $response->getData()->success);
+    }
+
 }
