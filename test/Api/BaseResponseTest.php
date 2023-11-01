@@ -34,7 +34,6 @@ class BaseResponseTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         $serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/Configuration.json');
         self::$config = $serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');

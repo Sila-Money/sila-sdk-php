@@ -19,11 +19,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ValidModelTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-    }
-
     /**
      * @test
      * @dataProvider validModelProvider

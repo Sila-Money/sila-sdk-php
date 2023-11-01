@@ -19,11 +19,6 @@ use PHPUnit\Framework\TestCase;
  */
 class AccountTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-    }
-
     public function testValidAccountModel()
     {
         $jsonData = \file_get_contents(__DIR__ . "/Data/Account.json");
