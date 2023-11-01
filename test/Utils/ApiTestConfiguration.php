@@ -42,7 +42,6 @@ class ApiTestConfiguration
 
     public function __construct()
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         $this->serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         $this->config = $this->serializer->deserialize($json, TestConfiguration::class, 'json');

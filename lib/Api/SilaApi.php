@@ -186,7 +186,6 @@ class SilaApi
      */
     public function __construct(string $environment, string $balanceEnvironment, string $appHandle, string $privateKey)
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         $this->configuration = new Configuration($environment, $balanceEnvironment, $privateKey, $appHandle);
         $this->serializer = SerializerBuilder::create()->build();
     }

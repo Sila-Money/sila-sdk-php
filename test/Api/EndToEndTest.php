@@ -64,7 +64,6 @@ class EndToEndTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
         self::$serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/Data/ConfigurationE2E.json');
         self::$config = self::$serializer->deserialize($json, 'Silamoney\Client\Utils\TestConfiguration', 'json');

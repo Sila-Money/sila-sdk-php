@@ -8,10 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class SearchFiltersTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
-    }
     public function testSetTransactionId()
     {
         $filters = new SearchFilters();
