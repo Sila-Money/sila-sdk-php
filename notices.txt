@@ -1,0 +1,119 @@
+Third Party Software License/Notices
+This document contains Third Party Software Notices and/or Additional Terms and Conditions for licensed third party software components included within sila-sdk-csharp.
+These notices and/or additional terms and conditions are made a part of and incorporated by reference into the sila-sdk-csharp Software License Agreement.
+
+Third Party Software
+
+Notice/Terms
+
+php
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+ext-curl
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+ext-json
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+ext-mbstring
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+ext-gmp
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+ext-openssl
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+guzzlehttp/guzzle
+
+MIT
+https://github.com/guzzle/guzzle/blob/7.8/LICENSE
+
+
+jms/serializer
+
+MIT
+https://github.com/schmittjoh/serializer/blob/master/LICENSE
+
+
+respect/validation
+
+MIT
+https://github.com/Respect/Validation/blob/master/LICENSE
+
+
+kornrunner/secp256k1
+
+MIT
+https://github.com/kornrunner/php-secp256k1/blob/main/LICENSE
+
+
+kornrunner/keccak
+
+MIT
+https://github.com/kornrunner/php-keccak/blob/main/LICENSE
+
+
+myclabs/php-enum
+
+MIT
+https://github.com/myclabs/php-enum/blob/master/LICENSE
+
+
+sop/asn1
+
+MIT
+https://github.com/sop/asn1/blob/master/LICENSE
+
+
+sop/crypto-encoding
+
+MIT
+https://github.com/sop/crypto-encoding/blob/master/LICENSE
+
+
+sop/crypto-types
+
+MIT
+https://github.com/sop/crypto-types/blob/master/LICENSE
+
+
+ext-xdebug
+
+PHP license
+https://www.php.net/license/3_01.txt
+
+
+phpunit/phpunit
+
+BSD-3-Clause
+https://github.com/sebastianbergmann/phpunit/blob/main/LICENSE
+
+
+squizlabs/php_codesniffer
+
+BSD-3-Clause
+https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/master/licence.txt
+
+
+friendsofphp/php-cs-fixer
+
+MIT
+https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/blob/master/LICENSE
