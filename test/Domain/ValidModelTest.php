@@ -69,7 +69,7 @@ class ValidModelTest extends TestCase
         return array(
             'Address is invalid' => array('AddressInvalid.json', 'Address', false),
             'Contact is invalid' => array('ContactInvalid.json', 'Contact', false),
-            'Crypt Entry is invalid' => array('CryptoEntryInvalid.json', 'CryptoEntry', false),
+            'Crypto Entry is invalid' => array('CryptoEntryInvalid.json', 'CryptoEntry', false),
             'Entity is invalid' => array('EntityInvalid.json', 'Entity', false),
             'Header is invalid' => array('HeaderInvalid.json', 'Header', false),
             'Identity is invalid' => array('IdentityInvalid.json', 'Identity', false),

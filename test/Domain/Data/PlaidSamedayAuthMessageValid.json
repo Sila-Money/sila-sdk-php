@@ -1,8 +1,8 @@
 {
     "header": {
         "created": 1234567890,
-        "auth_handle": "handle.silamoney.eth",
-        "user_handle": "user.silamoney.eth"
+        "auth_handle": "handle",
+        "user_handle": "user"
     },
     "account_name": "Custom Account Name"
 }

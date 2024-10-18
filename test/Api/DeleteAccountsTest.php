@@ -37,7 +37,6 @@ class DeleteAccountsTest extends TestCase
             DefaultConfig::$firstUserHandle,
             'account name 1'
         );
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getSuccess());
     }
@@ -49,7 +48,6 @@ class DeleteAccountsTest extends TestCase
             DefaultConfig::$firstUserHandle,
             'no existing account'
         );
-        var_dump($response);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
@@ -60,56 +58,6 @@ class DeleteAccountsTest extends TestCase
             DefaultConfig::$firstUserHandle,
             'no existing account'
         );
-        var_dump($response);
         $this->assertEquals(403, $response->getStatusCode());
     }
-
-    /**
-     * @test
-     */
-    // public function testLinkAccounts400(): void
-    // {
-    //     $response = self::$config->api->linkAccount(
-    //         DefaultConfig::$firstUserHandle,
-    //         DefaultConfig::$firstUserWallet->getPrivateKey(),
-    //         'public-xxx-xxx'
-    //     );
-    //     $this->assertEquals(400, $response->getStatusCode());
-    //     $this->assertEquals('FAILURE', $response->getData()->status);
-    //     $this->assertIsString($response->getData()->reference);
-    //     $this->assertStringContainsString('public token is in an invalid format', $response->getData()->message);
-    // }
-
-    /**
-     * @test
-     */
-    // public function testLinkAccounts401(): void
-    // {
-    //     self::$config->setUpBeforeClassInvalidAuthSignature();
-    //     $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
-    //     $options = [
-    //         'json' => [
-    //             "public_key" => "fa9dd19eb40982275785b09760ab79",
-    //             "initial_products" => ["transactions"],
-    //             "institution_id" => "ins_109508",
-    //             "credentials" => [
-    //                 "username" => "user_good",
-    //                 "password" => "pass_good"
-    //             ]
-    //         ]
-    //     ];
-    //     $response = $client->post('/link/item/create', $options);
-    //     $content = json_decode($response->getBody()->getContents());
-    //     $publicToken = $content->public_token;
-    //     $accountId = $content->accounts[0]->account_id;
-
-    //     $response = self::$config->api->linkAccount(
-    //         DefaultConfig::$firstUserHandle,
-    //         DefaultConfig::$firstUserWallet->getPrivateKey(),
-    //         $publicToken,
-    //         'default',
-    //         $accountId
-    //     );
-    //     $this->assertEquals(401, $response->getStatusCode());
-    // }
 }

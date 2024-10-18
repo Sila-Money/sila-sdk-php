@@ -47,9 +47,6 @@ class UpdateWalletTest extends TestCase
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
-        //$this->assertIsString($response->getData()->message);
-        //$this->assertIsObject($response->getData()->wallet);
-        //$this->assertIsArray($response->getData()->changes);
     }
 
     public function testUpdateWallet400()

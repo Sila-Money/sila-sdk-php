@@ -4,21 +4,21 @@
         "Invalid Signature",
         401,
         "checkHandle",
-        ["user.silamoney.eth"]
+        ["user"]
     ],
     [
         "RequestKYC401.json",
         "Invalid Signature",
         401,
         "requestKYC",
-        ["user.silamoney.eth", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
+        ["user", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
     ],
     [
         "GetAccounts401.json",
         "Invalid Signature",
         401,
         "getAccounts",
-        ["user.silamoney.eth", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
+        ["user", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
     ],
     [
         "LinkAccount401.json",
@@ -26,7 +26,7 @@
         401,
         "linkAccount",
         [
-            "user.silamoney.eth", 
+            "user", 
             "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D", 
             "public-xxx-xxx"
         ]
@@ -36,20 +36,20 @@
         "Invalid Signature",
         401,
         "transferSila",
-        ["user.silamoney.eth", "user2.silamoney.eth", 13, "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
+        ["user", "user2", 13, "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
     ],
     [
         "IssueSila401.json",
         "Invalid Signature",
         401,
         "issueSila",
-        ["user.silamoney.eth", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D", "test descriptor"]
+        ["user", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D", "test descriptor"]
     ],
     [
         "RedeemSila401.json",
         "Invalid Signature",
         401,
         "redeemSila",
-        ["user.silamoney.eth", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
+        ["user", 13, "Custom Account Name", "0CF475AD4A6C4B1E34915A3AF40E62621AC73DD752969473B6B6031A8E03021D"]
     ]
 ]

@@ -78,8 +78,6 @@ class BusinessUserBuilder extends BaseUserBuilder
             $this->businessTypeUuid,
             $this->doingBusinessAs,
             $this->businessWebsite,
-            $this->deviceFingerprint,
-            $this->smsOptIn,
             $this->cryptoAlias,
             $this->addressAlias,
             $this->contactAlias,

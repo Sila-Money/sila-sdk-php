@@ -82,18 +82,6 @@ class BaseUser
      * @var string
      * @Type("string")
      */
-    protected $deviceFingerprint;
-
-    /**
-     * @var bool
-     * @Type("bool")
-     */
-    protected $smsOptIn;
-
-    /**
-     * @var string
-     * @Type("string")
-     */
     protected $cryptoAlias;
 
     /**
@@ -109,12 +97,6 @@ class BaseUser
     protected $contactAlias;
 
     /**
-     * @var string
-     * @Type("string")
-     */
-    protected $sessionIdentifier;
-
-    /**
      * @param string $handle
      * @param string|null $address
      * @param string|null $address2
@@ -125,12 +107,9 @@ class BaseUser
      * @param string $email
      * @param string|null $identityNumber
      * @param string $cryptoAddress
-     * @param string|null $deviceFingerprint
-     * @param bool|null $smsOptIn
      * @param string $cryptoAlias
      * @param string $addressAlias
      * @param string $contactAlias
-     * @param string $sessionIdentifier
      * @return \Silamoney\Client\Domain\BaseUser
      */
     public function __construct(
@@ -144,12 +123,9 @@ class BaseUser
         ?string $email = null,
         ?string $identityNumber = null,
         string $cryptoAddress,
-        ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = null,
         ?string $cryptoAlias = null,
         ?string $addressAlias = null,
         ?string $contactAlias = null,
-        ?string $sessionIdentifier = null
     ) {
         $this->handle = $handle;
         $this->address = $address;
@@ -161,12 +137,9 @@ class BaseUser
         $this->email = $email;
         $this->identityNumber = $identityNumber;
         $this->cryptoAddress = $cryptoAddress;
-        $this->deviceFingerprint = $deviceFingerprint;
-        $this->smsOptIn = $smsOptIn;
         $this->cryptoAlias = $cryptoAlias;
         $this->addressAlias = $addressAlias;
         $this->contactAlias = $contactAlias;
-        $this->sessionIdentifier = $sessionIdentifier;
     }
 
     /**
@@ -258,36 +231,6 @@ class BaseUser
     {
         return $this->cryptoAddress;
     }
-
-    /**
-     * Gets the device fingerprint address.
-     * @return string
-     */
-     public function getDeviceFingerprint(): ?string
-     {
-         return $this->deviceFingerprint;
-     }
-
-
-    /**
-     * Gets the device fingerprint address.
-     * @return string
-     */
-    public function getSessionIdentifier(): ?string
-    {
-        return $this->sessionIdentifier;
-    }
-    
-    /**
-     * Gets the sms opt-in address.
-     * @return bool
-     */
-    public function getSmsOptIn(): ?bool
-    {
-        return $this->smsOptIn;
-    }
-    
-    
     
     /**
      * Gets the Crypto Alias.

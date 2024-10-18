@@ -52,8 +52,6 @@ class EntityMessage extends BaseEntityMessage implements ValidInterface
             && v::notOptional()->validate($this->cryptoEntry)
             && $this->cryptoEntry->isValid()
             && v::notOptional()->validate($this->entity)
-            && $this->entity->isValid()
-            && v::notOptional()->validate($this->device)
-            && $this->device->isValid();
+            && $this->entity->isValid();
     }
 }

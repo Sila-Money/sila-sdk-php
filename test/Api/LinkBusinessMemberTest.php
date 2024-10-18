@@ -46,15 +46,15 @@ class LinkBusinessMemberTest extends TestCase
     {
         $businessRole = DefaultConfig::$businessRoles[$roleIndex];
         $response = self::$config->api->linkBusinessMember(
-            DefaultConfig::$businessUserHandle,
-            DefaultConfig::$businessUserWallet->getPrivateKey(),
-            $userHandle,
-            $userPrivateKey,
-            null,
-            $businessRole->uuid,
-            $ownershipStake,
-            $memberHandle,
-            $details
+            businessHandle:DefaultConfig::$businessUserHandle,
+            businessPrivateKey:DefaultConfig::$businessUserWallet->getPrivateKey(),
+            userHandle:$userHandle,
+            userPrivateKey:$userPrivateKey,
+            role:$businessRole->name,
+            roleUuid:$businessRole->uuid,
+            ownershipStake:$ownershipStake,
+            memberHandle:$memberHandle,
+            details:$details
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);

@@ -1,5 +1,5 @@
 {
     "reference": "ref",
-    "message": "user.silamoney.eth ref not submitted to ACH queue",
+    "message": "user ref not submitted to ACH queue",
     "status": "FAILURE"
 }

@@ -27,8 +27,8 @@ class ApiClientTest extends TestCase
     {
         $baseUri = 'https://sandbox.silamoney.com';
         $ac = new ApiClient($baseUri);
-        $json = '{"header": {"created": 1234567890,"auth_handle": "handle.silamoney.eth",'
-            . '"user_handle":"user.silamoney.eth","version": "0.2","crypto": "ETH","reference": "ref"},'
+        $json = '{"header": {"created": 1234567890,"auth_handle": "handle",'
+            . '"user_handle":"user","version": "0.2","crypto": "ETH","reference": "ref"},'
             . '"message": "header_msg"}';
         $headers = [
             'Content-Type' => 'application/json',

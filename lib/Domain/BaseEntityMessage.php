@@ -37,12 +37,6 @@ class BaseEntityMessage
     protected $contact;
 
     /**
-     * @var \Silamoney\Client\Domain\Device
-     * @Type("Silamoney\Client\Domain\Device")
-     */
-     protected $device;
-
-    /**
      * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
@@ -78,9 +72,6 @@ class BaseEntityMessage
         }
         if ($user->getPhone() || $user->getEmail()) {
             $this->contact = new Contact($user);
-        }
-        if ($user->getDeviceFingerprint() || $user->getSessionIdentifier() ) {
-            $this->device = new Device($user);
         }
         $this->cryptoEntry = new CryptoEntry($user);
     }

@@ -28,9 +28,21 @@ class AddRegistrationDataTest extends TestCase
      */
     private static $config;
 
+    /**
+     * @var string
+     */
+    private static $new_email;
+
+    /**
+     * @var string
+     */
+    private static $new_ssn;
+
     public static function setUpBeforeClass(): void
     {
         self::$config = new ApiTestConfiguration();
+        self::$new_email = uniqid('some.new.email') . '@domain.com';
+        self::$new_ssn = (string) rand(100000000, 999999999);
     }
 
     public function testAddEmail200()
@@ -38,7 +50,7 @@ class AddRegistrationDataTest extends TestCase
         $response = self::$config->api->addEmail(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            'some.new.email@domain.com'
+            self::$new_email
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
@@ -72,45 +84,13 @@ class AddRegistrationDataTest extends TestCase
         $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
-    public function testAddDevice200()
-    {
-        $response = self::$config->api->addDevice(
-            DefaultConfig::$firstUserHandle,
-            DefaultConfig::$firstUserWallet->getPrivateKey(),
-            'device1',
-            DefaultConfig::uuid()
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('Device successfully registered', $response->getData()->message);
-        $this->assertNotEmpty($response->getData()->response_time_ms);
-    }
-
-    public function testAddDeviceWithEmptyDeviceFingerprint200()
-    {
-        $response = self::$config->api->addDevice(
-            DefaultConfig::$firstUserHandle,
-            DefaultConfig::$firstUserWallet->getPrivateKey(),
-            null,
-            null,
-            DefaultConfig::uuid(),
-            'he1h1-aaaa-dddd-99ce-c45944174e0c'
-        );
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertTrue($response->getData()->success);
-        $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->status);
-        $this->assertStringContainsString('Device successfully registered', $response->getData()->message);
-        $this->assertNotEmpty($response->getData()->response_time_ms);
-    }
-
     public function testAddIdentity200()
     {
         $response = self::$config->api->addIdentity(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             IdentityAlias::SSN(),
-            '543212222'
+            self::$new_ssn
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);

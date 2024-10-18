@@ -5,7 +5,7 @@
   "total_count": 1,
   "transactions": [
     {
-      "user_handle": "user.silamoney.eth",
+      "user_handle": "user",
       "reference_id": "ref",
       "transaction_id": "12345678-abcd-1234-abcd-1234567890ab",
       "transaction_hash": "0x1234567890abcdef1234567890abcdef",

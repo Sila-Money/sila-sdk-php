@@ -80,8 +80,6 @@ class RegisterWalletTest extends TestCase
         );
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
-        // $this->assertStringContainsString('Bad request', $response->getData()->message);
-        // $this->assertNotNull($response->getData()->validation_details);
         $this->assertStringContainsString('Please choose a different blockchain address to register.', $response->getData()->message);
         $this->assertStringContainsString('FAILURE', $response->getData()->status);
     }

@@ -49,12 +49,9 @@ class UserBuilder extends BaseUserBuilder
             $this->identityNumber,
             $this->cryptoAddress,
             $this->birthdate,
-            $this->deviceFingerprint,
-            $this->smsOptIn,
             $this->cryptoAlias,
             $this->addressAlias,
             $this->contactAlias,
-            $this->sessionIdentifier
         );
     }
 }

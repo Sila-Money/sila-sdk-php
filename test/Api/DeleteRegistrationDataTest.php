@@ -100,7 +100,6 @@ class DeleteRegistrationDataTest extends TestCase
             $dataType,
             DefaultConfig::$registrationDataUuids[$index]
         );
-        // var_dump($response);
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertFalse($response->getData()->success);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);

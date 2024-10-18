@@ -23,5 +23,4 @@ class RegistrationDataType extends Enum
     public const ENTITY = 'entity';
     public const IDENTITY = 'identity';
     public const PHONE = 'phone';
-    public const DEVICE = 'device';
 }
