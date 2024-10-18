@@ -32,7 +32,6 @@ class StatementsTest extends TestCase
         $filters->setStartDate('2022-07-19');
         $filters->setEndDate('2022-09-20');
         $filters->setUserName('Postman User');
-        // $filters->setUserHandle('1659592367');
         $filters->setUserHandle('user_handle1_1686776339cudgjmzwckh4ohh');
         $filters->setAccountType('blockchain_address');
         $filters->setEmail('test@silamoney.com');

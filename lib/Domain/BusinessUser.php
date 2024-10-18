@@ -79,8 +79,6 @@ class BusinessUser extends BaseUser
      * @param string|null $businessTypeUuid
      * @param string|null $doingBusinessAs
      * @param string|null $businessWebsite
-     * @param string|null $deviceFingerprint
-     * @param bool $smsOptIn
      * @param string $cryptoAlias
      * @param string $addressAlias
      * @param string $contactAlias
@@ -104,8 +102,6 @@ class BusinessUser extends BaseUser
         ?string $businessTypeUuid = null,
         ?string $doingBusinessAs = null,
         ?string $businessWebsite = null,
-        ?string $deviceFingerprint = null,
-        ?bool $smsOptIn = false,
         ?string $cryptoAlias = null,
         ?string $addressAlias = null,
         ?string $contactAlias = null,
@@ -122,8 +118,6 @@ class BusinessUser extends BaseUser
             $email,
             $identityNumber,
             $cryptoAddress,
-            $deviceFingerprint,
-            $smsOptIn,
             $cryptoAlias,
             $addressAlias,
             $contactAlias

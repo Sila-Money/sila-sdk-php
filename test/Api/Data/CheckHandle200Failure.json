@@ -1,5 +1,5 @@
 {
     "reference": "ref",
-    "message": "user.silamoney.eth is already taken.",
+    "message": "user is already taken.",
     "status": "FAILURE"
 }

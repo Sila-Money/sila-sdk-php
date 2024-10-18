@@ -21,7 +21,7 @@ class UserTest extends TestCase
 {
     public function testUserConstructor()
     {
-        $userHandle = 'user.silamoney.eth';
+        $userHandle = 'user';
         $firstName = 'Sila';
         $lastName = 'Money';
         $streetAddress1 = 'Some location';
@@ -30,7 +30,7 @@ class UserTest extends TestCase
         $state = 'NY'; 
         $postalCode = '12345'; 
         $phone = '1234567';
-        $email = 'you@awesomedomain.com';
+        $email = uniqid('you') . '@awesomedomain.com';
         $identityNumber = 'AAA-GG-SSSS';
         $cryptoAdress = '0xabc123abc123abc123';
         $birthDate = DateTime::createFromFormat('m/d/Y', '1/8/1935');

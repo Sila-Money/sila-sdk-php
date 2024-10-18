@@ -30,7 +30,6 @@ class ResendStatementsTest extends TestCase
         $filters->setStartDate('2023-01-01');
         $filters->setEndDate('2023-06-30');
         $filters->setUserName('Postman User');
-        // $filters->setUserHandle('1659592367');
         $filters->setUserHandle('user_handle1_1686776339cudgjmzwckh4ohh');
         $filters->setAccountType('VIRTUAL_ACCOUNT');
         $filters->setEmail('sunilarc14@silamoney.com');

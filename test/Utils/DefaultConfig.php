@@ -91,11 +91,6 @@ class DefaultConfig
     /**
      * @var string
      */
-    public static $invalidSmsOptInUserHandle;
-
-    /**
-     * @var string
-     */
     public static $businessUserWithEmptyBusinessWebsiteHandle;
 
     /**
@@ -181,11 +176,6 @@ class DefaultConfig
     /**
      * @var \Silamoney\Client\Domain\SilaWallet
      */
-    public static $invalidSmsOptInUserWallet;
-
-    /**
-     * @var \Silamoney\Client\Domain\SilaWallet
-     */
     public static $businessUserWithEmptyBusinessWebsiteWallet;
 
     /**
@@ -217,11 +207,6 @@ class DefaultConfig
      * @var string
      */
     public const VALID_BUSINESS_UUID = '9f280665-629f-45bf-a694-133c86bffd5e';
-
-    /**
-     * @var string
-     */
-     public const VALID_BUSINESS_UUID_INSTANT_ACH = '9f280665-629f-45bf-a694-133c86bffd5e';
 
     /**
      * @var string
@@ -291,24 +276,22 @@ class DefaultConfig
     {
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         return new User(
-            $handle,
-            $firstName,
-            'User',
-            '123 Main St',
-            null,
-            'Anytown',
-            'NY',
-            '12345',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '123452222',
-            $wallet->getAddress(),
-            $birthDate,
-            'fingerprint',
-            true,
-            "Crypto Alias",
-            "Address Alias",
-            "Contact Alias"
+            handle:$handle,
+            firstName:$firstName,
+            lastName:'User',
+            address:'123 Main St',
+            address2:null,
+            city:'Anytown',
+            state:'NY',
+            zipCode:'12345',
+            phone:'123-456-7890',
+            email:uniqid('you') . '@awesomedomain.com',
+            identityNumber:(string) rand(100000000, 999999999),
+            cryptoAddress:$wallet->getAddress(),
+            birthdate:$birthDate,
+            cryptoAlias:"Crypto Alias",
+            addressAlias:"Address Alias",
+            contactAlias:"Contact Alias"
         );
     }
 
@@ -316,21 +299,19 @@ class DefaultConfig
     {
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         return new User(
-            $handle,
-            $firstName,
-            'User',
-            '123 Main St',
-            null,
-            'Anytown',
-            'NY',
-            '12345',
-            '',
-            'you@awesomedomain.com',
-            '123452222',
-            $wallet->getAddress(),
-            $birthDate,
-            'fingerprint',
-            true
+            handle:$handle,
+            firstName:$firstName,
+            lastName:'User',
+            address:'123 Main St',
+            address2:null,
+            city:'Anytown',
+            state:'NY',
+            zipCode:'12345',
+            phone:'',
+            email:uniqid('you') . '@awesomedomain.com',
+            identityNumber:(string) rand(100000000, 999999999),
+            cryptoAddress:$wallet->getAddress(),
+            birthdate:$birthDate,
         );
     }
 
@@ -338,21 +319,19 @@ class DefaultConfig
     {
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         return new User(
-            $handle,
-            $firstName,
-            'User',
-            '123 Main St',
-            null,
-            'Anytown',
-            'NY',
-            '12345',
-            '123-456-7890',
-            '',
-            '123452222',
-            $wallet->getAddress(),
-            $birthDate,
-            'fingerprint',
-            true
+            handle:$handle,
+            firstName:$firstName,
+            lastName:'User',
+            address:'123 Main St',
+            address2:null,
+            city:'Anytown',
+            state:'NY',
+            zipCode:'12345',
+            phone:'123-456-7890',
+            email:'',
+            identityNumber:(string) rand(100000000, 999999999),
+            cryptoAddress:$wallet->getAddress(),
+            birthdate:$birthDate,
         );
     }
 
@@ -360,70 +339,22 @@ class DefaultConfig
     {
         $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
         return new User(
-            $handle,
-            $firstName,
-            'User',
-            '',
-            null,
-            null,
-            null,
-            null,
-            '123-456-7890',
-            'you@awesomedomain.com',
-            null,
-            $wallet->getAddress(),
-            $birthDate,
-            null,
-            true
+            handle:$handle,
+            firstName:$firstName,
+            lastName:'User',
+            address:'',
+            address2:null,
+            city:null,
+            state:null,
+            zipCode:null,
+            phone:'123-456-7890',
+            email:uniqid('you') . '@awesomedomain.com',
+            identityNumber:null,
+            cryptoAddress:$wallet->getAddress(),
+            birthdate:$birthDate,
         );
     }
 
-    public static function generateInvalidSmsOptInUser(string $handle, string $firstName, SilaWallet $wallet): User
-    {
-        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
-        return new User(
-            $handle,
-            $firstName,
-            'User',
-            '',
-            null,
-            null,
-            null,
-            null,
-            '123-456-7890',
-            'you@awesomedomain.com',
-            null,
-            $wallet->getAddress(),
-            $birthDate,
-            null,
-            'test'
-        );
-    }
-    public static function generateUserEmptyDeviceFingerPrint(string $handle, string $firstName, SilaWallet $wallet): User
-    {
-        $birthDate = date_create_from_format('m/d/Y', '1/8/1935');
-        return new User(
-            $handle,
-            $firstName,
-            'User',
-            '123 Main St',
-            null,
-            'Anytown',
-            'NY',
-            '12345',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '123452222',
-            $wallet->getAddress(),
-            $birthDate,
-            '',
-            true,
-            "Crypto Alias",
-            "Address Alias",
-            "Contact Alias",
-            "session-identifier-uuid"
-        );
-    }
     public static function uuid(): string
     {
         $data = random_bytes(16);

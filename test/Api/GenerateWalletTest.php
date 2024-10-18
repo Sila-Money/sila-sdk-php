@@ -21,7 +21,6 @@ class GenerateWalletTest extends TestCase
     public function testGenerateWallet200()
     {
         $response = self::$config->api->generateWallet();
-        var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
         $this->assertIsString($response->getData()->reference);
