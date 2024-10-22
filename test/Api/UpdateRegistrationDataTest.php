@@ -29,9 +29,15 @@ class UpdateRegistrationDataTest extends TestCase
      */
     private static $config;
 
+    /**
+     * @var string
+     */
+    private static $email;
+
     public static function setUpBeforeClass(): void
     {
         self::$config = new ApiTestConfiguration();
+        self::$email = uniqid().'@domain.com';
     }
 
     public function testUpdateRegistrationData()
@@ -54,12 +60,11 @@ class UpdateRegistrationDataTest extends TestCase
 
     public function testUpdateEmail200()
     {
-        $email = uniqid().'@domain.com'; // some.updated.email@domain.com
         $response = self::$config->api->updateEmail(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             DefaultConfig::$registrationDataUuids[4],
-            $email
+            self::$email
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
@@ -98,7 +103,7 @@ class UpdateRegistrationDataTest extends TestCase
             DefaultConfig::$firstUserWallet->getPrivateKey(),
             DefaultConfig::$registrationDataUuids[6],
             IdentityAlias::SSN(),
-            '654322222'
+            (string) rand(100000000, 999999999)
         );
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);

@@ -52,12 +52,9 @@ class User extends BaseUser
      * @param string|null $identityNumber
      * @param string $cryptoAddress
      * @param DateTime $birthdate
-     * @param string|null $deviceFingerprint
-     * @param bool|null $smsOptIn
      * @param string $cryptoAlias
      * @param string $addressAlias
      * @param string $contactAlias
-     * @param string $sessionIdentifier
      * @return \Silamoney\Client\Domain\User
      */
     public function __construct(
@@ -74,14 +71,10 @@ class User extends BaseUser
         ?string $identityNumber = null,
         string $cryptoAddress,
         DateTime $birthdate,
-        ?string $deviceFingerprint = null,
-        $smsOptIn = null,
         ?string $cryptoAlias = null,
         ?string $addressAlias = null,
         ?string $contactAlias = null,
-        ?string $sessionIdentifier = null
     ) {
-        $smsOptIn = is_bool($smsOptIn) ? $smsOptIn : null;
         parent::__construct(
             $handle,
             $address,
@@ -93,12 +86,9 @@ class User extends BaseUser
             $email,
             $identityNumber,
             $cryptoAddress,
-            $deviceFingerprint,
-            $smsOptIn,
             $cryptoAlias,
             $addressAlias,
             $contactAlias,
-            $sessionIdentifier
         );
         $this->firstName = $firstName;
         $this->lastName = $lastName;

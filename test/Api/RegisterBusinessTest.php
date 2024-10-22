@@ -96,19 +96,19 @@ class RegisterBusinessTest extends TestCase
     {
         $wallet = DefaultConfig::generateWallet();
         $user = new BusinessUser(
-            DefaultConfig::generateHandle(),
-            '',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            $wallet->getAddress(),
-            DefaultConfig::$naicsCode,
-            DefaultConfig::$businessType
+            handle:DefaultConfig::generateHandle(),
+            name:'',
+            address:'350 5th Avenue',
+            address2:null,
+            city:'New York',
+            state:'NY',
+            zipCode:'10118',
+            phone:'123-456-7890',
+            email:'you@awesomedomain.com',
+            identityNumber:'12-3456789',
+            cryptoAddress:$wallet->getAddress(),
+            naicsCode:DefaultConfig::$naicsCode,
+            businessType:DefaultConfig::$businessType
         );
         $response = self::$config->api->registerBusiness($user);
         $this->assertEquals(400, $response->getStatusCode());
@@ -122,19 +122,19 @@ class RegisterBusinessTest extends TestCase
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $wallet = DefaultConfig::generateWallet();
         $user = new BusinessUser(
-            DefaultConfig::generateHandle(),
-            'Signature',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            $wallet->getAddress(),
-            DefaultConfig::$naicsCode,
-            DefaultConfig::$businessType
+            handle:DefaultConfig::generateHandle(),
+            name:'Signature',
+            address:'350 5th Avenue',
+            address2:null,
+            city:'New York',
+            state:'NY',
+            zipCode:'10118',
+            phone:'123-456-7890',
+            email:'you@awesomedomain.com',
+            identityNumber:'12-3456789',
+            cryptoAddress:$wallet->getAddress(),
+            naicsCode:DefaultConfig::$naicsCode,
+            businessType:DefaultConfig::$businessType
         );
         $response = self::$config->api->registerBusiness($user);
         $this->assertEquals(401, $response->getStatusCode());
@@ -153,76 +153,29 @@ class RegisterBusinessTest extends TestCase
         DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet = DefaultConfig::generateWallet();
         
         $businessUser = new BusinessUser(
-            DefaultConfig::$businessUserHandle,
-            'Digital Geko',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            DefaultConfig::$businessUserWallet->getAddress(),
-            // DefaultConfig::$naicsCode,
-            5415,
-            // DefaultConfig::$businessType
-            'Corporation',
-            null,//true,
-            null,
-            null,
-            null,
-            true,
-            "Crypto Alias",
-            "Address Alias",
-            "Contact Alias"
-        );
-
-        $businessUserWithEmptyBusinessWebsite = new BusinessUser(
-            DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle,
-            'Digital Geko',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet->getAddress(),
-            // DefaultConfig::$naicsCode,
-            5415,
-            // DefaultConfig::$businessType
-            'Corporation',
-            true,
-            null,
-            ''
-        );
-
-        $businessUserWithEmptyDoingBusinessAs = new BusinessUser(
-            DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle,
-            'Digital Geko',
-            '350 5th Avenue',
-            null,
-            'New York',
-            'NY',
-            '10118',
-            '123-456-7890',
-            'you@awesomedomain.com',
-            '12-3456789',
-            DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet->getAddress(),
-            // DefaultConfig::$naicsCode,
-            5415,
-            // DefaultConfig::$businessType
-            'Corporation',
-            true,
-            ''
+            handle:DefaultConfig::$businessUserHandle,
+            name:'Digital Geko',
+            address:'350 5th Avenue',
+            address2:null,
+            city:'New York',
+            state:'NY',
+            zipCode:'10118',
+            phone:'123-456-7890',
+            email:uniqid('you') . '@awesomedomain.com',
+            identityNumber:(string) rand(100000000, 999999999),
+            cryptoAddress:DefaultConfig::$businessUserWallet->getAddress(),
+            naicsCode:5415,
+            businessType:'Corporation',
+            doingBusinessAs:'DG Inc',
+            businessWebsite:'http://www.dg.com',
+            registrationState:'NY',
+            cryptoAlias:"Crypto Alias",
+            addressAlias:"Address Alias",
+            contactAlias:"Contact Alias"
         );
 
         return [
-            'register - business user' => [$businessUser],
-            //'register - business user with empty business website' => [$businessUserWithEmptyBusinessWebsite],
-            //'register - business user with empty doing business as' => [$businessUserWithEmptyDoingBusinessAs]
+            'register - business user' => [$businessUser]
         ];
     }
 }

@@ -35,7 +35,6 @@
       <file>test/Api/CertifyBusinessTest.php</file>
       <file>test/Api/LinkAccountsTest.php</file>
       <file>test/Api/CreateCKOTestingTokenTest.php</file>
-      <file>test/Api/CheckInstantACHTest.php</file>
       <file>test/Api/GetAccountsTest.php</file>
       <file>test/Api/GetInstitutionsTest.php</file>
       <file>test/Api/GetAccountBalanceTest.php</file>

@@ -41,13 +41,6 @@ class Contact implements ValidInterface
     private $email;
 
     /**
-     * SMS Opt-In
-     * @var bool
-     * @Type("bool")
-     */
-     private $smsOptIn;
-
-    /**
      * Constructor for contact object.
      *
      * @param \Silamoney\Client\Domain\BaseUser $user
@@ -58,7 +51,6 @@ class Contact implements ValidInterface
         $this->contactAlias = "";
         $this->email = $user->getEmail();
         $this->phone = $user->getPhone();
-        $this->smsOptIn = $user->getSmsOptIn();
     }
 
     public function isValid(): bool

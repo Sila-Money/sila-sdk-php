@@ -115,8 +115,8 @@ class EndToEndTest extends TestCase
             'NY',
             '12345',
             '123-456-7890',
-            'you@awesomedomain.com',
-            '123452222',
+            uniqid('you') . '@awesomedomain.com',
+            (string) rand(100000000, 999999999),
             $wallet->getAddress(),
             $birthDate
         );
@@ -138,8 +138,8 @@ class EndToEndTest extends TestCase
             'NY',
             '12345',
             '123-456-7890',
-            'you@awesomedomain.com',
-            '123452222',
+            uniqid('you') . '@awesomedomain.com',
+            (string) rand(100000000, 999999999),
             $wallet2->getAddress(),
             $birthDate2
         );
@@ -158,21 +158,18 @@ class EndToEndTest extends TestCase
             '',
             '12345',
             '123-456-7890',
-            'you@invalid.com',
-            '123452222',
+            uniqid('you') . '@invalid.com',
+            (string) rand(100000000, 999999999),
             $wallet3->getAddress(),
             $birthDate3
         );
 
         $response = self::$api->register($user2);
-        // var_dump($response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
 
         $responseInvalid = self::$api->register($userFail);
-        // var_dump($responseInvalid);
         $this->assertEquals(400, $responseInvalid->getStatusCode());
-        //$this->assertStringContainsString('Bad request.', $responseInvalid->getData()->message);
 
         // Check KYC
         $response = self::$api->checkKYC($handle, $wallet->getPrivateKey());

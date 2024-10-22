@@ -30,8 +30,6 @@ use Silamoney\Client\Domain\{
     CertifyBeneficialOwnerMessage,
     CheckHandleResponse,
     CheckPartnerKYCMessage,
-    CheckInstantACHMessage,
-    CheckInstantACHResponse,
     CheckPartnerKYCResponse,
     Country,
     DeleteRegistrationMessage,
@@ -72,7 +70,6 @@ use Silamoney\Client\Domain\{
     Wallet,
     UpdateWalletMessage,
     DeleteWalletMessage,
-    DeviceMessage,
     DocumentMessage,
     EmailMessage,
     EntityUpdateMessage,
@@ -107,9 +104,6 @@ use Silamoney\Client\Domain\{
     CloseVirtualAccountMessage,
     RequestKYCResponse,
     CreateTestVirtualAccountAchTransactionMessage,
-    ApproveWireMessage,
-    MockWireOutFileMessage,
-    MockWireOutFileResponse,
     DocumentListMessage,
     DocumentWithoutHeaderMessage,
     LinkAccountMxMessage,
@@ -738,34 +732,6 @@ class SilaApi
     }
 
     /**
-     * Verify if end-user meets the risk requirements for instant ACH.
-     *
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param string|null $accountName
-     * @param string|null $kycLevel
-     * @return ApiResponse
-     */
-     public function checkInstantACH(
-        string $userHandle,
-        string $userPrivateKey,
-        string $accountName = null,
-        string $kycLevel = null
-    ): ApiResponse {
-        $body = new checkInstantACHMessage(
-            $userHandle,
-            $this->configuration->getAppHandle(),
-            $accountName,
-            $kycLevel
-        );
-        $path = ApiEndpoints::CHECK_INSTANT_ACH;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, CheckInstantACHResponse::class);
-    }
-
-    /**
      * Uses an account name to delete a bank account from an entity.
      *
      * @param string $userHandle
@@ -944,7 +910,6 @@ class SilaApi
             $cardName,
             $sourceId,
             $destinationId,
-            null, // null for mockWireAccountName optional input
             $transactionIdempotencyId
 
         );
@@ -1018,7 +983,6 @@ class SilaApi
      * @param string|null $cardName Optional.
      * @param string|null $sourceId Optional.
      * @param string|null $destinationId Optional.
-     * @param string|null $mockWireAccountName Optional.
      * @return ApiResponse
      */
     public function redeemSila(
@@ -1032,7 +996,6 @@ class SilaApi
         string $cardName = null,
         string $sourceId = null,
         string $destinationId = null,
-        string $mockWireAccountName = null,
         string $transactionIdempotencyId = null
         ): ApiResponse 
         {
@@ -1048,7 +1011,6 @@ class SilaApi
             $cardName,
             $sourceId,
             $destinationId,
-            $mockWireAccountName,
             $transactionIdempotencyId
         );
         $path = ApiEndpoints::REDEEM_SILA;
@@ -1621,12 +1583,11 @@ class SilaApi
      * @param string $userHandle The user handle
      * @param string $userPrivateKey The user's private key
      * @param string $phone The new phone
-     * @param bool $smsOptIn If is enabled SMS Opt-In
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function addPhone(string $userHandle, string $userPrivateKey, string $phone, bool $smsOptIn = false): ApiResponse
+    public function addPhone(string $userHandle, string $userPrivateKey, string $phone): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAppHandle(), $userHandle, $phone, $smsOptIn);
+        $body = new PhoneMessage($this->configuration->getAppHandle(), $userHandle, $phone);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::PHONE(), $body);
     }
 
@@ -1638,9 +1599,9 @@ class SilaApi
      * @param string $phone The new phone
      * @return \Silamoney\Client\Api\ApiResponse
      */
-    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null, bool $smsOptIn = false): ApiResponse
+    public function updatePhone(string $userHandle, string $userPrivateKey, string $uuid,  ?string $phone = null): ApiResponse
     {
-        $body = new PhoneMessage($this->configuration->getAppHandle(), $userHandle, $phone, $smsOptIn, $uuid);
+        $body = new PhoneMessage($this->configuration->getAppHandle(), $userHandle, $phone, $uuid);
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::PHONE(), $body);
     }
 
@@ -1755,22 +1716,6 @@ class SilaApi
             $uuid
         );
         return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::UPDATE(), RegistrationDataType::ADDRESS(), $body);
-    }
-
-    /**
-     * Add a new device to a registered entity.
-     * @param string $userHandle The user handle
-     * @param string $userPrivateKey The user's private key
-     * @param string $deviceAlias 
-     * @param string $deviceFingerprint 
-     * @param string|null $uuid 
-     * @param string|null $sessionIdentifier
-     * @return \Silamoney\Client\Api\ApiResponse
-     */
-    public function addDevice(string $userHandle, string $userPrivateKey, string $deviceAlias = null, string $deviceFingerprint = null, string $uuid = null, string $sessionIdentifier = null): ApiResponse
-    {
-        $body = new DeviceMessage($this->configuration->getAppHandle(), $userHandle, $deviceAlias, $deviceFingerprint, $uuid, $sessionIdentifier);
-        return $this->modifyRegistrationData($userPrivateKey, RegistrationDataOperation::ADD(), RegistrationDataType::DEVICE(), $body);
     }
 
     /**
@@ -2086,7 +2031,7 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\DeviceMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function modifyRegistrationData(
@@ -2098,7 +2043,6 @@ class SilaApi
     {
         switch (get_class($body)) {
             case EmailMessage::class:
-            case DeviceMessage::class:
             case PhoneMessage::class:
             case IdentityMessage::class:
             case AddressMessage::class:
@@ -2106,7 +2050,7 @@ class SilaApi
                 break;
             default:
                 throw new InvalidArgumentException('addRegistrationData function only accepts: '
-                    . EmailMessage::class . ', ' . DeviceMessage::class . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
+                    . EmailMessage::class . ', ' . ', ' . PhoneMessage::class . ', ' . IdentityMessage::class
                     . ', ' . AddressMessage::class . ', ' . EntityUpdateMessage::class . '. Input was: ' . get_class($body));
         }
         $path = "/{$operation}/{$dataType}";
@@ -2151,50 +2095,6 @@ class SilaApi
         $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response);
-    }
-
-    /**
-     * This function is used to approve/deny WIRE transaction.
-     *
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param string $transactionId - The transaction id to approve or deny
-     * @param boolean $approve
-     * @param string|null $notes - Optional.
-     * @param string|null $mockWireAccountName - Optional.
-     * @return ApiResponse
-     * @throws ClientException
-     * @throws Exception
-     */
-    public function approveWire(string $userHandle, string $userPrivateKey, string $transactionId, $approve, $notes = null, $mockWireAccountName = null): ApiResponse
-    {
-        $body = new ApproveWireMessage($this->configuration->getAppHandle(), $userHandle, $transactionId, $approve, $notes, $mockWireAccountName);
-        $path = ApiEndpoints::APPROVE_WIRE;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response);
-    }
-
-    /**
-     * This function is used to approve/deny WIRE transaction.
-     *
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @param string $transactionId - The transaction id to approve or deny
-     * @param string $wireStatus - Optional.
-     * @return ApiResponse
-     * @throws ClientException
-     * @throws Exception
-     */
-    public function mockWireOutFile(string $userHandle, string $userPrivateKey, string $transactionId, $wireStatus): ApiResponse
-    {
-        $body = new MockWireOutFileMessage($this->configuration->getAppHandle(), $userHandle, $transactionId, $wireStatus);
-        $path = ApiEndpoints::MOCK_WIRE_OUT_FILE;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, MockWireOutFileResponse::class);
     }
 
     /**
