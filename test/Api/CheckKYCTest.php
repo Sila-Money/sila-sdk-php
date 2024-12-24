@@ -50,13 +50,15 @@ class CheckKYCTest extends TestCase
         $statusCode = $response->getStatusCode();
         $status = $response->getData()->status;
         $message = $response->getData()->message;
-        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/', $message)) {
-            sleep(30);
+        $count = 0;
+        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/', $message) && $count < 4) {
+            sleep(15);
             echo '.';
             $response = self::$config->api->checkKYC($handle, $privateKey);
             $statusCode = $response->getStatusCode();
             $status = $response->getData()->status;
             $message = $response->getData()->message;
+            $count++;
         }
         $this->assertEquals(200, $statusCode);
         $this->assertEquals($expectedStatus, $status);

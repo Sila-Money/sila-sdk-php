@@ -234,27 +234,27 @@ class BaseUser
     
     /**
      * Gets the Crypto Alias.
-     * @return bool
+     * @return string
      */
-    public function getCryptoAlias(): ?bool
+    public function getCryptoAlias(): ?string
     {
         return $this->cryptoAlias;
     }
 
     /**
      * Gets the Address Alias.
-     * @return bool
+     * @return string
      */
-    public function getAddressAlias(): ?bool
+    public function getAddressAlias(): ?string
     {
         return $this->addressAlias;
     }
 
     /**
      * Gets the Contact Alias.
-     * @return bool
+     * @return string
      */
-    public function getContactAlias(): ?bool
+    public function getContactAlias(): ?string
     {
         return $this->contactAlias;
     }

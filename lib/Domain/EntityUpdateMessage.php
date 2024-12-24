@@ -20,47 +20,47 @@ use JMS\Serializer\Annotation\Type;
 class EntityUpdateMessage extends HeaderBaseMessage
 {
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $firstName;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $lastName;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $entityName;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $birthdate;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $businessType;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $naicsCode;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $doingBusinessAs;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $businessWebsite;
     /**
-     * @var string
+     * @var ?string
      * @Type("string")
      */
     private $registrationState;

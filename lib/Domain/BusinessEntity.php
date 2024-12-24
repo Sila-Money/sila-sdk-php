@@ -26,6 +26,11 @@ class BusinessEntity extends BaseEntity
     /**
      * @var string
      */
+    private $businessTypeUuid;
+
+    /**
+     * @var string
+     */
     private $businessWebsite;
 
     /**

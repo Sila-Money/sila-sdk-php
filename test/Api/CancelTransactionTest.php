@@ -37,7 +37,6 @@ class CancelTransactionTest extends TestCase
     {
         $response = self::$config->api->issueSila(DefaultConfig::$firstUserHandle, 10, 'default', DefaultConfig::$firstUserWallet->getPrivateKey());
         $transactionId = $response->getData()->getTransactionId();
-        sleep(1);
         $response = self::$config->api->cancelTransaction(DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), $transactionId);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);

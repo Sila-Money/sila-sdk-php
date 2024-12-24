@@ -58,6 +58,8 @@ class TearDownTest extends TestCase
 
     public function testTearDownLinkedAccounts200()
     {
+        // sleep is to allow any pending transactions to complete as they will block deletion
+        sleep(120);
         $response = self::$config->api->deleteAccount(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::DEFAULT_ACCOUNT
@@ -71,26 +73,7 @@ class TearDownTest extends TestCase
 
         $this->assertEquals(200, $response1->getStatusCode());
 
-    }
-    
-    public function testTearDownCloseVirtualAccount()
-    {
-        $virtualAccountTest =   new VirtualAccountsTest();
-        
-        $virtualAccountDetail   =   $virtualAccountTest->getVirtualAccountId();
-
-        foreach ($virtualAccountDetail as $userKey => $userDetail) {
-            $handle = $userDetail['handle'];
-            $privateKey = $userDetail['privateKey'];
-            $virtualAccountId = $userDetail['virtual_account_id'];
-            $accountNumber = $userDetail['account_number'];
-
-            $response = self::$config->api->closeVirtualAccount($handle, $privateKey, $virtualAccountId, $accountNumber);
-            
-            $this->assertEquals(200, $response->getStatusCode());
-            
-        }
-    }    
+    } 
 
     public function testDeleteCard()
     {

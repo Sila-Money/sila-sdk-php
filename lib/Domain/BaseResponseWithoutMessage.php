@@ -87,7 +87,7 @@ class BaseResponseWithoutMessage
     
     /**
      * Gets the response status.
-     * @return bool
+     * @return string
      */
     public function getResponseTimeMs()
     {

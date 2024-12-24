@@ -248,19 +248,6 @@ class DefaultConfig
      * @var string
      */
     public const INDIVIDUAL = 'individual';
-    
-    /**
-     * @var array
-     */
-    public static $plaidOptions = [
-        "public_key" => "fa9dd19eb40982275785b09760ab79",
-        "initial_products" => ["transactions"],
-        "institution_id" => "ins_109508",
-        "credentials" => [
-            "username" => "user_good",
-            "password" => "pass_good"
-        ]
-    ];
 
     public static function generateHandle(): string
     {

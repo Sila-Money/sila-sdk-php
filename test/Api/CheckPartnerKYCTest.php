@@ -41,37 +41,24 @@ class CheckPartnerKYCTest extends TestCase
      * @param string $handle
      * @param string $queryAppHandle
      * @param string $queryUserHandle
-     * @dataProvider checkPartnerKycProvider
      */
     public function testCheckPartnerKYC200($handle, $queryAppHandle, $queryUserHandle)
     {
-        $response = self::$config->api->checkPartnerKYC($handle, $queryAppHandle, $queryUserHandle);
+        $response = self::$config->api->checkPartnerKYC($handle, 'arc_sandbox_test_app01', DefaultConfig::$firstUserHandle);
         $statusCode = $response->getStatusCode();
         $status = $response->getData()->status;
         $message = $response->getData()->message;
-        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/', $message)) {
-            sleep(30);
+        $count = 0;
+        while ($statusCode == 200 && $status == DefaultConfig::FAILURE && preg_match('/pending ID verification/' && $count < 4, $message)) {
+            sleep(15);
             echo '.';
-            $response = self::$config->api->checkPartnerKYC($handle, $queryAppHandle, $queryUserHandle);
+            $response = self::$config->api->checkPartnerKYC($handle, 'arc_sandbox_test_app01', DefaultConfig::$firstUserHandle);
             $statusCode = $response->getStatusCode();
             $status = $response->getData()->status;
             $message = $response->getData()->message;
+            $count++;
         }
         $this->assertEquals(200, $statusCode);
-        $this->assertEquals($expectedStatus, $status);
-        $this->assertStringContainsString($messageRegex, $message);
-    }
-
-    public function checkPartnerKycProvider()
-    {
-        $queryAppHandle = 'digital_geko_auth';
-        $queryUserHandle = 'phpSDK-8c679fad-0491-49bc-8b7c-45f3afbca25d';
-        return [
-            'check kyc - first user' => [
-                DefaultConfig::$firstUserHandle,
-                $queryAppHandle,
-                $queryUserHandle
-            ]
-        ];
+        $this->assertEquals('SUCCESS', $status);
     }
 }

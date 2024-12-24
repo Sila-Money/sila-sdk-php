@@ -55,9 +55,6 @@ class ApiEndpoints
     public const LINK_CARD = "/link_card";
     public const LIST_DOCUMENTS = "/list_documents";
     public const OPEN_VIRTUAL_ACCOUNT = "/open_virtual_account";
-    public const PLAID_LINK_TOKEN = "/plaid_link_token";
-    public const PLAID_SAMEDAY_AUTH = "/plaid_sameday_auth";
-    public const PLAID_UPDATE_LINK_TOKEN = "/plaid_update_link_token";
     public const REDEEM_SILA = "/redeem_sila";
     public const REGISTER = "/register";
     public const REGISTER_WALLET = "/register_wallet";

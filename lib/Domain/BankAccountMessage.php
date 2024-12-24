@@ -26,7 +26,7 @@ class BankAccountMessage implements ValidInterface
     private $amount;
 
     /**
-     * @var Silamoney\Client\Domain\Header
+     * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
     private $header;

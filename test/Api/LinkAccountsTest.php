@@ -32,25 +32,11 @@ class LinkAccountsTest extends TestCase
 
     public function testLinkAccounts200Success(): void
     {
-        $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
-        $options = [
-            'json' => [
-                "public_key" => "fa9dd19eb40982275785b09760ab79",
-                "initial_products" => ["transactions"],
-                "institution_id" => "ins_109508",
-                "credentials" => [
-                    "username" => "user_good",
-                    "password" => "pass_good"
-                ]
-            ]
-        ];
-        $response = $client->post('/link/item/create', $options);
-        $content = json_decode($response->getBody()->getContents());
-        $publicToken = $content->public_token;
-        $response = self::$config->api->linkAccount(
+        $response = self::$config->api->linkAccountDirect(
             DefaultConfig::$firstUserHandle,
             DefaultConfig::$firstUserWallet->getPrivateKey(),
-            $publicToken,
+            '12123456789',
+            '123456780',
             DefaultConfig::DEFAULT_ACCOUNT
         );
         $this->assertEquals(200, $response->getStatusCode());
@@ -74,22 +60,6 @@ class LinkAccountsTest extends TestCase
     /**
      * @test
      */
-    // public function testLinkAccount200Failure(): void
-    // {
-    //     //We need an expired token to assert this test.
-    // }
-
-    /**
-     * @test
-     */
-    // public function testLinkAccount202(): void
-    // {
-    //     //We need an frozed bank account to assert this test.
-    // }
-
-    /**
-     * @test
-     */
     public function testLinkAccounts400(): void
     {
         $response = self::$config->api->linkAccount(
@@ -109,22 +79,8 @@ class LinkAccountsTest extends TestCase
     public function testLinkAccounts401(): void
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
-        $client = new \GuzzleHttp\Client(["base_uri" => "https://sandbox.plaid.com"]);
-        $options = [
-            'json' => [
-                "public_key" => "fa9dd19eb40982275785b09760ab79",
-                "initial_products" => ["transactions"],
-                "institution_id" => "ins_109508",
-                "credentials" => [
-                    "username" => "user_good",
-                    "password" => "pass_good"
-                ]
-            ]
-        ];
-        $response = $client->post('/link/item/create', $options);
-        $content = json_decode($response->getBody()->getContents());
-        $publicToken = $content->public_token;
-        $accountId = $content->accounts[0]->account_id;
+        $publicToken = 'nope';
+        $accountId = '1234567890';
 
         $response = self::$config->api->linkAccount(
             DefaultConfig::$firstUserHandle,

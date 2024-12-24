@@ -19,11 +19,16 @@ class ResendStatementsTest extends TestCase
      */
     private static $config;
 
+    public static function setUpBeforeClass(): void
+    {
+        self::$config = new ApiTestConfiguration();
+    }
+
     public function testResendStatements200()
     {
         $appHandle = 'arc_sandbox_test_app01';
         $privateKey = '9c17e7b767b8f4a63863caf1619ef3e9967a34b287ce58542f3eb19b5a72f076';
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
+        self::$config->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
 
         $filters = new SearchFilters();
         
@@ -38,7 +43,7 @@ class ResendStatementsTest extends TestCase
         $filters->setPage(1);
         $filters->setPerPage(5);
 
-        $response = $this->api->statements(
+        $response = self::$config->api->statements(
             $privateKey,
             $appHandle,
             $filters
@@ -48,7 +53,7 @@ class ResendStatementsTest extends TestCase
         
         $statement_id = $response->getData()->delivery_attempts[3]->statement_id;    // Dynamic $statement_id for this test case
 
-        $response = $this->api->resendStatements(
+        $response = self::$config->api->resendStatements(
             $privateKey,
             $appHandle,
             $statement_id,
@@ -65,12 +70,12 @@ class ResendStatementsTest extends TestCase
     {
         $appHandle = 'arc_sandbox_test_app01';
         $privateKey = '9c17e7b767b8f4a63863caf1619ef3e9967a34b287ce58542f3eb19b5a72f076';
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
+        self::$config->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
 
         $email = '';
         $statement_id = "16e04d90-c017-4ea5-ac3b-e449d8315470";
 
-        $response = $this->api->resendStatements(
+        $response = self::$config->api->resendStatements(
             0,
             $privateKey,
             $statement_id,

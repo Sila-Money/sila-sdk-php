@@ -69,7 +69,7 @@ class Statements
 
     /**
      * Transactions list used for the TransactionStatement.
-     * @var array<Silamoney\Client\Domain\TransactionStatement>
+     * @var array<\Silamoney\Client\Domain\TransactionStatement>
      * @Type("array<Silamoney\Client\Domain\TransactionStatement>")
      */
     public $transactions;

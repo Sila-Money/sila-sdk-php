@@ -11,12 +11,18 @@ pool:
 
 strategy:
   matrix:
-    php72:
-      phpVersion: 7.2
     php73:
       phpVersion: 7.3
     php74:
       phpVersion: 7.4
+    php80:
+      phpVersion: 8.0
+    php81:
+      phpVersion: 8.1
+    php82:
+      phpVersion: 8.2
+    php83:
+      phpVersion: 8.3
       executeSonar: true
 
 steps:

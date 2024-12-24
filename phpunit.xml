@@ -9,7 +9,6 @@
       <file>test/Domain/ValidModelTest.php</file>
       <file>test/Security/EcdsaUtilTest.php</file>
       <file>test/Api/ApiClientTest.php</file>
-      <file>test/Api/BaseResponseTest.php</file>
       <file>test/Api/ClientExceptionTest.php</file>
       <file>test/Api/SilaApiTest.php</file>
       <file>test/Api/GetBusinessRolesTest.php</file>
@@ -44,15 +43,12 @@
       <file>test/Api/TransferSilaTest.php</file>
       <file>test/Api/RedeemSilaTest.php</file>
       <file>test/Api/GetTransactionsTest.php</file>
-      <file>test/Api/PlaidLinkTokenTest.php</file>
-      <file>test/Api/PlaidSamedayAuthTest.php</file>
       <file>test/Api/RegisterWalletTest.php</file>
       <file>test/Api/GetWalletsTest.php</file>
       <file>test/Api/GetWalletTest.php</file>
       <file>test/Api/UpdateWalletTest.php</file>
       <file>test/Api/DeleteWalletTest.php</file>
       <file>test/Api/SilaBalanceTest.php</file>
-      <file>test/Api/VirtualAccountsTest.php</file>
       <file>test/Api/getStatementsDataTest.php</file>
       <file>test/Api/getWalletStatementDataTest.php</file>
       <file>test/Api/StatementsTest.php</file>

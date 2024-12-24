@@ -55,11 +55,6 @@ class ValidModelTest extends TestCase
                 'GetTransactionsMessageValid.json',
                 'GetTransactionsMessage',
                 true
-            ),
-            'Plaid Sameday Auth Message is valid' => array(
-                'PlaidSamedayAuthMessageValid.json',
-                'PlaidSamedayAuthMessage',
-                true
             )
         );
     }
@@ -80,8 +75,7 @@ class ValidModelTest extends TestCase
             'Issue Message is invalid' => array('MessageInvalid.json', 'BankAccountMessage', false),
             'Transfer Message is invalid' => array('MessageInvalid.json', 'TransferMessage', false),
             'Redeem Message is invalid' => array('MessageInvalid.json', 'BankAccountMessage', false),
-            'Get Transactions Message is invalid' => array('MessageInvalid.json', 'GetTransactionsMessage', false),
-            'Plaid Sameday Auth Message is invalid' => array('MessageInvalid.json', 'PlaidSamedayAuthMessage', false)
+            'Get Transactions Message is invalid' => array('MessageInvalid.json', 'GetTransactionsMessage', false)
         );
     }
 }

@@ -52,12 +52,6 @@ use Silamoney\Client\Domain\{
     UpdateAccountResponse,
     DeleteAccountResponse,
     Message,
-    PlaidSamedayAuthMessage,
-    PlaidSamedayAuthResponse,
-    PlaidLinkTokenMessage,
-    PlaidLinkTokenResponse,
-    PlaidUpdateLinkTokenMessage,
-    PlaidUpdateLinkTokenResponse,
     PlaidTokenType,
     SearchFilters,
     SilaBalanceMessage,
@@ -454,24 +448,6 @@ class SilaApi
     }
 
     /**
-     * Updates the Plaid link token when re-authentication is needed.
-     *
-     * @param string $userHandle
-     * @param string $userPrivateKey
-     * @return ApiResponse
-     * @throws Exception
-     */
-    public function plaidUpdateLinkToken(string $userHandle, string $userPrivateKey, string $accountName): ApiResponse
-    {
-        $body = new PlaidUpdateLinkTokenMessage($userHandle, $this->configuration->getAppHandle(), $accountName);
-        $path = ApiEndpoints::PLAID_UPDATE_LINK_TOKEN;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json, $userPrivateKey);
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareBaseResponse($response);
-    }
-
-    /**
      * Starts KYC verification process on a registered user handle.
      *
      * @param string $userHandle
@@ -752,29 +728,6 @@ class SilaApi
         $headers = $this->makeHeaders($json);
         $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
         return $this->prepareResponse($response, DeleteAccountResponse::class);
-    }
-
-    /**
-     * Generate Plaid link token.
-     *
-     * @param string $userHandle
-     * @param string $androidPackageName   Optional
-     * @return ApiResponse
-     */
-     public function plaidLinkToken(
-        string $userHandle,
-        string $androidPackageName = null
-    ): ApiResponse {
-        $body = new PlaidLinkTokenMessage(
-            $userHandle,
-            $this->configuration->getAppHandle(),
-            $androidPackageName
-        );
-        $path = ApiEndpoints::PLAID_LINK_TOKEN;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json);
-        $response = $this->configuration->getApiClient()->callApi($path, $json, $headers);
-        return $this->prepareResponse($response, PlaidLinkTokenResponse::class);
     }
 
     /**
@@ -1151,23 +1104,6 @@ class SilaApi
         $json = $this->serializer->serialize($body, 'json');
         $response = $this->configuration->getApiClient()->callAPI($path, $json, []);
         return $this->prepareResponse($response);
-    }
-
-    /**
-     * Gest a public token to complete the second phase of Plaid's Sameday Microdeposit authorization
-     *
-     * @param string $userHandle
-     * @param string $accountName
-     * @return \Silamoney\Client\Api\ApiResponse
-     */
-    public function plaidSamedayAuth(string $userHandle, string $accountName): ApiResponse
-    {
-        $body = new PlaidSamedayAuthMessage($userHandle, $accountName, $this->configuration->getAppHandle());
-        $path = ApiEndpoints::PLAID_SAMEDAY_AUTH;
-        $json = $this->serializer->serialize($body, 'json');
-        $headers = $this->makeHeaders($json);
-        $response = $this->configuration->getApiClient()->callAPI($path, $json, $headers);
-        return $this->prepareResponse($response, PlaidSamedayAuthResponse::class);
     }
 
     /**
@@ -2031,7 +1967,7 @@ class SilaApi
 
     /**
      * @param string $userPrivateKey
-     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage $body
+     * @param \Silamoney\Client\Domain\EmailMessage|\Silamoney\Client\Domain\PhoneMessage|\Silamoney\Client\Domain\IdentityMessage|\Silamoney\Client\Domain\AddressMessage|\Silamoney\Client\Domain\EntityUpdateMessage $body
      * @return \Silamoney\Client\Api\ApiResponse
      */
     private function modifyRegistrationData(
@@ -2230,7 +2166,7 @@ class SilaApi
         } else {
             $body = json_decode($contents);
         }
-        return new ApiResponse($statusCode, $response->getHeaders(), $body);
+        return new ApiResponse($statusCode, headers: $response->getHeaders(), data: $body);
     }
 
     private function prepareFileResponse(Response $response)

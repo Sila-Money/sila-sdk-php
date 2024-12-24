@@ -19,7 +19,7 @@ use JMS\Serializer\Annotation\Type;
 class DocumentListMessage
 {
     /**
-     * @var Silamoney\Client\Domain\Header
+     * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
     private $header;
