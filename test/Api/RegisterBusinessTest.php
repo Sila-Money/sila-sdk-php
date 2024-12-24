@@ -143,13 +143,9 @@ class RegisterBusinessTest extends TestCase
     }
 
     public function registerBusinessProvider(){
-        DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
+
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet = DefaultConfig::generateWallet();
         
         $businessUser = new BusinessUser(

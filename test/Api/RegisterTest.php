@@ -98,29 +98,15 @@ class RegisterTest extends TestCase
 
     public function registerUsersProvider()
     {
-        DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
+        // Handles are added to DefaultConfig in CheckHandleTest
         DefaultConfig::$firstUserWallet = DefaultConfig::generateWallet();
-
         DefaultConfig::$walletAddressForBalance = DefaultConfig::$firstUserWallet->getAddress();
-
-        DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$businessTempAdminHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$beneficialUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$beneficialUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$emptyPhoneUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyPhoneUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$emptyEmailUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyEmailUserWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$emptyStreetAddress1UserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyStreetAddress1UserWallet = DefaultConfig::generateWallet();
-
         DefaultConfig::$invalidHandle = 'invalid';
 
         $firstUser = DefaultConfig::generateUser(
