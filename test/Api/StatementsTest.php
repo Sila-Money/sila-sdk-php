@@ -20,12 +20,17 @@ class StatementsTest extends TestCase
      */
     private static $config;
 
+    public static function setUpBeforeClass(): void
+    {
+        self::$config = new ApiTestConfiguration();
+    }
+
     public function testStatements200()
     {
         
         $appHandle = 'arc_sandbox_test_app01';
         $privateKey = '9c17e7b767b8f4a63863caf1619ef3e9967a34b287ce58542f3eb19b5a72f076';
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
+        self::$config->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
 
         $filters = new SearchFilters();
         
@@ -40,7 +45,7 @@ class StatementsTest extends TestCase
         $filters->setPage(1);
         $filters->setPerPage(20);
 
-        $response = $this->api->statements(
+        $response = self::$config->api->statements(
             $privateKey,
             $appHandle,
             $filters
@@ -58,11 +63,11 @@ class StatementsTest extends TestCase
     {
         $appHandle = 'arc_sandbox_test_app01';
         $privateKey = '9c17e7b767b8f4a63863caf1619ef3e9967a34b287ce58542f3eb19b5a72f076';
-        $this->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
+        self::$config->api = SilaApi::fromEnvironment(Environments::SANDBOX(), BalanceEnvironments::SANDBOX(), $appHandle, $privateKey);
 
         $filters = new SearchFilters();
 
-        $response = $this->api->Statements(
+        $response = self::$config->api->Statements(
             0,
             $privateKey,
             $filters

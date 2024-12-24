@@ -89,6 +89,16 @@ class DefaultConfig
     public static $emptyStreetAddress1UserHandle;
 
     /**
+     * @var string 
+     */
+    public static $registerBuilderSuccessHandle;
+
+    /**
+     * @var string 
+     */
+    public static $registerBuilderEmptyStreet1Handle;
+
+    /**
      * @var string
      */
     public static $businessUserWithEmptyBusinessWebsiteHandle;
@@ -97,6 +107,16 @@ class DefaultConfig
      * @var string
      */
     public static $businessUserWithEmptyDoingBusinessAsHandle;
+
+    /**
+     * @var string
+     */
+    public static $businessInvalidHandle;
+
+    /**
+     * @var string
+     */
+    public static $registerBuilderBizSuccessHandle;
 
     /**
      * @var string
@@ -248,19 +268,6 @@ class DefaultConfig
      * @var string
      */
     public const INDIVIDUAL = 'individual';
-    
-    /**
-     * @var array
-     */
-    public static $plaidOptions = [
-        "public_key" => "fa9dd19eb40982275785b09760ab79",
-        "initial_products" => ["transactions"],
-        "institution_id" => "ins_109508",
-        "credentials" => [
-            "username" => "user_good",
-            "password" => "pass_good"
-        ]
-    ];
 
     public static function generateHandle(): string
     {
@@ -286,7 +293,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'123-456-7890',
             email:uniqid('you') . '@awesomedomain.com',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
             cryptoAlias:"Crypto Alias",
@@ -309,7 +316,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'',
             email:uniqid('you') . '@awesomedomain.com',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
         );
@@ -329,7 +336,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'123-456-7890',
             email:'',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
         );

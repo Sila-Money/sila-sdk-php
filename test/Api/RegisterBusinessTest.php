@@ -49,7 +49,7 @@ class RegisterBusinessTest extends TestCase
 
     public function testRegisterBusinessBuilder200()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$registerBuilderBizSuccessHandle;
         $wallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessType = 'Corporation';
         DefaultConfig::$naicsCode = 5415;
@@ -64,7 +64,7 @@ class RegisterBusinessTest extends TestCase
 
     public function testRegisterBusinessWithEmptyBusinessWebsiteBuilder400()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$businessInvalidHandle;
         $wallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessType = 'Corporation';
         DefaultConfig::$naicsCode = 5415;
@@ -79,7 +79,7 @@ class RegisterBusinessTest extends TestCase
 
     public function testRegisterBusinessWithEmptyDoingBusinessAsBuilder400()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$businessInvalidHandle;
         $wallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessType = 'Corporation';
         DefaultConfig::$naicsCode = 5415;
@@ -96,7 +96,7 @@ class RegisterBusinessTest extends TestCase
     {
         $wallet = DefaultConfig::generateWallet();
         $user = new BusinessUser(
-            handle:DefaultConfig::generateHandle(),
+            handle:DefaultConfig::$businessInvalidHandle,
             name:'',
             address:'350 5th Avenue',
             address2:null,
@@ -122,7 +122,7 @@ class RegisterBusinessTest extends TestCase
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $wallet = DefaultConfig::generateWallet();
         $user = new BusinessUser(
-            handle:DefaultConfig::generateHandle(),
+            handle:DefaultConfig::$businessInvalidHandle,
             name:'Signature',
             address:'350 5th Avenue',
             address2:null,
@@ -143,13 +143,9 @@ class RegisterBusinessTest extends TestCase
     }
 
     public function registerBusinessProvider(){
-        DefaultConfig::$businessUserHandle = DefaultConfig::generateHandle();
+
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyDoingBusinessAsWallet = DefaultConfig::generateWallet();
         
         $businessUser = new BusinessUser(

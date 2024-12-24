@@ -44,7 +44,7 @@ class VirtualAccountMessage implements ValidInterface
     private $statements_enabled;
 
     /**
-     * @var Silamoney\Client\Domain\Header
+     * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
     private $header;
@@ -63,7 +63,7 @@ class VirtualAccountMessage implements ValidInterface
         string $virtualAccountName,
         ?bool $achDebitEnabled = null,
         ?bool $achCreditEnabled = null,
-        ?bool $statements_enabled
+        ?bool $statements_enabled = null,
     ) {
         $this->virtualAccountName       =   $virtualAccountName;
         $this->achDebitEnabled          =   $achDebitEnabled;

@@ -42,6 +42,9 @@ class RegisterTest extends TestCase
     public function testRegister200($user)
     {
         $response = self::$config->api->register($user);
+        if ($response->getStatusCode() != 200) {
+            var_dump($response);
+        }
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
@@ -50,7 +53,7 @@ class RegisterTest extends TestCase
 
     public function testRegisterBuilder200()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$registerBuilderSuccessHandle;
         $wallet = DefaultConfig::generateWallet();
         $builder = new UserBuilder();
         $user = $builder->handle($handle)->firstName('Builder')->lastName('Last')
@@ -65,7 +68,7 @@ class RegisterTest extends TestCase
 
     public function testRegisterBuilderWithNoStreetAddress1Field400()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$emptyStreetAddress1UserHandle;
         $wallet = DefaultConfig::generateWallet();
         $builder = new UserBuilder();
         $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
@@ -91,6 +94,9 @@ class RegisterTest extends TestCase
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $user = DefaultConfig::generateUser(DefaultConfig::$invalidHandle, 'Signature', self::$config->api->generateWallet());
         $response = self::$config->api->register($user);
+        if ($response->getStatusCode() != 401) {
+            var_dump($response);
+        }
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
@@ -98,29 +104,15 @@ class RegisterTest extends TestCase
 
     public function registerUsersProvider()
     {
-        DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
+        // Handles are added to DefaultConfig in CheckHandleTest
         DefaultConfig::$firstUserWallet = DefaultConfig::generateWallet();
-
         DefaultConfig::$walletAddressForBalance = DefaultConfig::$firstUserWallet->getAddress();
-
-        DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$businessTempAdminHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessTempAdminWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$beneficialUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$beneficialUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$emptyPhoneUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyPhoneUserWallet = DefaultConfig::generateWallet();
-        
-        DefaultConfig::$emptyEmailUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyEmailUserWallet = DefaultConfig::generateWallet();
-
-        DefaultConfig::$emptyStreetAddress1UserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyStreetAddress1UserWallet = DefaultConfig::generateWallet();
-
         DefaultConfig::$invalidHandle = 'invalid';
 
         $firstUser = DefaultConfig::generateUser(

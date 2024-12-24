@@ -286,7 +286,7 @@ class SearchFilters implements ValidInterface
      * Sets the transaction id to the filters.
      *
      * @param string $transactionId
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setTransactionId(string $transactionId): SearchFilters
     {
@@ -298,7 +298,7 @@ class SearchFilters implements ValidInterface
      * Sets the transaction id to the filters.
      *
      * @param string $paymentMethodId
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setPaymentMethodId(string $paymentMethodId): SearchFilters
     {
@@ -310,7 +310,7 @@ class SearchFilters implements ValidInterface
      * Sets the processing type to the filters.
      *
      * @param string $processingType
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setProcessingType(string $processingType): SearchFilters
     {
@@ -322,7 +322,7 @@ class SearchFilters implements ValidInterface
      * Sets the source id to the filters.
      *
      * @param string $sourceId
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setSourceId(string $sourceId): SearchFilters
     {
@@ -334,7 +334,7 @@ class SearchFilters implements ValidInterface
      * Sets the destination id to the filters.
      *
      * @param string $destinationId
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setDestinationId(string $destinationId): SearchFilters
     {
@@ -346,7 +346,7 @@ class SearchFilters implements ValidInterface
      * Sets the user handle to the filters.
      *
      * @param string $userHandle
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setUserHandle(string $userHandle): SearchFilters
     {
@@ -357,7 +357,7 @@ class SearchFilters implements ValidInterface
     /**
      * Sets the delivered to true in the filters.
      *
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setDelivered(): SearchFilters
     {
@@ -369,7 +369,7 @@ class SearchFilters implements ValidInterface
      * Sets the endpoint name to the filters.
      *
      * @param string $endpointName
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEndpointName(string $endpointName): SearchFilters
     {
@@ -381,7 +381,7 @@ class SearchFilters implements ValidInterface
      * Sets the event type to the filters.
      *
      * @param string $eventType
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEventType(string $eventType): SearchFilters
     {
@@ -393,7 +393,7 @@ class SearchFilters implements ValidInterface
      * Sets the wallet_id to the filters.
      *
      * @param string $wallet_id
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setUuid(string $wallet_id): SearchFilters
     {
@@ -405,7 +405,7 @@ class SearchFilters implements ValidInterface
      * Sets the transactions per page to the filters.
      *
      * @param int $perPage
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setPerPage(int $perPage): SearchFilters
     {
@@ -416,8 +416,8 @@ class SearchFilters implements ValidInterface
     /**
      * Sets the transaction types to the filters.
      *
-     * @param array<Silamoney\Client\Domain\TransactionTypes> transactionTypes
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @param array<\Silamoney\Client\Domain\TransactionTypes> transactionTypes
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setTransactionTypes(array $transactionTypes): SearchFilters
     {
@@ -434,7 +434,7 @@ class SearchFilters implements ValidInterface
      * Sets the max amount to the filters.
      *
      * @param int $maxSilaAmount
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setMaxSilaAmount(float $maxSilaAmount): SearchFilters
     {
@@ -446,9 +446,9 @@ class SearchFilters implements ValidInterface
      * Sets the reference id to the filters.
      *
      * @param string $referenceId
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
-    public function setReferenceId(string $referenceId)
+    public function setReferenceId(string $referenceId): SearchFilters
     {
         $this->referenceId = $referenceId;
         return $this;
@@ -457,7 +457,7 @@ class SearchFilters implements ValidInterface
     /**
      * Sets the show time lines to true in the filters.
      *
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function showTimelines(): SearchFilters
     {
@@ -468,7 +468,7 @@ class SearchFilters implements ValidInterface
     /**
      * Sets the sort ascending to true in the filters.
      *
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function sortAscending(): SearchFilters
     {
@@ -480,7 +480,7 @@ class SearchFilters implements ValidInterface
      * Sets the end epoch to the filters.
      *
      * @param int $endEpoch
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEndEpoch(int $endEpoch): SearchFilters
     {
@@ -492,7 +492,7 @@ class SearchFilters implements ValidInterface
      * Sets the start epoch to the filters.
      *
      * @param int $startEpoch
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setStartEpoch(int $startEpoch): SearchFilters
     {
@@ -504,7 +504,7 @@ class SearchFilters implements ValidInterface
      * Sets the statuses to the filters.
      *
      * @param array<Status> $status
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setStatuses(array $status): SearchFilters
     {
@@ -521,7 +521,7 @@ class SearchFilters implements ValidInterface
      * Sets the page to be retreived to the filters.
      *
      * @param int $page
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setPage(int $page): SearchFilters
     {
@@ -533,7 +533,7 @@ class SearchFilters implements ValidInterface
      * Sets the min amount to the filters.
      *
      * @param int $minSilaAmount
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setMinSilaAmount(float $minSilaAmount): SearchFilters
     {
@@ -545,7 +545,7 @@ class SearchFilters implements ValidInterface
      * Sets the account_number to the filters.
      *
      * @param int $accountNumber
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setAccountNumber(int $accountNumber): SearchFilters
     {
@@ -557,7 +557,7 @@ class SearchFilters implements ValidInterface
      * Sets the routing_number to the filters.
      *
      * @param string $routingNumber
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setRoutingNumber(string $routingNumber): SearchFilters
     {
@@ -569,7 +569,7 @@ class SearchFilters implements ValidInterface
      * Sets the account_type to the filters.
      *
      * @param string $accountType
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setAccountType(string $accountType): SearchFilters
     {
@@ -581,7 +581,7 @@ class SearchFilters implements ValidInterface
      * Sets the bankAccountName to the filters.
      *
      * @param string $bankAccountName
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
      public function setBankAccountName(string $bankAccountName): SearchFilters
      {
@@ -593,7 +593,7 @@ class SearchFilters implements ValidInterface
      * Sets the cardName to the filters.
      *
      * @param string $cardName
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setCardName(string $cardName): SearchFilters
     {
@@ -605,7 +605,7 @@ class SearchFilters implements ValidInterface
      * Sets the blockchainAddress to the filters.
      *
      * @param string $blockchainAddress
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
      public function setBlockchainAddress(string $blockchainAddress): SearchFilters
      {
@@ -617,7 +617,7 @@ class SearchFilters implements ValidInterface
      * Sets the institutionName to the filters.
      *
      * @param string $institutionName
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
      public function setInstitutionName(string $institutionName): SearchFilters
      {
@@ -629,7 +629,7 @@ class SearchFilters implements ValidInterface
      * Sets the month to the filters.
      *
      * @param string $month
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setMonth(string $month): SearchFilters
     {
@@ -641,7 +641,7 @@ class SearchFilters implements ValidInterface
      * Sets the startMonth to the filters.
      *
      * @param string $startMonth
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setStartMonth(string $startMonth): SearchFilters
     {
@@ -653,7 +653,7 @@ class SearchFilters implements ValidInterface
      * Sets the endMonth to the filters.
      *
      * @param string $endMonth
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEndMonth(string $endMonth): SearchFilters
     {
@@ -665,7 +665,7 @@ class SearchFilters implements ValidInterface
      * Sets the startDate to the filters.
      *
      * @param string $startDate
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setStartDate(string $startDate): SearchFilters
     {
@@ -677,7 +677,7 @@ class SearchFilters implements ValidInterface
      * Sets the endDate to the filters.
      *
      * @param string $endDate
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEndDate(string $endDate): SearchFilters
     {
@@ -689,7 +689,7 @@ class SearchFilters implements ValidInterface
      * Sets the userName to the filters.
      *
      * @param string $userName
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setUserName(string $userName): SearchFilters
     {
@@ -701,7 +701,7 @@ class SearchFilters implements ValidInterface
      * Sets the email to the filters.
      *
      * @param string $email
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setEmail(string $email): SearchFilters
     {
@@ -713,7 +713,7 @@ class SearchFilters implements ValidInterface
      * Sets the status to the filters.
      *
      * @param string $status
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setStatus(string $status): SearchFilters
     {
@@ -725,7 +725,7 @@ class SearchFilters implements ValidInterface
      * Sets the identifier to the filters.
      *
      * @param string $identifier
-     * @return Silamoney\Client\Domain\SearchFilters
+     * @return \Silamoney\Client\Domain\SearchFilters
      */
     public function setIdentifier(string $identifier): SearchFilters
     {

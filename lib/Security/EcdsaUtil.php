@@ -41,8 +41,9 @@ class EcdsaUtil
      */
     public static function sign(string $message, string $privateKey): string
     {
+        $keccak_msg = Keccak::hash($message, 256);
         $secp256k1 = new Secp256k1();
-        $signature = $secp256k1->sign(Keccak::hash($message, 256), $privateKey);
+        $signature = $secp256k1->sign($keccak_msg, $privateKey);
         $v = $signature->getRecoveryParam();
         return $signature->toHex() . dechex((hexdec(bin2hex($v))) - self::OFFSET);
     }

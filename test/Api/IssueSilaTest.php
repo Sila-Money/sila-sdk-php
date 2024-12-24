@@ -156,14 +156,16 @@ class IssueSilaTest extends TestCase
         self::$config->setUpBeforeClassValidAuthSignature();
         $filters = new SearchFilters();
         $filters->setTransactionId(DefaultConfig::$issueTransactionId);
+        $count = 0;
         do {
-            $response = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters, DefaultConfig::$firstUserWallet->getPrivateKey());
+            $response = self::$config->api->getTransactions(DefaultConfig::$firstUserHandle, $filters);
             $statusCode = $response->getStatusCode();
             $success = $response->getData()->success;
             $status = $response->getData()->transactions[0]->status;
             sleep(30);
             echo '.';
-        } while ($statusCode == 200 && $success && ($status === 'pending' || $status === 'queued'));
+            $count++;
+        } while ($statusCode == 200 && $success && ($status === 'pending' || $status === 'queued') && $count < 10);
         $this->assertEquals(200, $statusCode);
         $this->assertTrue($success);
         $this->assertEquals('success', $status);

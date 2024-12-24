@@ -24,13 +24,13 @@ use GuzzleHttp\Psr7\Response;
 class ApiClient
 {
     /**
-     * @var GuzzleHttp\Client
+     * @var \GuzzleHttp\Client
      */
     private $client;
 
     private const BASE_URI = 'base_uri';
 
-    private const USER_AGENT = 'SilaSDK-php / 1.0.1';
+    private const USER_AGENT = 'SilaSDK-php / 1.1.1';
 
     /**
      * Api Client constructor

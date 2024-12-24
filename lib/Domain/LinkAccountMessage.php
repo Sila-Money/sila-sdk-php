@@ -32,7 +32,7 @@ class LinkAccountMessage implements ValidInterface
     private $accountName;
 
     /**
-     * @var Silamoney\Client\Domain\Header
+     * @var \Silamoney\Client\Domain\Header
      * @Type("Silamoney\Client\Domain\Header")
      */
     private $header;
