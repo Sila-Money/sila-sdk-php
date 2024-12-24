@@ -293,7 +293,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'123-456-7890',
             email:uniqid('you') . '@awesomedomain.com',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
             cryptoAlias:"Crypto Alias",
@@ -316,7 +316,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'',
             email:uniqid('you') . '@awesomedomain.com',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
         );
@@ -336,7 +336,7 @@ class DefaultConfig
             zipCode:'12345',
             phone:'123-456-7890',
             email:'',
-            identityNumber:(string) rand(100000000, 999999999),
+            identityNumber:(string) rand(666, 899) . rand(50, 99) . rand(1000, 9999),
             cryptoAddress:$wallet->getAddress(),
             birthdate:$birthDate,
         );
