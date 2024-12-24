@@ -89,9 +89,13 @@ class CheckHandleTest extends TestCase
         DefaultConfig::$emptyEmailUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyPhoneUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$emptyStreetAddress1UserHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$registerBuilderSuccessHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$registerBuilderEmptyStreet1Handle = DefaultConfig::generateHandle();
         DefaultConfig::$invalidHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyBusinessWebsiteHandle = DefaultConfig::generateHandle();
         DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$businessInvalidHandle = DefaultConfig::generateHandle();
+        DefaultConfig::$registerBuilderBizSuccessHandle = DefaultConfig::generateHandle();
         return [
             'check handle -first user handle' => [
                 DefaultConfig::$firstUserHandle,
@@ -133,6 +137,16 @@ class CheckHandleTest extends TestCase
                 DefaultConfig::SUCCESS,
                 self::HANDLE_AVAILABLE
             ],
+            'check handle - register builder success handle' => [
+                DefaultConfig::$registerBuilderSuccessHandle,
+                DefaultConfig::SUCCESS,
+                self::HANDLE_AVAILABLE
+            ],
+            'check handle - register builder empty street 1 handle' => [
+                DefaultConfig::$registerBuilderEmptyStreet1Handle,
+                DefaultConfig::SUCCESS,
+                self::HANDLE_AVAILABLE
+            ],
             'check handle - invalid registration handle' => [
                 DefaultConfig::$invalidHandle,
                 DefaultConfig::SUCCESS,
@@ -145,6 +159,16 @@ class CheckHandleTest extends TestCase
             ],
             'check handle - business user with empty doing business as handle' => [
                 DefaultConfig::$businessUserWithEmptyDoingBusinessAsHandle,
+                DefaultConfig::SUCCESS,
+                self::HANDLE_AVAILABLE
+            ],
+            'check handle - business invalid handle' => [
+                DefaultConfig::$businessInvalidHandle,
+                DefaultConfig::SUCCESS,
+                self::HANDLE_AVAILABLE
+            ],
+            'check handle - register builder biz success handle' => [
+                DefaultConfig::$registerBuilderBizSuccessHandle,
                 DefaultConfig::SUCCESS,
                 self::HANDLE_AVAILABLE
             ],

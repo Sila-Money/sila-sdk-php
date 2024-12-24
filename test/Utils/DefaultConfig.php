@@ -89,6 +89,16 @@ class DefaultConfig
     public static $emptyStreetAddress1UserHandle;
 
     /**
+     * @var string 
+     */
+    public static $registerBuilderSuccessHandle;
+
+    /**
+     * @var string 
+     */
+    public static $registerBuilderEmptyStreet1Handle;
+
+    /**
      * @var string
      */
     public static $businessUserWithEmptyBusinessWebsiteHandle;
@@ -97,6 +107,16 @@ class DefaultConfig
      * @var string
      */
     public static $businessUserWithEmptyDoingBusinessAsHandle;
+
+    /**
+     * @var string
+     */
+    public static $businessInvalidHandle;
+
+    /**
+     * @var string
+     */
+    public static $registerBuilderBizSuccessHandle;
 
     /**
      * @var string

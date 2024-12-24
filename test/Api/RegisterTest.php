@@ -50,7 +50,7 @@ class RegisterTest extends TestCase
 
     public function testRegisterBuilder200()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$registerBuilderSuccessHandle;
         $wallet = DefaultConfig::generateWallet();
         $builder = new UserBuilder();
         $user = $builder->handle($handle)->firstName('Builder')->lastName('Last')
@@ -65,7 +65,7 @@ class RegisterTest extends TestCase
 
     public function testRegisterBuilderWithNoStreetAddress1Field400()
     {
-        $handle = DefaultConfig::generateHandle();
+        $handle = DefaultConfig::$emptyStreetAddress1UserHandle;
         $wallet = DefaultConfig::generateWallet();
         $builder = new UserBuilder();
         $user = $builder->handle($handle)->firstName('Empty')->lastName('Email')
