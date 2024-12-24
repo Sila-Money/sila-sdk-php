@@ -42,6 +42,9 @@ class RegisterTest extends TestCase
     public function testRegister200($user)
     {
         $response = self::$config->api->register($user);
+        if ($response->getStatusCode() != 200) {
+            var_dump($response);
+        }
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::SUCCESS, $response->getData()->getStatus());
         $this->assertStringContainsString('successfully registered', $response->getData()->getMessage());
@@ -91,6 +94,9 @@ class RegisterTest extends TestCase
         self::$config->setUpBeforeClassInvalidAuthSignature();
         $user = DefaultConfig::generateUser(DefaultConfig::$invalidHandle, 'Signature', self::$config->api->generateWallet());
         $response = self::$config->api->register($user);
+        if ($response->getStatusCode() != 401) {
+            var_dump($response);
+        }
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertEquals(DefaultConfig::FAILURE, $response->getData()->status);
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
