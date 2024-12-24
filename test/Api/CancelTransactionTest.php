@@ -37,6 +37,8 @@ class CancelTransactionTest extends TestCase
     {
         $response = self::$config->api->issueSila(DefaultConfig::$firstUserHandle, 10, 'default', DefaultConfig::$firstUserWallet->getPrivateKey());
         $transactionId = $response->getData()->getTransactionId();
+        // This sleep is needed for tests to pass in the Azure pipeline. However you may need to comment it out locally.
+        sleep(1);
         $response = self::$config->api->cancelTransaction(DefaultConfig::$firstUserHandle, DefaultConfig::$firstUserWallet->getPrivateKey(), $transactionId);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue($response->getData()->success);
