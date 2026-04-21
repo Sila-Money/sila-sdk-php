@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Create PR review request
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_AUTO_REQUEST_REVIEW }}
+          GITHUB_TOKEN: ${{ secrets.PAT_WORKFLOW }}
         run: |
           gh pr edit ${{ github.event.pull_request.html_url }} \
             --add-reviewer Sila-Money/sdks
