@@ -1,87 +1,98 @@
 {
-    "name": "silamoney/php-sdk",
-    "description": "Sila PHP SDK for API Version 0.2",
-    "version": "1.1.1",
-    "keywords": ["sila","payments","ach","credit","fintech","finance"],
-    "type": "library",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "José Morales",
-            "email": "jmorales@digitalgeko.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Karlo Lorenzana",
-            "email": "klorenzana@digitalgeko.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Carlos Sosa",
-            "email": "csosa@digitalgeko.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Alanfer Orozco",
-            "email": "aorozco@digitalgeko.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=7.2",
-        "ext-curl": "*",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-gmp": "*",
-        "guzzlehttp/guzzle": "^7.1",
-        "jms/serializer": "^3.3",
-        "respect/validation": "^1.1",
-        "kornrunner/secp256k1": "^0.1.2",
-        "kornrunner/keccak": "^1.0",
-        "myclabs/php-enum": "^1.7",
-        "sop/asn1": "^3.3",
-        "sop/crypto-encoding": "^0.2.0",
-        "sop/crypto-types": "^0.2.1",
-        "ext-openssl": "*"
+  "name": "silamoney/php-sdk",
+  "description": "Sila PHP SDK for API Version 0.2",
+  "version": "1.1.1",
+  "keywords": [
+    "sila",
+    "payments",
+    "ach",
+    "credit",
+    "fintech",
+    "finance"
+  ],
+  "type": "library",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "José Morales",
+      "email": "jmorales@digitalgeko.com",
+      "role": "Developer"
     },
-    "require-dev": {
-        "ext-xdebug": "*",
-        "phpunit/phpunit": "^8.4",
-        "squizlabs/php_codesniffer": "^3.5",
-        "friendsofphp/php-cs-fixer": "^2.16"
+    {
+      "name": "Karlo Lorenzana",
+      "email": "klorenzana@digitalgeko.com",
+      "role": "Developer"
     },
-    "scripts": {
-        "lint": [
-            "@lint:lib",
-            "@lint:test"
-        ],
-        "lint:lib": "phpcs --standard=PSR12 lib",
-        "lint:test": "phpcs --standard=PSR12 test",
-        "lint:autofix": [
-            "@lint:autofix:lib",
-            "@lint:autofix:test"
-        ],
-        "lint:autofix:lib": "phpcbf --standard=PSR12 lib",
-        "lint:autofix:test": "phpcbf --standard=PSR12 test",
-        "test": [
-            "Composer\\Config::disableProcessTimeout",
-            "phpunit"
-        ],
-        "test:coverage": [
-            "@test:pre:coverage",
-            "@test:coverage:base --prepend build/xdebug-filter.php --log-junit build/test-junit.xml --coverage-clover build/coverage-clover.xml"
-        ],
-        "test:coverage:base": "@test --whitelist ./lib",
-        "test:coverage:human": [
-            "@test:pre:coverage",
-            "@test:coverage:base --prepend ./build/xdebug-filter.php --coverage-html ./build/coverage-report"
-        ],
-        "test:pre:coverage": "phpunit --dump-xdebug-filter ./build/xdebug-filter.php"
+    {
+      "name": "Carlos Sosa",
+      "email": "csosa@digitalgeko.com",
+      "role": "Developer"
     },
-    "autoload": {
-        "psr-4": { "Silamoney\\Client\\" : "lib/" }
-    },
-    "autoload-dev": {
-        "psr-4": { "Silamoney\\Client\\" : "test/" }
+    {
+      "name": "Alanfer Orozco",
+      "email": "aorozco@digitalgeko.com",
+      "role": "Developer"
     }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-gmp": "*",
+    "guzzlehttp/guzzle": "^7.1",
+    "jms/serializer": "^3.3",
+    "respect/validation": "^1.1",
+    "kornrunner/secp256k1": "^0.1.2",
+    "kornrunner/keccak": "^1.0",
+    "myclabs/php-enum": "^1.7",
+    "sop/asn1": "^3.3",
+    "sop/crypto-encoding": "^0.2.0",
+    "sop/crypto-types": "^0.2.1",
+    "ext-openssl": "*"
+  },
+  "require-dev": {
+    "ext-xdebug": "*",
+    "phpunit/phpunit": "^8.4",
+    "squizlabs/php_codesniffer": "^3.5",
+    "friendsofphp/php-cs-fixer": "^2.16"
+  },
+  "scripts": {
+    "lint": [
+      "@lint:lib",
+      "@lint:test"
+    ],
+    "lint:lib": "phpcs --standard=PSR12 lib",
+    "lint:test": "phpcs --standard=PSR12 test",
+    "lint:autofix": [
+      "@lint:autofix:lib",
+      "@lint:autofix:test"
+    ],
+    "lint:autofix:lib": "phpcbf --standard=PSR12 lib",
+    "lint:autofix:test": "phpcbf --standard=PSR12 test",
+    "test": [
+      "Composer\\Config::disableProcessTimeout",
+      "phpunit"
+    ],
+    "test:coverage": [
+      "@test:pre:coverage",
+      "@test:coverage:base --prepend build/xdebug-filter.php --log-junit build/test-junit.xml --coverage-clover build/coverage-clover.xml"
+    ],
+    "test:coverage:base": "@test --whitelist ./lib",
+    "test:coverage:human": [
+      "@test:pre:coverage",
+      "@test:coverage:base --prepend ./build/xdebug-filter.php --coverage-html ./build/coverage-report"
+    ],
+    "test:pre:coverage": "phpunit --dump-xdebug-filter ./build/xdebug-filter.php"
+  },
+  "autoload": {
+    "psr-4": {
+      "Silamoney\\Client\\": "lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Silamoney\\Client\\": "test/"
+    }
+  }
 }
