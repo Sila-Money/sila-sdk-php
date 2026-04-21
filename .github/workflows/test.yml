@@ -21,7 +21,7 @@ jobs:
           coverage: xdebug
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --no-audit
+        run: composer install --no-interaction --prefer-dist --no-security-blocking
 
       - name: Run tests
         env:
