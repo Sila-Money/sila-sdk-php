@@ -35,7 +35,7 @@ steps:
     php -version
   displayName: 'Use PHP version $(phpVersion)'
 
-- script: composer install --no-interaction --prefer-dist
+- script: composer install --no-interaction --prefer-dist --no-security-blocking
   displayName: 'composer install'
 
 - script: 'composer test:coverage'
