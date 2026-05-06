@@ -1,7 +1,7 @@
 {
   "name": "silamoney/php-sdk",
   "description": "Sila PHP SDK for API Version 0.2",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "keywords": [
     "sila",
     "payments",
