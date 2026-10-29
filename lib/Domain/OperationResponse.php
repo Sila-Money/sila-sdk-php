@@ -21,15 +21,15 @@ class OperationResponse extends BaseResponse
     /**
      * Transaction Id
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $transactionId;
 
     /**
      * Descriptor
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $descriptor;
 
     /**

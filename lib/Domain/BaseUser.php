@@ -20,80 +20,80 @@ class BaseUser
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $handle;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $address;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $address2;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $city;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $state;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $zipCode;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $phone;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $email;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $identityNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $cryptoAddress;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $cryptoAlias;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $addressAlias;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $contactAlias;
 
     /**

@@ -20,34 +20,34 @@ class DocumentWithoutHeaderMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $filename;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $hash;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $mimeType;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $documentType;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $name;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $description;
 
     /**

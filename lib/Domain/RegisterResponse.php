@@ -22,29 +22,29 @@ class RegisterResponse
     /**
      * Reference
      * @var bool
-     * @Type("bool")
      */
+     #[Type("bool")]
      private $success;
 
     /**
      * Reference
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $reference;
 
     /**
      * Message
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**
      * Status
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $status;
 
     /**

@@ -20,8 +20,8 @@ class CancelTransactionMessage extends BaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $transactionId;
 
     /**

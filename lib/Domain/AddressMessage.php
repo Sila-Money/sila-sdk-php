@@ -20,40 +20,40 @@ class AddressMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $addressAlias;
     /**
      * @var string
-     * @SerializedName("street_address_1")
-     * @Type("string")
      */
+    #[SerializedName("street_address_1")]
+    #[Type("string")]
     private $streetAddress1;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $city;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $state;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $country;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $postalCode;
     /**
      * @var string
-     * @SerializedName("street_address_2")
-     * @Type("string")
      */
+    #[SerializedName("street_address_2")]
+    #[Type("string")]
     private $streetAddress2;
 
     /**

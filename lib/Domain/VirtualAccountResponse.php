@@ -21,8 +21,8 @@ class VirtualAccountResponse extends BaseResponse
 {
     /**
      * @var array
-     * @Type("array")
      */
+    #[Type("array")]
     public $virtualAccount;
 
     /**

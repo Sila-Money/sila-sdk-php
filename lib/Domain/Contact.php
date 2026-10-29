@@ -22,22 +22,22 @@ class Contact implements ValidInterface
     /**
      * Phone
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $phone;
 
     /**
      * Contact Alias
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $contactAlias;
 
     /**
      * Email
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $email;
 
     /**

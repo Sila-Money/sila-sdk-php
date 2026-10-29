@@ -27,29 +27,29 @@ class BaseResponseWithoutMessage
     /**
      * Reference
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     public $success;
 
     /**
      * Reference
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $reference;
 
     /**
      * Status
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $status;
 
     /**
      * response_time_ms
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $response_time_ms;
 
     /**

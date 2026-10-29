@@ -22,15 +22,15 @@ class LinkCardResponse extends BaseResponse
     /**
      * accountName
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountName;
 
     /**
      * avs
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $avs;
 
     public function getAccountName(): string

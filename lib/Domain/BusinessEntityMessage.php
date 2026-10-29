@@ -20,8 +20,8 @@ class BusinessEntityMessage extends BaseEntityMessage
 {
     /**
      * @var \Silamoney\Client\Domain\BusinessEntity
-     * @Type("Silamoney\Client\Domain\BusinessEntity")
      */
+    #[Type("Silamoney\Client\Domain\BusinessEntity")]
     private $entity;
 
     /**

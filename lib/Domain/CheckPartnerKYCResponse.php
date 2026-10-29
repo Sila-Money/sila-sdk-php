@@ -21,38 +21,38 @@ class CheckPartnerKYCResponse
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $status;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $reference;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $message;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $entityType;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $verificationStatus;
 
     /**
      * @var array
-     * @Type("array<string, string>")
      */
+    #[Type("array<string, string>")]
     public $validKycLevels;
 
     /**

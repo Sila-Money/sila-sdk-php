@@ -21,48 +21,48 @@ class EntityUpdateMessage extends HeaderBaseMessage
 {
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $firstName;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $lastName;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $entityName;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $birthdate;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessType;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $naicsCode;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $doingBusinessAs;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessWebsite;
     /**
      * @var ?string
-     * @Type("string")
      */
+    #[Type("string")]
     private $registrationState;
 
     /**

@@ -21,57 +21,57 @@ class LinkAccountMessage implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $plaidToken;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountName;
 
     /**
      * @var \Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $selectedAccountId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     // Support for accountNumber, routingNumber and accountType
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $routingNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountType;
 
     /**
      * @var string
-     * @Type("string")
      */
+     #[Type("string")]
      private $plaidTokenType;
 
     /**

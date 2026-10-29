@@ -22,33 +22,33 @@ class GetInstitutionsResponse extends BaseResponseWithoutMessage
     /**
      * Integer field used for the page.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $page;
     /**
      * Integer field used for the returned count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $returnedCount;
     /**
      * Integer field used for the total count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $totalCount;
     /**
      * Institutions list used for the institutions.
      * @var array<Silamoney\Client\Domain\Institution>
-     * @Type("array<Silamoney\Client\Domain\Institution>")
      */
+    #[Type("array<Silamoney\Client\Domain\Institution>")]
     public $institutions;
 
     /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
-     * @Type("Silamoney\Client\Domain\Pagination")
      */
+    #[Type("Silamoney\Client\Domain\Pagination")]
     public $pagination;
 
     /**

@@ -21,20 +21,20 @@ class GetInstitutionsMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**
      * @var Silamoney\Client\Domain\SearchFilters
-     * @Type("Silamoney\Client\Domain\SearchFilters")
      */
+     #[Type("Silamoney\Client\Domain\SearchFilters")]
      private $searchFilters;
 
     /**

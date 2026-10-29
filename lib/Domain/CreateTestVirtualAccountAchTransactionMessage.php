@@ -21,50 +21,50 @@ class CreateTestVirtualAccountAchTransactionMessage
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $virtualAccountNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $amount;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $tranCode;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $entityName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $effectiveDate = null;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $ced = null;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $achName = null;
     
     /**

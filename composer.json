@@ -1,7 +1,7 @@
 {
   "name": "silamoney/php-sdk",
   "description": "Sila PHP SDK for API Version 0.2",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "keywords": [
     "sila",
     "payments",
@@ -35,27 +35,27 @@
     }
   ],
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.2",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-gmp": "*",
-    "guzzlehttp/guzzle": "^7.1",
-    "jms/serializer": "^3.3",
-    "respect/validation": "^1.1",
-    "kornrunner/secp256k1": "^0.1.2",
-    "kornrunner/keccak": "^1.0",
-    "myclabs/php-enum": "^1.7",
-    "sop/asn1": "^3.3",
-    "sop/crypto-encoding": "^0.2.0",
-    "sop/crypto-types": "^0.2.1",
+    "guzzlehttp/guzzle": "^8.3",
+    "jms/serializer": "^3.32",
+    "respect/validation": "^2.5",
+    "kornrunner/secp256k1": "^0.4",
+    "kornrunner/keccak": "^1.1",
+    "myclabs/php-enum": "^1.8",
+    "sop/asn1": "^4.1",
+    "sop/crypto-encoding": "^0.3",
+    "sop/crypto-types": "^0.3",
     "ext-openssl": "*"
   },
   "require-dev": {
     "ext-xdebug": "*",
-    "phpunit/phpunit": "^8.4",
-    "squizlabs/php_codesniffer": "^3.5",
-    "friendsofphp/php-cs-fixer": "^2.16"
+    "phpunit/phpunit": "^11.5",
+    "squizlabs/php_codesniffer": "^4.0",
+    "friendsofphp/php-cs-fixer": "^3.95"
   },
   "scripts": {
     "lint": [
@@ -74,16 +74,8 @@
       "Composer\\Config::disableProcessTimeout",
       "phpunit"
     ],
-    "test:coverage": [
-      "@test:pre:coverage",
-      "@test:coverage:base --prepend build/xdebug-filter.php --log-junit build/test-junit.xml --coverage-clover build/coverage-clover.xml"
-    ],
-    "test:coverage:base": "@test --whitelist ./lib",
-    "test:coverage:human": [
-      "@test:pre:coverage",
-      "@test:coverage:base --prepend ./build/xdebug-filter.php --coverage-html ./build/coverage-report"
-    ],
-    "test:pre:coverage": "phpunit --dump-xdebug-filter ./build/xdebug-filter.php"
+    "test:coverage": "@test --log-junit build/test-junit.xml --coverage-clover build/coverage-clover.xml",
+    "test:coverage:human": "@test --coverage-html ./build/coverage-report"
   },
   "autoload": {
     "psr-4": {
@@ -93,6 +85,11 @@
   "autoload-dev": {
     "psr-4": {
       "Silamoney\\Client\\": "test/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.2.0"
     }
   }
 }

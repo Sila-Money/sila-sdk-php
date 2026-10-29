@@ -9,7 +9,7 @@ namespace Silamoney\Client\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\{ClientException, ServerException};
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ResponseException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 
@@ -58,7 +58,7 @@ class ApiClient
             return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
-        } catch (RequestException $e) {
+        } catch (ResponseException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();
@@ -80,7 +80,7 @@ class ApiClient
             return $this->client->get("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
-        } catch (RequestException $e) {
+        } catch (ResponseException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();
@@ -102,7 +102,7 @@ class ApiClient
             return $this->client->put("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
-        } catch (RequestException $e) {
+        } catch (ResponseException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();
@@ -136,7 +136,7 @@ class ApiClient
             return $this->client->post("/0.2{$url}", ['multipart' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
             return $e->getResponse();
-        } catch (RequestException $e) {
+        } catch (ResponseException $e) {
             return $e->getResponse();
         } catch (ServerException $e) {
             return $e->getResponse();

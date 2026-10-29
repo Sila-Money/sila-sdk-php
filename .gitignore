@@ -1,12 +1,11 @@
 vendor
-.php_cs.cache
+.php-cs-fixer.cache
 build
 docs
 /.project
 .phpunit.*
 /.buildpath
 .scannerwork
-composer.lock
 .rnd
 composer.phar
 response.txt

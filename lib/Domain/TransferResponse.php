@@ -20,8 +20,8 @@ class TransferResponse extends OperationResponse
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $destinationAddress;
 
     public function getDestinationAddress(): string

@@ -22,31 +22,31 @@ class GetWebhooksResponse extends BaseResponseWithoutMessage
     /**
      * Integer field used for the page.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $page;
     /**
      * Integer field used for the returned count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $returnedCount;
     /**
      * Integer field used for the total count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $totalCount;
     /**
      * webhooks list used for the webhooks.
-     * @Type("array")
      */
+    #[Type("array")]
     public $webhooks;
     /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
-     * @Type("Silamoney\Client\Domain\Pagination")
      */
+    #[Type("Silamoney\Client\Domain\Pagination")]
     public $pagination;
     /**
      * @return Silamoney\Client\Domain\Pagination

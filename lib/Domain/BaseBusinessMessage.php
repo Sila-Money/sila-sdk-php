@@ -20,8 +20,8 @@ class BaseBusinessMessage
 {
     /**
      * @var \Silamoney\Client\Domain\HeaderBusiness
-     * @Type("Silamoney\Client\Domain\HeaderBusiness")
      */
+    #[Type("Silamoney\Client\Domain\HeaderBusiness")]
     protected $header;
 
     /**

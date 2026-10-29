@@ -21,27 +21,27 @@ class UpdateWalletMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $nickname;
 
 
     /**
      * @var boolean
-     * @Type("boolean")
      */
+    #[Type("boolean")]
     private $default;
 
     /**
      * @var boolean
-     * @Type("boolean")
      */
+    #[Type("boolean")]
     private $statements_enabled;
 
 

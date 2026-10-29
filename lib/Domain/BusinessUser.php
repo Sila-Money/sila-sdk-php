@@ -21,44 +21,44 @@ class BusinessUser extends BaseUser
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $name;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessType;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessTypeUuid;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $naicsCode;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $doingBusinessAs;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessWebsite;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $registrationState;
     
     /**

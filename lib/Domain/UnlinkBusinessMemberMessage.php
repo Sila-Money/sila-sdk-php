@@ -20,14 +20,14 @@ class UnlinkBusinessMemberMessage extends BaseBusinessMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $role;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $roleUuid;
 
     /**

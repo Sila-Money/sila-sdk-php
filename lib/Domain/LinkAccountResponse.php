@@ -22,50 +22,50 @@ class LinkAccountResponse extends BaseResponse
     /**
      * accountName
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountName;
 
     /**
      * accountOwnerName
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountOwnerName;
 
     /**
      * entityName
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $entityName;
 
     /**
      * matchCode
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $matchCode;
 
     /**
      * matchScore
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $matchScore;
 
     /**
      * webDebitVerified
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     public $webDebitVerified;
 
     /**
      * provider
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $provider;
 
     public function getAccountName(): string

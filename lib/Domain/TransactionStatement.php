@@ -22,36 +22,36 @@ class TransactionStatement
     /**
      * String field used for the settled date.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $settledDate;
 
     /**
      * String field used for the description.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $description;
 
     /**
      * String field used for the category.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $category;
 
     /**
      * Integer field used for the amount.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $amount;
 
     /**
      * Integer field used for the running balance.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $runningBalance;
 
 }

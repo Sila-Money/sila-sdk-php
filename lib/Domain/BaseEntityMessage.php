@@ -20,38 +20,38 @@ class BaseEntityMessage
 {
     /**
      * @var \Silamoney\Client\Domain\Address
-     * @Type("Silamoney\Client\Domain\Address")
      */
+    #[Type("Silamoney\Client\Domain\Address")]
     protected $address;
 
     /**
      * @var \Silamoney\Client\Domain\Identity
-     * @Type("Silamoney\Client\Domain\Identity")
      */
+    #[Type("Silamoney\Client\Domain\Identity")]
     protected $identity;
 
     /**
      * @var \Silamoney\Client\Domain\Contact
-     * @Type("Silamoney\Client\Domain\Contact")
      */
+    #[Type("Silamoney\Client\Domain\Contact")]
     protected $contact;
 
     /**
      * @var \Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     protected $header;
 
     /**
      * @var \Silamoney\Client\Domain\CryptoEntry
-     * @Type("Silamoney\Client\Domain\CryptoEntry")
      */
+    #[Type("Silamoney\Client\Domain\CryptoEntry")]
     protected $cryptoEntry;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $message;
 
     /**

@@ -20,37 +20,37 @@ class GetAccountBalanceResponse extends BaseResponseWithoutMessage
 {
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $availableBalance;
 
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $currentBalance;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $maskedAccountNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $routingNumber;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $provider;
 }

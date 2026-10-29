@@ -21,14 +21,14 @@ class DeleteAccountResponse extends BaseResponse
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountName;
 
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $matchCode;
 
     public function getAccountName(): string

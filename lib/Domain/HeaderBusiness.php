@@ -20,8 +20,8 @@ class HeaderBusiness extends HeaderBase
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessHandle;
 
     /**

@@ -20,13 +20,13 @@ class IdentityMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $identityAlias;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $identityValue;
 
     /**

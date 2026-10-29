@@ -20,8 +20,8 @@ class EmailMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $email;
 
     /**

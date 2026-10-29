@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Domain;
 
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,11 +20,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ValidModelTest extends TestCase
 {
-    /**
-     * @test
-     * @dataProvider validModelProvider
-     * @dataProvider invalidModelProvider
-     */
+    #[DataProvider('validModelProvider')]
+    #[DataProvider('invalidModelProvider')]
     public function testModel($file, $model, $result)
     {
         $jsonData = \file_get_contents(__DIR__ . "/Data/" . $file);
@@ -32,7 +30,7 @@ class ValidModelTest extends TestCase
         $this->assertEquals($modelInstance->isValid(), $modelInstance->isValid());
     }
 
-    public function validModelProvider(): array
+    public static function validModelProvider(): array
     {
         return array(
             'Address without street address 2 is valid' => array('AddressWithoutStreetAddress2.json', 'Address', true),
@@ -59,7 +57,7 @@ class ValidModelTest extends TestCase
         );
     }
 
-    public function invalidModelProvider(): array
+    public static function invalidModelProvider(): array
     {
         return array(
             'Address is invalid' => array('AddressInvalid.json', 'Address', false),

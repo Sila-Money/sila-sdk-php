@@ -22,8 +22,8 @@ class RequestKYCResponse extends BaseResponse
     /**
      * verification_uuid
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $verification_uuid;
 
     /**

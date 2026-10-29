@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\RegistrationDataType;
 use Silamoney\Client\Utils\ApiTestConfiguration;
@@ -50,10 +51,7 @@ class DeleteRegistrationDataTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider deleteRegistrationData200Provider
-     */
+    #[DataProvider('deleteRegistrationData200Provider')]
     public function testDeleteRegistrationData200($dataType, $index)
     {
         $response = self::$config->api->deleteRegistrationData(
@@ -68,10 +66,7 @@ class DeleteRegistrationDataTest extends TestCase
         $this->assertStringContainsString("Successfully deleted {$dataType}", $response->getData()->message);
     }
 
-    /**
-     * @test
-     * @dataProvider deleteRegistrationData400Provider
-     */
+    #[DataProvider('deleteRegistrationData400Provider')]
     public function testDeleteRegistrationData400($dataType)
     {
         $response = self::$config->api->deleteRegistrationData(
@@ -87,10 +82,7 @@ class DeleteRegistrationDataTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
-    /**
-     * @test
-     * @dataProvider deleteRegistrationData403Provider
-     */
+    #[DataProvider('deleteRegistrationData403Provider')]
     public function testDeleteRegistrationData403($dataType, $index)
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
@@ -105,7 +97,7 @@ class DeleteRegistrationDataTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function deleteRegistrationData200Provider(): array
+    public static function deleteRegistrationData200Provider(): array
     {
         return [
             'delete email - 200' => [RegistrationDataType::EMAIL(), 0],
@@ -115,7 +107,7 @@ class DeleteRegistrationDataTest extends TestCase
         ];
     }
 
-    public function deleteRegistrationData400Provider(): array
+    public static function deleteRegistrationData400Provider(): array
     {
         return [
             'delete email - 400' => [RegistrationDataType::EMAIL()],
@@ -125,7 +117,7 @@ class DeleteRegistrationDataTest extends TestCase
         ];
     }
 
-    public function deleteRegistrationData403Provider(): array
+    public static function deleteRegistrationData403Provider(): array
     {
         return [
             'delete email - 403' => [RegistrationDataType::EMAIL(), 0],

@@ -21,28 +21,28 @@ class Pagination
     /**
      * Returned Count
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $returnedCount;
 
     /**
      * Total Count
      * @var int
-     * @Type("int")
      */
+     #[Type("int")]
      public $totalCount;
 
     /**
      * Current Page
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $currentPage;
     
     /**
      * Total Pages
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $totalPages;
 }

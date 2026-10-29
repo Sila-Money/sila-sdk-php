@@ -21,84 +21,84 @@ class Account
     /**
      * Account Number
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountNumber;
 
     /**
      * Routing Number
      * @var string
-     * @Type("string")
      */
+     #[Type("string")]
      public $routingNumber;
 
     /**
      * Account Name
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountName;
     
     /**
      * Account Type
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountType;
 
     /**
      * Account Status
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountStatus;
 
     /**
      * Active
      * @var bool
-     * @Type("bool")
      */
+     #[Type("bool")]
      public $active;
 
      /**
      * Account Link Status
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountLinkStatus;
 
     /**
      * Match Score
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $matchScore;
 
      /**
      * Account Owner Name
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $accountOwnerName;
 
     /**
      * Entity Name
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $entityName;
 
      /**
       * webDebitVerified
       * @var bool
-      * @Type("bool")
       */
+    #[Type("bool")]
     public $webDebitVerified;
 
      /**
       * Provider Name
       * @var string
-      * @Type("string")
       */
+    #[Type("string")]
     public $providerName;
 }

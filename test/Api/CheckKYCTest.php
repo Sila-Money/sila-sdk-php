@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
@@ -42,8 +43,8 @@ class CheckKYCTest extends TestCase
      * @param string $privateKey
      * @param string $expectedStatus
      * @param string $messageRegex
-     * @dataProvider checkKycProvider
      */
+    #[DataProvider('checkKycProvider')]
     public function testCheckKYC200Success($handle, $privateKey, $expectedStatus, $messageRegex)
     {
         $response = self::$config->api->checkKYC($handle, $privateKey);
@@ -83,7 +84,7 @@ class CheckKYCTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function checkKycProvider()
+    public static function checkKycProvider()
     {
         return [
             'check kyc - first user' => [

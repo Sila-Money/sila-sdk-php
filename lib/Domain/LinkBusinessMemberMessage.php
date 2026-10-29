@@ -20,20 +20,20 @@ class LinkBusinessMemberMessage extends UnlinkBusinessMemberMessage
 {
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     private $ownershipStake;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $memberHandle;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $details;
 
     /**

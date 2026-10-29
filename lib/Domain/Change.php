@@ -21,21 +21,21 @@ class Change
     /**
      * Attribute
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $attribute;
 
     /**
      * Old Value
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $oldValue;
     
     /**
      * New Value
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $newValue;
 }

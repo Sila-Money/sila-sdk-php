@@ -20,40 +20,40 @@ class DocumentMessage
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $filename;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $hash;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $mimeType;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $documentType;
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $name;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $description;
 
     /**

@@ -12,6 +12,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\{Request, Response};
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Environments;
 
@@ -43,15 +44,14 @@ class ClientExceptionTest extends TestCase
     }
 
     /**
-     * @test
-     * @dataProvider clientException400Provider
-     * @dataProvider clientException401Provider
      * @param string $file
      * @param string $message
      * @param int $code
      * @param string $method
      * @param array $params
      */
+    #[DataProvider('clientException400Provider')]
+    #[DataProvider('clientException401Provider')]
     public function testCheckHandle4xx(string $file, string $message, int $code, string $method, array $params): void
     {
         $body = file_get_contents(__DIR__ . '/Data/' . $file);
@@ -64,14 +64,14 @@ class ClientExceptionTest extends TestCase
         $this->assertEquals($code, $response->getStatusCode());
     }
 
-    public function clientException400Provider(): array
+    public static function clientException400Provider(): array
     {
         $serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/DataProvider/clientException400.json');
         return $serializer->deserialize($json, 'array', 'json');
     }
 
-    public function clientException401Provider(): array
+    public static function clientException401Provider(): array
     {
         $serializer = SerializerBuilder::create()->build();
         $json = file_get_contents(__DIR__ . '/DataProvider/clientException401.json');

@@ -20,8 +20,8 @@ class RegistrationDataBaseMessage extends HeaderBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $uuid;
 
     /**

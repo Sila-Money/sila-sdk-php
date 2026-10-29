@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Country;
 use Silamoney\Client\Domain\IdentityAlias;
@@ -135,10 +136,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertNotEmpty($response->getData()->response_time_ms);
     }
 
-    /**
-     * @test
-     * @dataProvider addRegistrationData400Provider
-     */
+    #[DataProvider('addRegistrationData400Provider')]
     public function testAddRegistrationData400($method, $parameters)
     {
         $response = self::$config->api->$method(
@@ -153,10 +151,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
-    /**
-     * @test
-     * @dataProvider addRegistrationData403Provider
-     */
+    #[DataProvider('addRegistrationData403Provider')]
     public function testAddRegistrationData403($method, $parameters)
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
@@ -170,7 +165,7 @@ class AddRegistrationDataTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function addRegistrationData400Provider(): array
+    public static function addRegistrationData400Provider(): array
     {
         return [
             'add email - 400' => ['addEmail', ['']],
@@ -179,7 +174,7 @@ class AddRegistrationDataTest extends TestCase
         ];
     }
 
-    public function addRegistrationData403Provider(): array
+    public static function addRegistrationData403Provider(): array
     {
         return [
             'add email - 403' => ['addEmail', ['some.signature.email@domain.com']],
