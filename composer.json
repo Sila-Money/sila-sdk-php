@@ -49,7 +49,8 @@
     "sop/asn1": "^4.1",
     "sop/crypto-encoding": "^0.3",
     "sop/crypto-types": "^0.3",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "composer-runtime-api": "^2.0"
   },
   "require-dev": {
     "ext-xdebug": "*",

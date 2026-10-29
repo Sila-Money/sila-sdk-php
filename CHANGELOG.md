@@ -16,6 +16,8 @@
 ### Changed
 - `ApiClient` now returns the response for any Guzzle `ResponseException`; a
   request failure without a response is thrown as `RequestException`
+- The `User-Agent` header now sends the installed SDK version (read from
+  Composer) instead of a fixed `1.1.1`; requires Composer 2
 - `composer.lock` is committed (excluded from the package by `.gitattributes`)
   so dependencies can be scanned
 - Dev tools updated: phpunit 11, squizlabs/php_codesniffer 4, friendsofphp/php-cs-fixer 3

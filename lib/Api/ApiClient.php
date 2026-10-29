@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use Composer\InstalledVersions;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\{ClientException, ServerException};
 use GuzzleHttp\Exception\ResponseException;
@@ -30,7 +31,12 @@ class ApiClient
 
     private const BASE_URI = 'base_uri';
 
-    private const USER_AGENT = 'SilaSDK-php / 1.1.1';
+    private const PACKAGE_NAME = 'silamoney/php-sdk';
+
+    /**
+     * @var string|null
+     */
+    private static $userAgent;
 
     /**
      * Api Client constructor
@@ -53,7 +59,7 @@ class ApiClient
      */
     public function callAPI(string $url, string $data, array $headers): Response
     {
-        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        $headers['User-Agent'] = ApiClient::userAgent();
         try {
             return $this->client->post("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -75,7 +81,7 @@ class ApiClient
      */
     public function callGetAPI(string $url, string $data, array $headers): Response
     {
-        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        $headers['User-Agent'] = ApiClient::userAgent();
         try {
             return $this->client->get("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -97,7 +103,7 @@ class ApiClient
      */
     public function callPutAPI(string $url, string $data, array $headers): Response
     {
-        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        $headers['User-Agent'] = ApiClient::userAgent();
         try {
             return $this->client->put("/0.2{$url}", ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -119,7 +125,7 @@ class ApiClient
      */
     public function callUnversionedAPI(string $url, string $data, array $headers): Response
     {
-        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        $headers['User-Agent'] = ApiClient::userAgent();
         try {
             return $this->client->post($url, ['body' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -131,7 +137,7 @@ class ApiClient
 
     public function callFileApi(string $url, array $data, array $headers): Response
     {
-        $headers['User-Agent'] = ApiClient::USER_AGENT;
+        $headers['User-Agent'] = ApiClient::userAgent();
         try {
             return $this->client->post("/0.2{$url}", ['multipart' => $data, 'headers' => $headers]);
         } catch (ClientException $e) {
@@ -152,5 +158,20 @@ class ApiClient
             ApiClient::BASE_URI => $this->client->getConfig(ApiClient::BASE_URI),
             'handler' => $handler
         ]);
+    }
+
+    /**
+     * Builds the User-Agent header with the installed SDK version
+     * @return string
+     */
+    public static function userAgent(): string
+    {
+        if (self::$userAgent === null) {
+            $version = InstalledVersions::isInstalled(self::PACKAGE_NAME)
+                ? InstalledVersions::getPrettyVersion(self::PACKAGE_NAME)
+                : null;
+            self::$userAgent = 'SilaSDK-php / ' . ($version ? ltrim($version, 'v') : 'unknown');
+        }
+        return self::$userAgent;
     }
 }
