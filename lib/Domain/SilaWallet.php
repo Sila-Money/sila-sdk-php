@@ -24,38 +24,38 @@ class SilaWallet implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $address;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $private_key;
 
     /**
      * @var string
-     * @Type("string")
      */
+     #[Type("string")]
      private $blockchain_address;
 
      /**
       * @var string
-      * @Type("string")
       */
+     #[Type("string")]
      private $blockchain_network;
  
      /**
       * @var string
-      * @Type("string")
       */
+     #[Type("string")]
      private $nickname;
     
      /**
       * @var bool
-      * @Type("bool")
       */
+      #[Type("bool")]
       private $default;
 
     /**

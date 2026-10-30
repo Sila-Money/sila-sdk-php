@@ -21,32 +21,32 @@ class UpdateAccountMessage implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountName;
 
     /**
      * @var string
-     * @Type("string")
      */
+     #[Type("string")]
      private $newAccountName;
     
      /**
      * @var isActive
-     * @Type("bool")
      */
+    #[Type("bool")]
     private $isActve;
 
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**

@@ -20,8 +20,8 @@ class PhoneMessage extends RegistrationDataBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $phone;
 
     /**

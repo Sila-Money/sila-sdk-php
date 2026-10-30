@@ -20,32 +20,32 @@ class RefundDebitCardResponse extends BaseResponseWithoutMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $status;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $transaction_id;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $refund_transaction_id;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $reference;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $message;
 
     

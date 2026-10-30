@@ -21,224 +21,224 @@ class SearchFilters implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $transactionId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $processingType;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $sourceId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destinationId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $userHandle;
 
     /**
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     private $delivered;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $endpointName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $eventType;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $wallet_id;
     
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $perPage;
 
     /**
      * @var array<string>
-     * @Type("array<string>")
      */
+    #[Type("array<string>")]
     private $transactionTypes;
 
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     private $maxSilaAmount;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $referenceId;
 
     /**
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     private $showTimelines;
 
     /**
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     private $sortAscending;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $endEpoch;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $startEpoch;
 
     /**
      * @var array<string>
-     * @Type("array<string>")
      */
+    #[Type("array<string>")]
     private $statuses;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $page;
 
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     private $minSilaAmount;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $accountNumber;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $routingNumber;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountType;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $bankAccountName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cardName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $blockchainAddress;
 
      /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $institutionName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $paymentMethodId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $month;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $startMonth;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $endMonth;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $startDate;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $endDate;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $userName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $email;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $status;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $identifier;
 
     public function isValid(): bool

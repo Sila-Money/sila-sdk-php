@@ -21,8 +21,8 @@ class EntityMessage extends BaseEntityMessage implements ValidInterface
 {
     /**
      * @var \Silamoney\Client\Domain\Entity
-     * @Type("Silamoney\Client\Domain\Entity")
      */
+    #[Type("Silamoney\Client\Domain\Entity")]
     private $entity;
 
     /**

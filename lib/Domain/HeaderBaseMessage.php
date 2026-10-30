@@ -20,8 +20,8 @@ class HeaderBaseMessage
 {
     /**
      * @var \Silamoney\Client\Domain\HeaderBase
-     * @Type("Silamoney\Client\Domain\HeaderBase")
      */
+    #[Type("Silamoney\Client\Domain\HeaderBase")]
     protected $header;
 
     /**

@@ -22,20 +22,20 @@ class RegisterWalletMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var Silamoney\Client\Domain\SilaWallet
-     * @Type("Silamoney\Client\Domain\SilaWallet")
      */
+    #[Type("Silamoney\Client\Domain\SilaWallet")]
     private $wallet;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $wallet_verification_signature;
 
     /**

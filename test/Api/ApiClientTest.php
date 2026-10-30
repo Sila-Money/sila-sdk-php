@@ -7,6 +7,10 @@
 
 namespace Silamoney\Client\Api;
 
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -37,5 +41,23 @@ class ApiClientTest extends TestCase
         ];
         $response = $ac->CallAPI('/check_handle', $json, $headers);
         $this->assertEquals(400, $response->getStatusCode());
+    }
+
+    /**
+     * Tests that the User-Agent header carries the SDK version from composer.json
+     */
+    public function testUserAgentMatchesSdkVersion()
+    {
+        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
+        $expected = 'SilaSDK-php / ' . $composer['version'];
+        $this->assertEquals($expected, ApiClient::userAgent());
+
+        $history = [];
+        $handler = HandlerStack::create(new MockHandler([new Response(200)]));
+        $handler->push(Middleware::history($history));
+        $ac = new ApiClient('https://sandbox.silamoney.com');
+        $ac->setApiHandler($handler);
+        $ac->callAPI('/check_handle', '{}', []);
+        $this->assertEquals($expected, $history[0]['request']->getHeaderLine('User-Agent'));
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
@@ -35,9 +36,7 @@ class CheckHandleTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    /**
-     * @dataProvider availableHandlesProvider
-     */
+    #[DataProvider('availableHandlesProvider')]
     public function testCheckHandle200()
     // This is set up to try the initially generated handles, and if they are taken, it will generate new ones and try again.
     // The test suite was regularly failing before due to handles being taken, necessitating this change.
@@ -79,7 +78,7 @@ class CheckHandleTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function availableHandlesProvider()
+    public static function availableHandlesProvider()
     {
         DefaultConfig::$firstUserHandle = DefaultConfig::generateHandle();
         DefaultConfig::$secondUserHandle = DefaultConfig::generateHandle();

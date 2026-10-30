@@ -21,15 +21,15 @@ class SilaBalanceResponse
     /**
      * Boolean field used for success.
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     public $success;
 
     /**
      * Integer field used for the page.
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     public $silaBalance;
 
 }

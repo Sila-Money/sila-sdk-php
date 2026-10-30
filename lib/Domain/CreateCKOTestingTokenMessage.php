@@ -21,32 +21,32 @@ class CreateCKOTestingTokenMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cardNumber;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $expiryMonth;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     private $expiryYear;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $ckoPublicKey;
 
     /**

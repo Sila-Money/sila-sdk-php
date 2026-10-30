@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use DateTime;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\Country;
 use Silamoney\Client\Domain\IdentityAlias;
@@ -145,10 +146,7 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertIsString($response->getData()->address->postal_code);
     }
 
-    /**
-     * @test
-     * @dataProvider updateEntity200Provider
-     */
+    #[DataProvider('updateEntity200Provider')]
     public function testUpdateEntity200($method, $userHandle, $privateKey, $parameters)
     {
         $response = self::$config->api->$method(
@@ -181,10 +179,7 @@ class UpdateRegistrationDataTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     * @dataProvider updateRegistrationData400Provider
-     */
+    #[DataProvider('updateRegistrationData400Provider')]
     public function testUpdateRegistrationData400($method, $parameters)
     {
         $response = self::$config->api->$method(
@@ -199,10 +194,7 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertTrue($response->getData()->validation_details != null);
     }
 
-    /**
-     * @test
-     * @dataProvider updateRegistrationData403Provider
-     */
+    #[DataProvider('updateRegistrationData403Provider')]
     public function testUpdateRegistrationData403($method, $parameters)
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();
@@ -216,7 +208,7 @@ class UpdateRegistrationDataTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function updateEntity200Provider(): array
+    public static function updateEntity200Provider(): array
     {
         return [
             'update individual entity - 200' => [
@@ -234,7 +226,7 @@ class UpdateRegistrationDataTest extends TestCase
         ];
     }
 
-    public function updateRegistrationData400Provider(): array
+    public static function updateRegistrationData400Provider(): array
     {
         return [
             'update email - 400' => ['updateEmail', ['', '']],
@@ -245,7 +237,7 @@ class UpdateRegistrationDataTest extends TestCase
         ];
     }
 
-    public function updateRegistrationData403Provider(): array
+    public static function updateRegistrationData403Provider(): array
     {
         return [
             'update email - 403' => ['updateEmail', ['', 'some.signature.email@domain.com']],

@@ -21,8 +21,8 @@ class DeleteWalletMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**

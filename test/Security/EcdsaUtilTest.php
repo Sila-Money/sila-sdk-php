@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Security;
 
 use JMS\Serializer\SerializerBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,17 +27,14 @@ class EcdsaUtilTest extends TestCase
         $this->assertTrue($ecdsaUtil != null);
     }
 
-    /**
-     * @test
-     * @dataProvider silaProvider
-     */
+    #[DataProvider('silaProvider')]
     public function testSign($message, $hexSignature): void
     {
         $result = EcdsaUtil::sign($message, 'badba7368134dcd61c60f9b56979c09196d03f5891a20c1557b1afac0202a97c');
         $this->assertEquals($hexSignature, $result);
     }
 
-    public function silaProvider(): array
+    public static function silaProvider(): array
     {
         return array(
             'Sila message signature is valid' => array(

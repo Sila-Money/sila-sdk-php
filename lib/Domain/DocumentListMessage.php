@@ -20,8 +20,8 @@ class DocumentListMessage
 {
     /**
      * @var \Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     private $fileMetadata;

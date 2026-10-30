@@ -22,35 +22,35 @@ class GetStatementsResponse extends BaseResponseWithoutMessage
     /**
      * Statements list used for the Statements.
      * @var array<Silamoney\Client\Domain\Statements>
-     * @Type("array<Silamoney\Client\Domain\Statements>")
      */
+    #[Type("array<Silamoney\Client\Domain\Statements>")]
     public $statements;
     
     /**
      * Integer field used for the page.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $page;
     /**
      * Integer field used for the returned count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $returnedCount;
 
     /**
      * Integer field used for the total count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $totalCount;
     
     /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
-     * @Type("Silamoney\Client\Domain\Pagination")
      */
+    #[Type("Silamoney\Client\Domain\Pagination")]
     public $pagination;
 
     /**

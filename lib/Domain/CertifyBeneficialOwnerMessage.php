@@ -20,14 +20,14 @@ class CertifyBeneficialOwnerMessage extends BaseBusinessMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $memberHandle;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $certificationToken;
 
     /**

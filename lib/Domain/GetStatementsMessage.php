@@ -21,26 +21,26 @@ class GetStatementsMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var Silamoney\Client\Domain\SearchFilters
-     * @Type("Silamoney\Client\Domain\SearchFilters")
      */
+    #[Type("Silamoney\Client\Domain\SearchFilters")]
     private $searchFilters;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $walletId;
 
     /**

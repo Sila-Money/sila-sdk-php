@@ -21,20 +21,20 @@ class User extends BaseUser
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $firstName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $lastName;
 
     /**
      * @var DateTime
-     * @Type("DateTime<'Y-m-d'>")
      */
+    #[Type("DateTime<'Y-m-d'>")]
     private $birthdate;
 
     /**

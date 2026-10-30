@@ -22,33 +22,33 @@ class GetTransactionsResponse extends BaseResponseWithoutMessage
     /**
      * Integer field used for the page.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $page;
     /**
      * Integer field used for the returned count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $returnedCount;
 
     /**
      * Integer field used for the total count.
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     public $totalCount;
     /**
      * Transactions list used for the transactions.
      * @var array<Silamoney\Client\Domain\Transaction>
-     * @Type("array<Silamoney\Client\Domain\Transaction>")
      */
+    #[Type("array<Silamoney\Client\Domain\Transaction>")]
     public $transactions;
     /**
      * Pagination.
      * @var Silamoney\Client\Domain\Pagination
-     * @Type("Silamoney\Client\Domain\Pagination")
      */
+    #[Type("Silamoney\Client\Domain\Pagination")]
     public $pagination;
 
     /**

@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\BusinessUser;
 use Silamoney\Client\Domain\BusinessUserBuilder;
@@ -37,8 +38,8 @@ class RegisterBusinessTest extends TestCase
 
     /**
      * @param \Silamoney\Client\Domain\BusinessUser $user
-     * @dataProvider registerBusinessProvider
      */
+    #[DataProvider('registerBusinessProvider')]
     public function testRegisterBusiness200($user)
     {
         $response = self::$config->api->registerBusiness($user);
@@ -142,7 +143,7 @@ class RegisterBusinessTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function registerBusinessProvider(){
+    public static function registerBusinessProvider(){
 
         DefaultConfig::$businessUserWallet = DefaultConfig::generateWallet();
         DefaultConfig::$businessUserWithEmptyBusinessWebsiteWallet = DefaultConfig::generateWallet();

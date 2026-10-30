@@ -9,6 +9,7 @@ namespace Silamoney\Client\Api;
 
 use DateInterval;
 use DateTime;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\ApiTestConfiguration;
 use Silamoney\Client\Utils\DefaultConfig;
@@ -33,10 +34,7 @@ class ListDocumentsTest extends TestCase
         self::$config = new ApiTestConfiguration();
     }
 
-    /**
-     * @test
-     * @dataProvider listDocuments200Provider
-     */
+    #[DataProvider('listDocuments200Provider')]
     public function testListDocuments200(string $handle, string $privateKey, array $parameters, int $documents)
     {
         $response = self::$config->api->listDocuments($handle, $privateKey, ...$parameters);
@@ -89,7 +87,7 @@ class ListDocumentsTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function listDocuments200Provider(): array
+    public static function listDocuments200Provider(): array
     {
         $today = new DateTime();
         $yesterday = clone $today;

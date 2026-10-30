@@ -20,26 +20,26 @@ class CreateCKOTestingTokenResponse extends BaseResponseWithoutMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $status;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $reference;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $message;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $token;
 
     

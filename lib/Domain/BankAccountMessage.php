@@ -21,68 +21,68 @@ class BankAccountMessage implements ValidInterface
 {
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     private $amount;
 
     /**
      * @var \Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $descriptor;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountName;
  
     /**
      * @var string
-     * @Type("string")
      */
-   private $cardName;
+    #[Type("string")]
+    private $cardName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessUuid;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $processingType;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $sourceId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destinationId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $transactionIdempotencyId;
 
     /**

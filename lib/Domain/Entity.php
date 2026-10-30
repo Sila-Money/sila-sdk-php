@@ -21,26 +21,26 @@ class Entity extends BaseEntity implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $birthdate;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $lastName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $relationship;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $firstName;
 
     /**

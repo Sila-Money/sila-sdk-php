@@ -8,6 +8,7 @@
 namespace Silamoney\Client\Api;
 
 use DateTime;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Domain\UserBuilder;
 use Silamoney\Client\Utils\{
@@ -37,8 +38,8 @@ class RegisterTest extends TestCase
 
     /**
      * @param \Silamoney\Client\Domain\User $user
-     * @dataProvider registerUsersProvider
      */
+    #[DataProvider('registerUsersProvider')]
     public function testRegister200($user)
     {
         $response = self::$config->api->register($user);
@@ -102,7 +103,7 @@ class RegisterTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function registerUsersProvider()
+    public static function registerUsersProvider()
     {
         // Handles are added to DefaultConfig in CheckHandleTest
         DefaultConfig::$firstUserWallet = DefaultConfig::generateWallet();

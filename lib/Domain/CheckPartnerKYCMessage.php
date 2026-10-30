@@ -21,26 +21,26 @@ class CheckPartnerKYCMessage implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $queryAppHandle;
 
     /**
      * @var string
-     * @Type("string")
      */
+     #[Type("string")]
      private $queryUserHandle;
 
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**

@@ -21,28 +21,28 @@ class TestConfiguration
     /**
      * Default appHandle for testing.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $appHandle;
 
     /**
      * Default private key for testing.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $privateKey;
 
     /**
      * Default user handle for testing.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $userHandle;
 
     /**
      * Default user private key for testing.
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $userPrivateKey;
 }

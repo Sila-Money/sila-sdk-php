@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
@@ -40,8 +41,8 @@ class LinkBusinessMemberTest extends TestCase
      * @param string $details
      * @param float $ownershipStake
      * @param string $memberHandle
-     * @dataProvider linkBusinessMemberProvider
      */
+    #[DataProvider('linkBusinessMemberProvider')]
     public function testLinkBusinessMember200($userHandle, $userPrivateKey, $roleIndex, $details, $ownershipStake, $memberHandle)
     {
         $businessRole = DefaultConfig::$businessRoles[$roleIndex];
@@ -93,7 +94,7 @@ class LinkBusinessMemberTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function linkBusinessMemberProvider()
+    public static function linkBusinessMemberProvider()
     {
         return [
             'link business member - administrator' => [

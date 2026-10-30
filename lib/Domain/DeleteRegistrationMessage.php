@@ -20,8 +20,8 @@ class DeleteRegistrationMessage extends HeaderBaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $uuid;
 
     /**

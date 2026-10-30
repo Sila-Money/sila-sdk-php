@@ -21,32 +21,32 @@ class VirtualAccountMessage implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $virtualAccountName;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $achDebitEnabled;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $achCreditEnabled;
     
     /**
      * @var boolean
-     * @Type("boolean")
      */
+    #[Type("boolean")]
     private $statements_enabled;
 
     /**
      * @var \Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**

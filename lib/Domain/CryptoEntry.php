@@ -21,20 +21,20 @@ class CryptoEntry implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cryptoAlias;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cryptoAddress;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cryptoCode;
 
     /**

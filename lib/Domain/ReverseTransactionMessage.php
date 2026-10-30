@@ -20,8 +20,8 @@ class ReverseTransactionMessage extends BaseMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $transactionId;
 
     /**

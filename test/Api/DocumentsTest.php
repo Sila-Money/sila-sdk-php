@@ -19,7 +19,7 @@ use Silamoney\Client\Utils\DefaultConfig;
  * @package Silamoney\Client
  * @author José Morales <jmorales@digitalgeko.com>
  */
-class DodcumentsTest extends TestCase
+class DocumentsTest extends TestCase
 {
 
     /**

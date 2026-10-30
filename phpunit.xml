@@ -1,4 +1,5 @@
-<phpunit bootstrap="vendor/autoload.php">
+<?xml version="1.0"?>
+<phpunit bootstrap="vendor/autoload.php" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="silamoney">
       <file>test/Configuration/ConfigurationTest.php</file>
@@ -52,13 +53,13 @@
       <file>test/Api/getStatementsDataTest.php</file>
       <file>test/Api/getWalletStatementDataTest.php</file>
       <file>test/Api/StatementsTest.php</file>
-      <file>test/Api/ResendStatementsTest.php</file> 
-      <file>test/Api/TearDownTest.php</file>   
+      <file>test/Api/ResendStatementsTest.php</file>
+      <file>test/Api/TearDownTest.php</file>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
+  <source>
+    <include>
       <directory suffix=".php">./lib</directory>
-    </whitelist>
-  </filter>
+    </include>
+  </source>
 </phpunit>

@@ -22,60 +22,60 @@ class Address implements ValidInterface
     /**
      * Address Alias
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $addressAlias;
 
     /**
      * City
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $city;
 
     /**
      * Country
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $country;
 
     /**
      * Postal Code
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $postalCode;
 
     /**
      * State
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $state;
 
     /**
      * Street Address
      * @var string
-     * @SerializedName("street_address")
-     * @Type("string")
      */
+     #[SerializedName("street_address")]
+     #[Type("string")]
      private $streetAddress;
 
     /**
      * Street Address 1
      * @var string
-     * @SerializedName("street_address_1")
-     * @Type("string")
      */
+    #[SerializedName("street_address_1")]
+    #[Type("string")]
     private $streetAddress1;
 
     /**
      * Street Address 2
      * @var string
-     * @SerializedName("street_address_2")
-     * @Type("string")
      */
+    #[SerializedName("street_address_2")]
+    #[Type("string")]
     private $streetAddress2;
 
     /**

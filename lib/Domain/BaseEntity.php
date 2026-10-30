@@ -20,8 +20,8 @@ class BaseEntity
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $entityName;
 
     /**

@@ -21,38 +21,38 @@ class HeaderBase implements ValidInterface
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $reference;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $version;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $crypto;
 
     /**
      * @var int
-     * @Type("int")
      */
+    #[Type("int")]
     protected $created;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $userHandle;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     protected $appHandle;
 
     /**

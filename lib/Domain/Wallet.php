@@ -20,20 +20,20 @@ class Wallet
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $blockchain_address;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $blockchain_network;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $nickname;
 
     /**

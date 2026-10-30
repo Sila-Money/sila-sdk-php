@@ -20,8 +20,8 @@ class SilaBalanceMessage
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $address;
 
     /**

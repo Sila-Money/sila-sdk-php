@@ -21,20 +21,20 @@ class Header extends HeaderBase
 {
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $reference;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $version;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $crypto;
 
     /**

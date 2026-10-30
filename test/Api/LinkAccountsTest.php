@@ -57,9 +57,6 @@ class LinkAccountsTest extends TestCase
         $this->assertEquals('sync_direct', $response->getData()->getAccountName());
     }
 
-    /**
-     * @test
-     */
     public function testLinkAccounts400(): void
     {
         $response = self::$config->api->linkAccount(
@@ -73,9 +70,6 @@ class LinkAccountsTest extends TestCase
         $this->assertStringContainsString('public token is in an invalid format', $response->getData()->message);
     }
 
-    /**
-     * @test
-     */
     public function testLinkAccounts401(): void
     {
         self::$config->setUpBeforeClassInvalidAuthSignature();

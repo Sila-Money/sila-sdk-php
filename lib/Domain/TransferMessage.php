@@ -21,68 +21,68 @@ class TransferMessage implements ValidInterface
 {
     /**
      * @var float
-     * @Type("float")
      */
+    #[Type("float")]
     private $amount;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destination;
 
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $message;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destinationAddress;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destinationWallet;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $descriptor;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $businessUuid;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $sourceId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $destinationId;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $transactionIdempotencyId;
 
 

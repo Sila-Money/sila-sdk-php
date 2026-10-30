@@ -21,38 +21,38 @@ class LinkCardMessage implements ValidInterface
 {
     /**
      * @var Silamoney\Client\Domain\Header
-     * @Type("Silamoney\Client\Domain\Header")
      */
+    #[Type("Silamoney\Client\Domain\Header")]
     private $header;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $token;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $accountPostalCode;
 
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $cardName;
     
     /**
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     private $provider;
 
     /**
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     private $skipVerification;
 
     /**

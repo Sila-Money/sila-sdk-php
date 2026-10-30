@@ -22,8 +22,8 @@ class BaseResponse extends BaseResponseWithoutMessage
     /**
      * Message
      * @var string
-     * @Type("string")
      */
+    #[Type("string")]
     public $message;
 
     /**

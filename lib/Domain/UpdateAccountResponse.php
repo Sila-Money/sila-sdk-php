@@ -22,22 +22,22 @@ class UpdateAccountResponse extends BaseResponse
     /**
      * Updated account.
      * @var Silamoney\Client\Domain\Account
-     * @Type("Silamoney\Client\Domain\Account")
      */
+    #[Type("Silamoney\Client\Domain\Account")]
     public $account;
      
     /**
      * Changes list.
      * @var array<Silamoney\Client\Domain\Change>
-     * @Type("array<Silamoney\Client\Domain\Change>")
     */
+    #[Type("array<Silamoney\Client\Domain\Change>")]
     public $changes;
 
     /**
      * webDebitVerified
      * @var bool
-     * @Type("bool")
      */
+    #[Type("bool")]
     public $webDebitVerified;
 
     public function getAccount(): Silamoney\Client\Domain\Account

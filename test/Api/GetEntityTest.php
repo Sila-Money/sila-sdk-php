@@ -7,6 +7,7 @@
 
 namespace Silamoney\Client\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Silamoney\Client\Utils\{
     ApiTestConfiguration,
@@ -39,8 +40,8 @@ class GetEntityTest extends TestCase
      * @param string $entityType
      * @param int|null $numberOfMemberships
      * @param bool $beneficialOwner
-     * @dataProvider entityProvider
      */
+    #[DataProvider('entityProvider')]
     public function testGetEntityIndividual200($handle, $privateKey, $entityType, $numberOfMemberships, $beneficialOwner)
     {
         $response = self::$config->api->getEntity($handle, $privateKey);
@@ -87,7 +88,7 @@ class GetEntityTest extends TestCase
         $this->assertStringContainsString(DefaultConfig::BAD_APP_SIGNATURE, $response->getData()->message);
     }
 
-    public function entityProvider()
+    public static function entityProvider()
     {
         return [
             'get entity - first user' => [
